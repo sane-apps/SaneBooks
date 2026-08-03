@@ -1,0 +1,404 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4E6030B974F02307C93FE467 /* SaneUI in Frameworks */ = {isa = PBXBuildFile; productRef = 37E4222B1375DECB46235DC7 /* SaneUI */; };
+		6648F4FADF82ACC510F58540 /* SaneBooksFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 6D9177DA89EB6E5A848C7321 /* SaneBooksFeature */; };
+		7E716952BFFDE74852966933 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A9470AAE1FB79699258E2CE /* Assets.xcassets */; };
+		C9C5132BC1F666621D0A7119 /* SaneBooksIconMaster.png in Resources */ = {isa = PBXBuildFile; fileRef = 5512D51EFC84BF49270D40C9 /* SaneBooksIconMaster.png */; };
+		DF28362F947E626805381C22 /* SaneBooksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20806F421A338E0B9837944F /* SaneBooksApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		20806F421A338E0B9837944F /* SaneBooksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneBooksApp.swift; sourceTree = "<group>"; };
+		2B8179267171AE09B8FD09F0 /* SaneBooks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaneBooks.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5512D51EFC84BF49270D40C9 /* SaneBooksIconMaster.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SaneBooksIconMaster.png; sourceTree = "<group>"; };
+		55C6A61A833112820EAEAA90 /* SaneBooks.debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaneBooks.debug.entitlements; sourceTree = "<group>"; };
+		6A9470AAE1FB79699258E2CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AE4092C3A5965DACC6A1ACEB /* SaneBooks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaneBooks.entitlements; sourceTree = "<group>"; };
+		DE8E7AFE2A4362D0E6D07049 /* SaneBooksPackage */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SaneBooksPackage; path = SaneBooksPackage; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F7AF64595B2D6ADD485A4E48 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6648F4FADF82ACC510F58540 /* SaneBooksFeature in Frameworks */,
+				4E6030B974F02307C93FE467 /* SaneUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		09851667D979A20F6B9A62A6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5512D51EFC84BF49270D40C9 /* SaneBooksIconMaster.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		1EF1A7B1F719115458DEACFC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B8179267171AE09B8FD09F0 /* SaneBooks.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		20AD28FF83CE0CE588CFADC8 = {
+			isa = PBXGroup;
+			children = (
+				B8402A1A911855AEF1C998A4 /* Packages */,
+				85D7D838710C48E1ADCFAAB8 /* SaneBooks */,
+				1EF1A7B1F719115458DEACFC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		85D7D838710C48E1ADCFAAB8 /* SaneBooks */ = {
+			isa = PBXGroup;
+			children = (
+				6A9470AAE1FB79699258E2CE /* Assets.xcassets */,
+				55C6A61A833112820EAEAA90 /* SaneBooks.debug.entitlements */,
+				AE4092C3A5965DACC6A1ACEB /* SaneBooks.entitlements */,
+				20806F421A338E0B9837944F /* SaneBooksApp.swift */,
+				09851667D979A20F6B9A62A6 /* Resources */,
+			);
+			path = SaneBooks;
+			sourceTree = "<group>";
+		};
+		B8402A1A911855AEF1C998A4 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				DE8E7AFE2A4362D0E6D07049 /* SaneBooksPackage */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		87B58395896E27172ECE49AF /* SaneBooks */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6392920430291410EC66DF8 /* Build configuration list for PBXNativeTarget "SaneBooks" */;
+			buildPhases = (
+				C7019BF40D8BAE1D3563ED8F /* Sources */,
+				9EFFE8E596C7081F2F548FFB /* Resources */,
+				F7AF64595B2D6ADD485A4E48 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SaneBooks;
+			packageProductDependencies = (
+				6D9177DA89EB6E5A848C7321 /* SaneBooksFeature */,
+				37E4222B1375DECB46235DC7 /* SaneUI */,
+			);
+			productName = SaneBooks;
+			productReference = 2B8179267171AE09B8FD09F0 /* SaneBooks.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F1993404C7788C5F6FB0E749 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					87B58395896E27172ECE49AF = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 5E4FD91ABB5F73F5D7A19448 /* Build configuration list for PBXProject "SaneBooks" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 20AD28FF83CE0CE588CFADC8;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A3E4FFD5F08A501CFA4DB3EB /* XCRemoteSwiftPackageReference "SaneUI" */,
+				8257C18DF1911B47349C4411 /* XCLocalSwiftPackageReference "SaneBooksPackage" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 1EF1A7B1F719115458DEACFC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				87B58395896E27172ECE49AF /* SaneBooks */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9EFFE8E596C7081F2F548FFB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E716952BFFDE74852966933 /* Assets.xcassets in Resources */,
+				C9C5132BC1F666621D0A7119 /* SaneBooksIconMaster.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C7019BF40D8BAE1D3563ED8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF28362F947E626805381C22 /* SaneBooksApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2202B5C486AC6B50F7C4AFE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SaneBooks/SaneBooks.debug.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SaneBooks/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.saneapps.SaneBooks;
+				PRODUCT_NAME = SaneBooks;
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				VALID_ARCHS = arm64;
+			};
+			name = Debug;
+		};
+		33D5AB620775A5BA837D0DE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SaneBooks/SaneBooks.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SaneBooks/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.saneapps.SaneBooks;
+				PRODUCT_NAME = SaneBooks;
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				VALID_ARCHS = arm64;
+			};
+			name = Release;
+		};
+		BE1D1865C92B83135B2F6A8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E5E3B231B7AA9B9732C4A61E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5E4FD91ABB5F73F5D7A19448 /* Build configuration list for PBXProject "SaneBooks" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE1D1865C92B83135B2F6A8F /* Debug */,
+				E5E3B231B7AA9B9732C4A61E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D6392920430291410EC66DF8 /* Build configuration list for PBXNativeTarget "SaneBooks" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2202B5C486AC6B50F7C4AFE6 /* Debug */,
+				33D5AB620775A5BA837D0DE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		8257C18DF1911B47349C4411 /* XCLocalSwiftPackageReference "SaneBooksPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = SaneBooksPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A3E4FFD5F08A501CFA4DB3EB /* XCRemoteSwiftPackageReference "SaneUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sane-apps/SaneUI.git";
+			requirement = {
+				kind = revision;
+				revision = 9e90dbbc194caac805157e71585fe2629a6412da;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		37E4222B1375DECB46235DC7 /* SaneUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3E4FFD5F08A501CFA4DB3EB /* XCRemoteSwiftPackageReference "SaneUI" */;
+			productName = SaneUI;
+		};
+		6D9177DA89EB6E5A848C7321 /* SaneBooksFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SaneBooksFeature;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F1993404C7788C5F6FB0E749 /* Project object */;
+}
