@@ -13,6 +13,8 @@ public enum ViewingKeyValidationOutcome: Sendable, Equatable {
 public struct ViewingKeyValidator: Sendable {
     public static let fixtureMainnetUFVK = DemoLedgerFixtures.fixtureMainnetUFVK
     public static let fixtureTestnetUFVK = DemoLedgerFixtures.fixtureTestnetUFVK
+    /// Real ECC SDK test UFVK — live LWD path.
+    public static let liveProbeMainnetUFVK = LiveProbeKey.mainnetUFVK
 
     public init() {}
 

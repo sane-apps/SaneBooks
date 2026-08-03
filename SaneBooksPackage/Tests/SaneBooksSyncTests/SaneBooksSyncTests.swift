@@ -39,30 +39,51 @@ struct SyncFacadeTests {
         #expect(cursor?.status == .capabilityBlocked)
     }
 
-    @Test func capabilityProbeDefaultsIronwoodFalse() async {
+    @Test func capabilityProbeReportsIronwoodLinked() async {
         let probe = CapabilityProbe()
         let report = await probe.probe()
-        #expect(report.supportsIronwood == false)
-        #expect(report.mainnetSafe == false)
-        #expect(report.notes.contains { $0.contains("1806") })
+        #expect(report.supportsIronwood == true)
+        #expect(report.mainnetSafe == true)
+        #expect(report.sdkRevision == LinkedZcashSDK.revision)
     }
 
-    @Test func lightClientBlocksWhenNotMainnetSafe() async throws {
+    @Test func lightClientRequiresCredentialsWhenLive() async throws {
         let sync = LightClientSyncFacade(forceMock: false)
         let report = await sync.capabilityReport()
-        #expect(report.mainnetSafe == false)
+        #expect(report.mainnetSafe == true)
         let vaultID = VaultID()
         do {
             try await sync.start(vaultID: vaultID)
-            Issue.record("Expected blocked")
+            Issue.record("Expected missing-credentials error")
+        } catch let error as SaneBooksError {
+            guard case .sync = error else {
+                Issue.record("Unexpected \(error)")
+                return
+            }
+        }
+    }
+
+    @Test func lightClientBlocksUIVK() async throws {
+        let sync = LightClientSyncFacade(forceMock: false)
+        let vaultID = VaultID()
+        await sync.bindCredentials(
+            SyncAccountCredentials(
+                vaultID: vaultID,
+                viewingKey: "uivk1placeholder",
+                keyKind: .uivk,
+                network: .mainnet,
+                birthdayHeight: 3_400_000
+            )
+        )
+        do {
+            try await sync.start(vaultID: vaultID)
+            Issue.record("Expected UIVK blocked")
         } catch let error as SaneBooksError {
             guard case .syncBlocked = error else {
                 Issue.record("Unexpected \(error)")
                 return
             }
         }
-        let cursor = await sync.currentCursor(vaultID: vaultID)
-        #expect(cursor?.status == .capabilityBlocked)
     }
 
     @Test func lightClientUsesMockWhenForced() async throws {
@@ -73,5 +94,12 @@ struct SyncFacadeTests {
         #expect(cursor?.status == .caughtUp)
         let notes = await sync.latestNotes(vaultID: vaultID)
         #expect(!notes.isEmpty)
+    }
+
+    @Test func endpointParsesHostPort() throws {
+        let endpoint = try ZcashSDKEngine.endpoint(from: LinkedZcashSDK.defaultMainnetLWD)
+        #expect(endpoint.host == "zec.rocks")
+        #expect(endpoint.port == 443)
+        #expect(endpoint.secure == true)
     }
 }

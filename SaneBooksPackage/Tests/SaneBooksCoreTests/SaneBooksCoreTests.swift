@@ -37,6 +37,20 @@ struct ViewingKeyValidatorTests {
         #expect(fingerprint.hasPrefix("uview:"))
     }
 
+    @Test func acceptsLiveProbeUFVK() {
+        let result = validator.validate(LiveProbeKey.mainnetUFVK, selectedNetwork: .mainnet)
+        guard case let .accept(kind, network, hrp, _, mode) = result else {
+            Issue.record("Expected accept, got \(result)")
+            return
+        }
+        #expect(kind == .ufvk)
+        #expect(network == .mainnet)
+        #expect(hrp == "uview")
+        #expect(mode == .bookkeeper)
+        #expect(LiveProbeKey.mainnetUFVK.hasPrefix("uview1"))
+        #expect(LiveProbeKey.mainnetUFVK.count > 400)
+    }
+
     @Test func networkMismatch() {
         let key = "uviewtest1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
         #expect(validator.validate(key, selectedNetwork: .mainnet) == .networkMismatch(detected: .testnet))

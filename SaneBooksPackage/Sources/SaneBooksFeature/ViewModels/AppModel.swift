@@ -246,11 +246,22 @@ public final class AppModel {
         route = .reader
     }
 
+    /// Offline fixture ledger (mock sync). Used by E2E scenes and the offline demo button.
     public func useDemoKey() {
         importKeyText = ViewingKeyValidator.fixtureMainnetUFVK
         importNetwork = .mainnet
+        importBirthdayText = ""
         importError = nil
         pendingForceMock = true
+    }
+
+    /// Real ECC SDK mainnet UFVK → live lightwalletd sync (no mock).
+    public func useLiveProbeKey() {
+        importKeyText = ViewingKeyValidator.liveProbeMainnetUFVK
+        importNetwork = .mainnet
+        importBirthdayText = String(LiveProbeKey.defaultBirthday)
+        importError = nil
+        pendingForceMock = false
     }
 
     public func finishImport() {
@@ -495,6 +506,21 @@ public final class AppModel {
                     if let url = URL(string: lwdURLString) {
                         await light.setLWDURL(url)
                     }
+                    if let key = try keyStore.load(for: vault.id) {
+                        let birthday = vault.birthdayHeight
+                            ?? (vault.network == .mainnet
+                                ? LinkedZcashSDK.mainnetDefaultBirthday
+                                : LinkedZcashSDK.testnetDefaultBirthday)
+                        await light.bindCredentials(
+                            SyncAccountCredentials(
+                                vaultID: vault.id,
+                                viewingKey: key,
+                                keyKind: vault.keyKind,
+                                network: vault.network,
+                                birthdayHeight: birthday
+                            )
+                        )
+                    }
                 }
                 capabilityReport = await sync.capabilityReport()
                 try await sync.start(vaultID: vault.id)
@@ -509,11 +535,14 @@ public final class AppModel {
     }
 
     private func pollUntilSettled(vaultID: VaultID) async {
-        for _ in 0 ..< 120 {
+        // Mock finishes in one tick; live LWD can run for hours from birthday.
+        // Keep UI cursor fresh while scanning; settle on terminal states.
+        for _ in 0 ..< 21600 {
             guard !Task.isCancelled else { return }
             if let c = await sync.currentCursor(vaultID: vaultID) {
                 cursor = c
-                if c.status == .caughtUp || c.status == .idle || c.status == .capabilityBlocked {
+                if c.status == .caughtUp || c.status == .idle || c.status == .capabilityBlocked
+                    || c.status == .stalled {
                     await refreshFromSync()
                     // Do not clobber proof-pack / detail / share routes after E2E or user navigation.
                     if route == .syncing {
@@ -522,7 +551,7 @@ public final class AppModel {
                     return
                 }
             }
-            try? await Task.sleep(for: .milliseconds(250))
+            try? await Task.sleep(for: .seconds(1))
         }
         await refreshFromSync()
         if route == .syncing {

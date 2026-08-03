@@ -1,0 +1,70 @@
+import Foundation
+@testable import SaneBooksCore
+@testable import SaneBooksSync
+import Testing
+
+/// Opt-in live lightwalletd smoke. Run on Mini:
+/// `SANEBOOKS_LIVE_LWD=1 SANEBOOKS_USE_LOCAL_SANEUI=1 swift test --filter LiveLWD`
+@Suite("Live LWD", .disabled(if: ProcessInfo.processInfo.environment["SANEBOOKS_LIVE_LWD"] != "1"))
+struct LiveLWDTests {
+    @Test func liveProbeKeyImportsAndSyncs() async throws {
+        let sync = LightClientSyncFacade(forceMock: false)
+        let vaultID = VaultID()
+        let birthday = LiveProbeKey.defaultBirthday
+
+        let validated = ViewingKeyValidator().validate(
+            LiveProbeKey.mainnetUFVK,
+            selectedNetwork: .mainnet
+        )
+        guard case let .accept(kind, _, _, _, _) = validated else {
+            Issue.record("LiveProbeKey failed validation: \(validated)")
+            return
+        }
+        #expect(kind == .ufvk)
+
+        await sync.bindCredentials(
+            SyncAccountCredentials(
+                vaultID: vaultID,
+                viewingKey: LiveProbeKey.mainnetUFVK,
+                keyKind: .ufvk,
+                network: .mainnet,
+                birthdayHeight: birthday
+            )
+        )
+
+        try await sync.start(vaultID: vaultID)
+
+        var last: SyncCursor?
+        var reachedWorking = false
+        // Prove tip + meaningful scan progress (full catch-up can take many minutes).
+        for _ in 0 ..< 120 {
+            let cursor = await sync.currentCursor(vaultID: vaultID)
+            last = cursor
+            if let tip = cursor?.chainTipHeight, tip >= 3_428_143,
+               (cursor?.progressFraction ?? 0) >= 0.05 || cursor?.status == .caughtUp {
+                reachedWorking = true
+                break
+            }
+            if cursor?.status == .caughtUp {
+                reachedWorking = true
+                break
+            }
+            if cursor?.status == .stalled || cursor?.status == .capabilityBlocked {
+                Issue.record("Sync failed: \(String(describing: cursor))")
+                break
+            }
+            try await Task.sleep(for: .seconds(2))
+        }
+
+        let notes = await sync.latestNotes(vaultID: vaultID)
+        await sync.cancel(vaultID: vaultID)
+
+        #expect(reachedWorking, "cursor=\(String(describing: last))")
+        #expect((last?.chainTipHeight ?? 0) >= 3_428_143)
+        // Derivation-test UFVK may have zero receives in this window.
+        _ = notes
+        let report = await sync.capabilityReport()
+        #expect(report.supportsIronwood == true)
+        #expect(report.mainnetSafe == true)
+    }
+}

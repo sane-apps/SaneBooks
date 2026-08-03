@@ -17,7 +17,7 @@ Community signal: [Is anyone actually using viewing keys for business accounting
 | Step | What happens |
 |------|----------------|
 | 1 | Import a **UFVK** (`uview…`) for bookkeeper mode (or **UIVK** for receivables-only, with a permanent degraded-mode banner) |
-| 2 | Sync compact history via lightwalletd (demo today uses `MockSyncFacade`; live Ironwood sync is capability-gated) |
+| 2 | Sync compact history via lightwalletd (`ZcashLightClientKit` 2.7.0-rc.4; demo via `SANEBOOKS_FORCE_MOCK=1`) |
 | 3 | Tag rows: Income / Expense / Change / Fee — change is excluded from income totals |
 | 4 | Build a time-scoped **proof pack** (encrypted `.sanebooks` + CSV) |
 | 5 | Accountant opens **Reader** mode — read-only rows, no vault key, no chain sync |
@@ -41,7 +41,9 @@ Community signal: [Is anyone actually using viewing keys for business accounting
 
 NU6.3 / Ironwood activated on mainnet at height **3,428,143** ([ZIP 258](https://zips.z.cash/zip-0258)). New shielded receives land in Ironwood, not Orchard.
 
-SaneBooks gates live mainnet completeness behind a capability check: Sapling **and** Orchard **and** Ironwood compact sync must be available in the pinned SDK. Until that gate passes, the shipping demo path uses **mock sync** and does **not** claim live mainnet ledger completeness.
+SaneBooks links **ZcashLightClientKit 2.7.0-rc.4** (Ironwood receive/sync; tracking issue [#1806](https://github.com/zcash/zcash-swift-wallet-sdk/issues/1806) closed). Live path imports a **UFVK** as view-only and syncs against a configurable lightwalletd (default `zec.rocks:443`). Demo/offline still uses `MockSyncFacade` when `SANEBOOKS_FORCE_MOCK=1` or the fixture demo key is used.
+
+UIVK/receivables mode cannot import via the public SDK yet — that path stays degraded/honest.
 
 ## Demo path (offline)
 
@@ -81,6 +83,7 @@ See `VERDICT.md` in that folder for scene list and pass/fail notes.
 | [docs/GRANT_PROPOSAL.md](docs/GRANT_PROPOSAL.md) | Draft Coinholder-Directed Retroactive Grant application |
 | [docs/COMPETITIVE_POSITIONING.md](docs/COMPETITIVE_POSITIONING.md) | vs CipherPay, Zodl, ZGo, Koinly, ZBooks |
 | [docs/WALLET_VIEWING_KEY_GUIDE.md](docs/WALLET_VIEWING_KEY_GUIDE.md) | How to export a UFVK from common wallets |
+| [docs/LIVE_PROBE_FUNDING.md](docs/LIVE_PROBE_FUNDING.md) | How to fund the live probe UA for a real ledger row |
 | [SECURITY.md](SECURITY.md) / [PRIVACY.md](PRIVACY.md) | Threat model and data boundaries |
 | [AGENTS.md](AGENTS.md) | Agent / contributor project facts |
 

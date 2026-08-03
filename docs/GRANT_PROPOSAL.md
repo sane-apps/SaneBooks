@@ -1,7 +1,7 @@
 # Draft: Retroactive Grant Application — SaneBooks
 
 **Status:** Draft packaging for Coinholder-Directed Retroactive Grants (FPF template fields).  
-**Not submitted.** Do not paste to GitHub/forum until owner fills TBD fields and confirms the retroactive scope is complete enough to attest.
+**Not submitted.** Do not paste to GitHub/forum until owner sets **Requested Grant Amount** and confirms a **funded live receive** receipt exists (or explicitly scopes the attestation to catch-up-only).
 
 Program: [Financial Privacy Foundation — Zcash Coinholder Grants Program](https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram)  
 Forum gap cited: [Is anyone actually using viewing keys for business accounting?](https://forum.zcashcommunity.com/t/is-anyone-actually-using-viewing-keys-for-business-accounting/56300)
@@ -10,7 +10,7 @@ Forum gap cited: [Is anyone actually using viewing keys for business accounting?
 
 ### Application Owners
 
-TBD — `@github-handle` (Stephan Joseph / SaneApps)
+`@MrSaneApps` (Stephan Joseph / SaneApps)
 
 ### Organization or Individual Name
 
@@ -19,7 +19,6 @@ SaneApps
 ### Additional Team Members
 
 ```yaml
-# TBD — fill before submission
 - Name: Stephan Joseph
   Role: Founder / product + engineering
   Background: SaneApps Mac products (local-first, privacy-minded utilities)
@@ -28,11 +27,11 @@ SaneApps
 
 ### How did you learn about the Lockbox: Coinholder Retroactive Grants Program?
 
-TBD (forum / community / prior Zcash ecosystem reading)
+Zcash Community Forum (business viewing-key accounting thread) and ongoing Zcash ecosystem follow.
 
 ### Requested Grant Amount (USD)
 
-**$X TBD** — do not invent hours or a dollar figure until owner sets scope and rates.
+**$X TBD — owner must set before submission.** Do not invent hours or a dollar figure.
 
 ### Category
 
@@ -59,7 +58,7 @@ Adjacent products cover other lanes (CipherPay = IVK checkout; Zodl/YWallet = sp
 
 ### What shipped (verifiable artifacts)
 
-Honest inventory as of **2026-08-03** (Week 0–1 MVP + v1.1 competition pack). Live lightwalletd / Ironwood compact sync is **not** claimed complete — mainnet completeness is capability-gated (`supportsIronwood=false` until SDK #1806-class work).
+Honest inventory as of **2026-08-03**.
 
 | Artifact | Path / evidence |
 |----------|-----------------|
@@ -68,50 +67,52 @@ Honest inventory as of **2026-08-03** (Week 0–1 MVP + v1.1 competition pack). 
 | Viewing-key validator (seed/spend reject; UFVK/UIVK accept) | `SaneBooksCore` + unit tests |
 | Classification engine (change ≠ income) + memo auto-tag rules | `SaneBooksCore` + unit tests |
 | ZIP 302 memo decode | unit tests |
-| Mock sync + `LightClientSyncFacade` blocked path + capability probe | `SaneBooksSync` |
+| Live `ZcashLightClientKit` **2.7.0-rc.4** view-only sync (`zec.rocks`) | `SaneBooksSync` + Mini catch-up receipt (tip **3435350**) |
+| Offline `MockSyncFacade` demo path | `SANEBOOKS_FORCE_MOCK=1` / Offline demo ledger |
 | Encrypted `.sanebooks` packs (AEAD) + CSV + **PDF summary**; no UVK in pack bytes | `SaneBooksExport` + unit tests |
 | Partial-history export gate (ack required) | PackWriter + Proof Pack / Share UI |
 | Share history log (local) | Settings → Proof Packs |
 | Multi-vault + Keychain + file ledger persistence | `AppModel.makeProduction()` |
 | IVK receivables banner + upgrade-to-UFVK path | Ledger + Import |
 | Birthday / viewing-key help (Zodl + YWallet) | Import + `docs/WALLET_VIEWING_KEY_GUIDE.md` |
+| Live probe funding guide | `docs/LIVE_PROBE_FUNDING.md` |
 | Reader mode (pack without vault key) | `SaneBooksFeature` |
-| Unit tests | `SANEBOOKS_USE_LOCAL_SANEUI=1 swift test` — **34/34 green** |
-| Visual audit screenshots | `outputs/visual-audit-sanebooks/` (`e2e-*`, `v11-*`, `VERDICT.md`) |
+| Unit tests | `SANEBOOKS_USE_LOCAL_SANEUI=1 swift test` — **38/38 green** |
+| Visual audit screenshots (mock E2E) | `outputs/visual-audit-sanebooks/` (`e2e-*`, `v11-*`, `VERDICT.md`) |
 | License / privacy / security docs | `LICENSE` (PolyForm Shield), `PRIVACY.md`, `SECURITY.md` |
 | Competition packaging | `docs/GRANT_PROPOSAL.md`, `COMPETITIVE_POSITIONING.md`, `WALLET_VIEWING_KEY_GUIDE.md` |
 
-**Explicitly not shipped yet (do not claim in a submitted application until done):**
+**Still open before a full “live books” attestation:**
 
-- Live compact-block sync against mainnet lightwalletd with Ironwood actions
-- Notarized public release / Sparkle updates / public GitHub remote
+- Non-empty live ledger (probe UFVK has **0** historical receives — needs a dust send to the probe UA, or import of an owner UFVK with history). See `docs/LIVE_PROBE_FUNDING.md`.
+- Notarized public release / Sparkle updates
 - Hosted share links / QuickBooks OAuth
 - ZIP 311 payment-disclosure-only proofs as the sole export path
+
 ### Technical Approach
 
-- Native **SwiftUI** Mac app; SaneHosts-style SPM split (`SaneBooksCore`, `SaneBooksSync`, `SaneBooksExport`, `SaneBooksFeature`)
-- View-only facade over sync: import UFVK/UIVK only; refuse seeds/spend keys
-- Demo path: `MockSyncFacade` for offline E2E while Ironwood-capable SDK pin is gated (`mainnetSafe = Sapling && Orchard && Ironwood`)
+- Native **SwiftUI** Mac app; SPM split (`SaneBooksCore`, `SaneBooksSync`, `SaneBooksExport`, `SaneBooksFeature`)
+- View-only facade: import UFVK/UIVK only; refuse seeds/spend keys; **no** propose/send APIs called
+- Live path: `ZcashLightClientKit` 2.7.0-rc.4 behind Sync only (`importAccount(purpose: .viewOnly)`)
+- Demo path: `MockSyncFacade` when `SANEBOOKS_FORCE_MOCK=1` or offline demo fixture
 - Ledger classification: Income / Expense / Change / Fee; UFVK same-tx inbound+outbound → change candidate
 - Export: versioned AEAD `.sanebooks` (HKDF-SHA256 + ChaCha20-Poly1305) + CSV; packs never embed UVKs
 - Trust: local-first; Keychain ThisDeviceOnly for key material; no iCloud vault sync; LWD trust named in pack attestation metadata
 
-Stack target for live sync (when capability gate passes): `ZcashLightClientKit` / librustzcash behind Sync only — Feature/Export must not import the SDK.
-
 ### Time Period of Work Completion
 
-TBD — scaffold and mock MVP work dated **2026-08** (see `SESSION_HANDOFF.md`). Extend only with dates of verifiable completed work before submission.
+**2026-08** — scaffold, mock MVP, v1.1 competition pack, live SDK wire-up and mainnet catch-up proof (see `SESSION_HANDOFF.md`).
 
 ### Total Budget (USD)
 
-**$X TBD**
+**$X TBD — owner must set before submission.**
 
 ### Budget Breakdown
 
 | Line | $(USD) | Justification |
 |------|--------|---------------|
 | Compensation | TBD | Owner engineering for Core/Sync/Export/Feature, Mac shell, tests, visual audit, docs — **hours not invented** |
-| Technology | TBD | Build/test Mac Mini time, signing/notarization if in scope — leave blank until known |
+| Technology | TBD | Build/test Mac Mini time, signing/notarization if in scope |
 | Services/Contractors | $0 (expected) | None unless owner adds |
 | **Total** | **$X TBD** | |
 
@@ -135,30 +136,30 @@ _N/A_
 
 Use only measurable, non-fake metrics. **Do not invent download counts or testimonials.**
 
-Proposed metrics (fill with real numbers at submission time):
-
 | Metric | How verified | Current (2026-08-03) |
 |--------|--------------|----------------------|
-| Unit tests green | `swift test` | 21/21 |
+| Unit tests green | `swift test` | **38/38** |
 | Mock E2E visual audit | `outputs/visual-audit-sanebooks/VERDICT.md` | 7 scenes pass |
 | Seed/spend rejection | unit tests | covered |
 | Pack contains no UVK | unit tests (byte scan) | covered |
 | Change excluded from income | unit tests + ledger YTD | covered |
-| Live Ironwood sync | capability gate + mainnet receipt | **not yet** |
+| Live LWD catch-up | Mini run: tip **3435350**, status caughtUp, LWD `zec.rocks` | **proven** |
+| Live Ironwood **receive** visible | screenshot of ≥1 inbound note after fund/sync | **pending dust send** (`docs/LIVE_PROBE_FUNDING.md`) |
 | External CPA pilot | written feedback (if any) | **none claimed** |
 
 ### Proof of completion checklist
 
-- [ ] Repo paths: `~/SaneApps/apps/SaneBooks` (public GitHub URL TBD when remote exists)
+- [ ] Public GitHub URL (fill after `sane-apps/SaneBooks` remote exists)
 - [x] `LICENSE` — PolyForm Shield
 - [x] `README.md` — coinholder-facing problem/solution/non-goals
 - [x] Core/Sync/Export/Feature sources under `SaneBooksPackage/`
 - [x] Test command:  
   `cd SaneBooksPackage && SANEBOOKS_USE_LOCAL_SANEUI=1 swift test`
 - [x] Visual audit: `outputs/visual-audit-sanebooks/` (`e2e-welcome.png` … `e2e-reader.png`, `VERDICT.md`)
-- [ ] Live sync proof (when ready): named LWD endpoint, tip height, Ironwood receive visible — screenshot + log receipt
+- [x] Live sync catch-up: LWD `zec.rocks`, tip **3435350**, `SESSION_HANDOFF.md`
+- [ ] Live receive screenshot + log (after funding probe UA or importing funded UFVK)
 - [ ] Forum application thread + FPF GitHub issue (at submission)
-- [ ] Conflict disclosure confirmed: none
+- [x] Conflict disclosure confirmed: none
 
 ### Conflict of Interest Disclosure
 
@@ -170,7 +171,7 @@ None. Applicant builds SaneApps consumer Mac utilities; no conflict with ZCG com
 
 ### Terms checklist (complete at submission)
 
-Copy from the current FPF issue template and check only what is true — especially the attestation that work is **fully completed and verifiable**. Do not submit a partially complete Ironwood sync claim.
+Copy from the current FPF issue template and check only what is true — especially the attestation that work is **fully completed and verifiable**. Do **not** claim a live Ironwood **receive** until the pending funded-note receipt exists.
 
 ---
 

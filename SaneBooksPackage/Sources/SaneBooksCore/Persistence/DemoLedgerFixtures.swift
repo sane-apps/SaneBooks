@@ -117,3 +117,31 @@ public enum DemoLedgerFixtures {
         ]
     }
 }
+
+/// Real mainnet UFVK from zcash-swift-wallet-sdk `DerivationToolMainnetTests`
+/// (seed `9VDVOZZZ…`, Sapling `zs1vp7kvlqr4n9gpehztr76lcn6skkss9p8keqs3nv8avkdtjrcctrvmk9a7u494kluv756jeee5k0`).
+/// Live lightwalletd sync — not mock.
+public enum LiveProbeKey {
+    public static let mainnetUFVK = """
+    uview17fme6ux853km45g9ep07djpfzeydxxgm22xpmr7arzxyutlusalgpqlx7suga4ahzywfuwz4jclm00u7g8u65qvvdt45kttnfunvschssg3h3g06txs9ja32vx3xa8dej3unnat\
+    gzjvd0vumk37t8es3ludldrtse3q6226ws7eq4q0ywz78nudwpepgdn7jmxz8yvp7k6gxkeynkam0f8aqf9qpeaej55zhkw39x7epayhndul0j4xjttdxxlnwcd09nr8svyx8j0zng0w6\
+    scx3m5unpkaqxcm3hslhlfg4caz7r8d4xy9wm7klkg79w7j0uyzec5s3yje20eg946r6rmkf532nfydu26s8q9ua7mwxw2j2ag7hfcuu652gw6uta03vlm05zju3a9rwc4h367kqzfqrc\
+    z35pdwdk2a7yqnk850un3ujxcvve45ueajgvtr6dj4ufszgqwdy0aedgmkalx2p7qed2suarwkr35dl0c8dnqp3
+    """.replacingOccurrences(of: "\\\n", with: "").replacingOccurrences(of: "\n", with: "")
+
+    /// Just after NU6.3 / Ironwood activation — short live scan window.
+    public static let defaultBirthday: UInt32 = 3_430_000
+
+    public static let saplingAddress =
+        "zs1vp7kvlqr4n9gpehztr76lcn6skkss9p8keqs3nv8avkdtjrcctrvmk9a7u494kluv756jeee5k0"
+
+    /// Unified address for the same account (DerivationToolMainnetTests).
+    /// Send any small mainnet ZEC amount here, then live-sync to get a real ledger row.
+    public static let unifiedAddress =
+        "u1l9f0l4348negsncgr9pxd9d3qaxagmqv3lnexcplmufpq7muffvfaue6ksevfvd7wrz7xrvn95rc5zjtn7ugkmgh5rnxswmcj30y0pw52pn0zjvy38rn2esfgve64rj5pcmazxgpyuj"
+
+    public static let transparentAddress = "t1dRJRY7GmyeykJnMH38mdQoaZtFhn1QmGz"
+
+    public static let source =
+        "zcash/zcash-swift-wallet-sdk DerivationToolMainnetTests (2.7.0-rc.4)"
+}

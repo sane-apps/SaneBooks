@@ -160,20 +160,35 @@ public struct ImportViewingKeyView: View {
         .padding(.top, 8)
     }
 
-    /// Prominent secondary path for grant demos / offline walks.
+    /// Live probe uses the ECC SDK DerivationTool mainnet UFVK against zec.rocks.
     private var demoKeyCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Try without a real key")
+            Text("Sync a real UFVK now")
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.white)
-            Text("Loads a fixture UFVK and demo ledger so you can walk the product without pasting secrets.")
+            Text(
+                "Loads the ECC Swift SDK mainnet test UFVK and syncs live via lightwalletd. Birthday \(LiveProbeKey.defaultBirthday.formatted())."
+            )
+            .font(.system(size: 14, weight: .medium))
+            .foregroundStyle(.white)
+            .fixedSize(horizontal: false, vertical: true)
+            Text("To get a real ledger row: send any tiny ZEC amount to the probe unified address (docs/LIVE_PROBE_FUNDING.md), then sync again.")
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
-            ActionButton("Use Demo Key", icon: "sparkles", style: .secondary) {
+            Text(LiveProbeKey.unifiedAddress)
+                .font(.system(size: 12, weight: .medium, design: .monospaced))
+                .foregroundStyle(.white)
+                .textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
+            ActionButton("Use Live Probe Key", icon: "antenna.radiowaves.left.and.right", style: .primary) {
+                model.useLiveProbeKey()
+            }
+            .frame(maxWidth: 260)
+            ActionButton("Offline demo ledger", icon: "sparkles", style: .secondary) {
                 model.useDemoKey()
             }
-            .frame(maxWidth: 220)
+            .frame(maxWidth: 260)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)

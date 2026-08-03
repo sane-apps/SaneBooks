@@ -174,7 +174,13 @@ public struct SettingsView: View {
                 CompactSection("Capability", icon: "shield.lefthalf.filled", iconColor: SaneSettingsIconSemantic.sync.color) {
                     let report = model.capabilityReport ?? model.cursor?.capabilityReport
                     CompactRow("Ironwood", icon: "leaf", iconColor: SaneSettingsIconSemantic.sync.color) {
-                        Text(report?.supportsIronwood == true ? "Supported" : "Unavailable (SDK #1806)")
+                        Text(report?.supportsIronwood == true ? "Supported" : "Unavailable")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(.white)
+                    }
+                    CompactDivider()
+                    CompactRow("SDK", icon: "shippingbox", iconColor: SaneSettingsIconSemantic.sync.color) {
+                        Text(report?.sdkRevision ?? "—")
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(.white)
                     }
@@ -187,7 +193,7 @@ public struct SettingsView: View {
                     if report?.mainnetSafe != true {
                         CompactDivider()
                         CompactRow("Notice", icon: "exclamationmark.triangle", iconColor: .orange) {
-                            Text("Mainnet complete sync unavailable until Ironwood SDK")
+                            Text("Mainnet complete sync is capability-blocked — check SDK notes")
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundStyle(.white)
                                 .fixedSize(horizontal: false, vertical: true)

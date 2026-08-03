@@ -13,7 +13,7 @@ Export → Core
 | Product | Responsibility |
 |---------|----------------|
 | **SaneBooksCore** | Vault, NoteRow, Classification, TagRule, ShareHistoryEntry, ViewingKeyValidator, LedgerStore (File + InMemory), ZIP302, VaultModeBanner |
-| **SaneBooksSync** | `SyncFacade`, `MockSyncFacade`, `BlockedSyncFacade`, `LightClientSyncFacade`, `CapabilityProbe` (Ironwood/SDK #1806 honesty) |
+| **SaneBooksSync** | `SyncFacade`, `MockSyncFacade`, `BlockedSyncFacade`, `LightClientSyncFacade`, `ZcashSDKEngine` (ZcashLightClientKit 2.7.0-rc.4 view-only), `CapabilityProbe` |
 | **SaneBooksExport** | PackBuilder, PackCrypto/PackWriter, PackReader, CSVExporter, PDFSummaryExporter |
 | **SaneBooksFeature** | SwiftUI E2E screens + `AppModel` (multi-vault, share history, tag rules, partial-history ack) |
 

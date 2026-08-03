@@ -31,10 +31,24 @@ let package = Package(
         .library(name: "SaneBooksExport", targets: ["SaneBooksExport"]),
         .library(name: "SaneBooksFeature", targets: ["SaneBooksFeature"])
     ],
-    dependencies: [saneUIDependency],
+    dependencies: [
+        saneUIDependency,
+        // Ironwood receive/sync: zcash-swift-wallet-sdk#1806 closed; pin non-prerelease 2.7.0-rc.4.
+        .package(
+            url: "https://github.com/zcash/zcash-swift-wallet-sdk.git",
+            revision: "fb9f6cf46fa725efa6cb9e646e13a94f05a293bf"
+        )
+    ],
     targets: [
         .target(name: "SaneBooksCore", dependencies: [], swiftSettings: [.swiftLanguageMode(.v6)]),
-        .target(name: "SaneBooksSync", dependencies: ["SaneBooksCore"], swiftSettings: [.swiftLanguageMode(.v6)]),
+        .target(
+            name: "SaneBooksSync",
+            dependencies: [
+                "SaneBooksCore",
+                .product(name: "ZcashLightClientKit", package: "zcash-swift-wallet-sdk")
+            ],
+            swiftSettings: [.swiftLanguageMode(.v6)]
+        ),
         .target(name: "SaneBooksExport", dependencies: ["SaneBooksCore"], swiftSettings: [.swiftLanguageMode(.v6)]),
         .target(
             name: "SaneBooksFeature",
