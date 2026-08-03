@@ -149,7 +149,7 @@ Use only measurable, non-fake metrics. **Do not invent download counts or testim
 
 ### Proof of completion checklist
 
-- [ ] Public GitHub URL (fill after `sane-apps/SaneBooks` remote exists)
+- [x] Public GitHub: https://github.com/sane-apps/SaneBooks
 - [x] `LICENSE` — PolyForm Shield
 - [x] `README.md` — coinholder-facing problem/solution/non-goals
 - [x] Core/Sync/Export/Feature sources under `SaneBooksPackage/`
