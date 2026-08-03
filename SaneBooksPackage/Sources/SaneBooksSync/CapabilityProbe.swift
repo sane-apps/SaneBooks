@@ -2,27 +2,13 @@ import Foundation
 import SaneBooksCore
 
 /// Default capability probe for production.
-/// Documents zcash-swift-wallet-sdk Ironwood tracking:
-/// https://github.com/zcash/zcash-swift-wallet-sdk/issues/1806
-///
-/// Until Ironwood compact sync ships in a pinned SDK revision, `supportsIronwood` stays false
-/// and `mainnetSafe` is false. Do not claim mainnet completeness.
+/// Ironwood receive/sync landed in ZcashLightClientKit 2.7.0-rc.1+ (#1806 closed).
+/// SaneBooks links `2.7.0-rc.4` via `LinkedZcashSDK`.
 public struct CapabilityProbe: SyncCapabilityProbing, Sendable {
     public init() {}
 
     public func probe() async -> CapabilityReport {
-        CapabilityReport(
-            sdkRevision: "not-linked",
-            supportsSapling: true,
-            supportsOrchard: true,
-            supportsIronwood: false,
-            supportsTransparent: false,
-            notes: [
-                "Ironwood compact sync unavailable (SDK #1806).",
-                "Mainnet complete sync blocked until Ironwood support lands.",
-                "Set SANEBOOKS_FORCE_MOCK=1 for demo ledger only."
-            ]
-        )
+        LinkedZcashSDK.linkedCapabilityReport
     }
 }
 

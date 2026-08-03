@@ -1,37 +1,36 @@
 import Foundation
 import SaneBooksCore
 
-/// View-only light-client facade scaffold.
+/// View-only light-client facade over ZcashLightClientKit.
 ///
-/// Does **not** link ZcashLightClientKit by default (macOS/Ironwood incomplete — SDK #1806).
 /// Behavior:
-/// - `SANEBOOKS_FORCE_MOCK=1` or demo fixture key → `MockSyncFacade`
-/// - `!mainnetSafe` from capability probe → capability-blocked cursor (honest incompleteness)
-/// - Optional compile flag `SANEBOOKS_ENABLE_LIGHTCLIENT=1` reserves a stub path for future SDK wiring
+/// - `SANEBOOKS_FORCE_MOCK=1` or `setForceMock(true)` → `MockSyncFacade`
+/// - Live path: bind UFVK credentials, then `start` drives SDKSynchronizer against LWD
+/// - UIVK / missing credentials → honest `syncBlocked` (no fake completeness)
 ///
-/// Never pretends completeness when blocked.
+/// Never pretends chain completeness on the mock path without `isDemo`.
 public actor LightClientSyncFacade: SyncFacade {
     private let probe: any SyncCapabilityProbing
     private let mock: MockSyncFacade
-    private let blocked: BlockedSyncFacade
+    private let engine: ZcashSDKEngine
     private var forceMock: Bool
     private var lwdURL: URL
+    private var credentialsByVault: [UUID: SyncAccountCredentials] = [:]
     private var cursors: [UUID: SyncCursor] = [:]
-    private var lastReport: CapabilityReport?
 
     public init(
         probe: any SyncCapabilityProbing = CapabilityProbe(),
         forceMock: Bool? = nil,
-        lwdURL: URL = URL(string: "https://zec.rocks:443")!
+        lwdURL: URL = LinkedZcashSDK.defaultMainnetLWD
     ) {
         self.probe = probe
         mock = MockSyncFacade()
-        blocked = BlockedSyncFacade()
+        engine = ZcashSDKEngine()
         self.forceMock = forceMock ?? Self.envForceMock
         self.lwdURL = lwdURL
     }
 
-    /// Production default: blocked/honest unless mock forced.
+    /// Production default: live SDK unless mock forced.
     public static func makeDefault() -> LightClientSyncFacade {
         LightClientSyncFacade()
     }
@@ -52,28 +51,36 @@ public actor LightClientSyncFacade: SyncFacade {
         lwdURL
     }
 
+    /// Bind vault UFVK before `start`. Required for live sync.
+    public func bindCredentials(_ credentials: SyncAccountCredentials) {
+        credentialsByVault[credentials.vaultID.uuid] = credentials
+    }
+
     public func capabilityReport() async -> CapabilityReport {
         if forceMock {
             return .demoMock
         }
-        let report = await probe.probe()
-        lastReport = report
-        return report
+        return await probe.probe()
     }
 
     public func currentCursor(vaultID: VaultID) async -> SyncCursor? {
         if forceMock {
             return await mock.currentCursor(vaultID: vaultID)
         }
-        if let cached = cursors[vaultID.uuid] {
-            return cached
+        if let live = engine.currentCursor(), live.vaultID == vaultID {
+            cursors[vaultID.uuid] = live
+            return live
         }
-        return await blocked.currentCursor(vaultID: vaultID)
+        return cursors[vaultID.uuid]
     }
 
     public func latestNotes(vaultID: VaultID) async -> [NoteRow] {
         if forceMock {
             return await mock.latestNotes(vaultID: vaultID)
+        }
+        let live = engine.latestNotes()
+        if !live.isEmpty {
+            return live.filter { $0.vaultID == vaultID }
         }
         return []
     }
@@ -85,18 +92,11 @@ public actor LightClientSyncFacade: SyncFacade {
         }
 
         let report = await capabilityReport()
-        #if SANEBOOKS_ENABLE_LIGHTCLIENT
-            // Reserved: when Ironwood SDK lands and mainnetSafe, wire ZcashLightClientKit view-only here.
-            if report.mainnetSafe {
-                // Stub — fall through to blocked until real adapter exists.
-            }
-        #endif
-
-        if !report.mainnetSafe {
+        guard report.mainnetSafe else {
             let cursor = SyncCursor(
                 vaultID: vaultID,
-                birthdayHeight: 419_200,
-                scannedThroughHeight: 419_200,
+                birthdayHeight: LinkedZcashSDK.mainnetDefaultBirthday,
+                scannedThroughHeight: LinkedZcashSDK.mainnetDefaultBirthday,
                 lastError: .capability,
                 lwdURL: lwdURL,
                 status: .capabilityBlocked,
@@ -105,12 +105,21 @@ public actor LightClientSyncFacade: SyncFacade {
             )
             cursors[vaultID.uuid] = cursor
             throw SaneBooksError.syncBlocked(
-                "Mainnet complete sync unavailable until Ironwood SDK (issue #1806). Ledger incomplete for post-NU6.3 receives."
+                "Mainnet complete sync unavailable — capability gate failed (\(report.sdkRevision))."
             )
         }
 
-        // Should not reach until SDK path is live.
-        throw SaneBooksError.syncBlocked("Light client not linked — use mock or wait for Ironwood-capable SDK.")
+        guard let credentials = credentialsByVault[vaultID.uuid] else {
+            throw SaneBooksError.sync(
+                "No viewing key loaded for this vault. Re-import the UFVK, then sync again."
+            )
+        }
+
+        engine.bind(credentials: credentials, lwdURL: lwdURL)
+        try await engine.start()
+        if let cursor = engine.currentCursor() {
+            cursors[vaultID.uuid] = cursor
+        }
     }
 
     public func cancel(vaultID: VaultID) async {
@@ -118,11 +127,13 @@ public actor LightClientSyncFacade: SyncFacade {
             await mock.cancel(vaultID: vaultID)
             return
         }
-        if var cursor = cursors[vaultID.uuid] {
+        engine.cancel()
+        if let cursor = engine.currentCursor() {
+            cursors[vaultID.uuid] = cursor
+        } else if var cursor = cursors[vaultID.uuid] {
             cursor.status = .idle
             cursors[vaultID.uuid] = cursor
         }
-        await blocked.cancel(vaultID: vaultID)
     }
 
     public func rescan(vaultID: VaultID, from height: UInt32) async throws {
@@ -130,7 +141,14 @@ public actor LightClientSyncFacade: SyncFacade {
             try await mock.rescan(vaultID: vaultID, from: height)
             return
         }
-        _ = height
-        try await start(vaultID: vaultID)
+        if var credentials = credentialsByVault[vaultID.uuid] {
+            credentials.birthdayHeight = height
+            credentialsByVault[vaultID.uuid] = credentials
+            engine.bind(credentials: credentials, lwdURL: lwdURL)
+        }
+        try await engine.rescan(from: height)
+        if let cursor = engine.currentCursor() {
+            cursors[vaultID.uuid] = cursor
+        }
     }
 }

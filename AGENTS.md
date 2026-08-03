@@ -34,7 +34,7 @@ Mac-native, local-first accountant layer for shielded Zcash: import a viewing ke
 1. **Cannot spend** — no seed/spend key acceptance; Sync facade is view-only.
 2. **UFVK preferred** — UIVK is degraded receivables mode with a permanent banner.
 3. **No UVK in packs** — packs carry fingerprint + classified rows only.
-4. **Ironwood gate** — mainnet completeness waits on SDK capability; demo uses MockSyncFacade.
+4. **Ironwood** — live sync uses linked ZcashLightClientKit `2.7.0-rc.4` (UFVK view-only). Demo still available via `SANEBOOKS_FORCE_MOCK=1`.
 5. **SaneUI** — accent `#0DA3C7`, settings text white ≥14pt, no gray `.secondary` in settings.
 6. **Mini-first** — builds/tests/runtime on Mac Mini unless owner approves Air fallback.
 
