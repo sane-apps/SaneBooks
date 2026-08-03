@@ -1,0 +1,27 @@
+# SaneBooks .gitignore
+
+.DS_Store
+
+# SwiftPM / Xcode build
+.build/
+DerivedData/
+.derivedData/
+.swiftpm/
+*.xcresult/
+*.xcuserstate
+*.xcuserstatedata
+xcuserdata/
+
+# Packs must never be committed (may contain confidential ledger rows)
+*.sanebooks
+
+# Runtime / agent logs under outputs — keep visual-audit PNGs + VERDICT tracked
+outputs/**
+!outputs/visual-audit-sanebooks/
+!outputs/visual-audit-sanebooks/**
+outputs/visual-audit-sanebooks/**/*.log
+
+# Local scratch
+*.log
+build_log*.txt
+test_output*.txt
