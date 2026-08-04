@@ -160,7 +160,7 @@ Use only measurable, non-fake metrics. **Do not invent download counts or testim
 - [x] Live sync catch-up: LWD `zec.rocks`, tip **3435350**, `SESSION_HANDOFF.md`
 - [x] Zashi database import receipt — `outputs/visual-audit-sanebooks/gold-zashi-e2e/` + `LOG_RECEIPT.txt` (not live-receive proof)
 - [ ] Funded live Ironwood receive and current live-sync receipt
-- [ ] Signed/notarized public artifact with source/dependency/binary provenance
+- [x] Signed/notarized public artifact with source/dependency/binary provenance — https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0 (`SaneBooks-0.1.0.zip`, sha256 `54b922814f0269f94609b483d948b7cb2706a6b8cdc3254756a8e1142b964fe8`, notary `fcd6111b-0267-48f2-9797-866fac68ac06`, git `8583fbdc531f`)
 - [ ] Forum application thread + FPF GitHub issue (at submission)
 - [x] Conflict disclosure confirmed: none
 
