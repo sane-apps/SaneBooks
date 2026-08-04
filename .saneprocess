@@ -15,17 +15,27 @@ tests:
   unit_destination: "platform=macOS"
   verify_timeout_seconds: 1800
 
-# Distribution is intentionally fail-closed while SaneBooks is pre-release.
-# Replace the reserved .invalid hosts only after owned infrastructure is live.
+# GitHub Releases lane (Sparkle/site reserved; not used this pass).
 release:
-  enabled: false
+  enabled: true
   team_id: M78L6FXD48
   signing_identity: "Developer ID Application"
+  github_repo: sane-apps/SaneBooks
   dist_host: dist.sanebooks.invalid
   site_host: sanebooks.invalid
   r2_bucket: sanebar-downloads
   use_sparkle: false
   min_system_version: "14.0"
+  upgrade_path_test:
+    scheme: SaneBooks
+    test_selector: SaneBooksTests/AppModelTests/settingsPersistAcrossModelRelaunch
+    from_version: "0.0.1"
+    timeout_seconds: 900
+  reconcile:
+    enabled: true
+    peer_host: mini
+    peer_repo_path: /Users/stephansmac/SaneApps/apps/SaneBooks
+    peer_branch: main
 
 appstore:
   enabled: false

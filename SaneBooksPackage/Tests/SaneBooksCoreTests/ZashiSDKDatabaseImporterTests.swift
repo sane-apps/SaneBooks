@@ -126,6 +126,63 @@ struct ZashiSDKDatabaseImporterTests {
     }
 
     @Test
+    func equalValueDualOutputsDoNotCrossCopyClassificationOnLegacyRematch() {
+        let vaultID = VaultID()
+        let txid = Data(repeating: 0xAB, count: 32)
+        let height: UInt32 = 3_100_000
+        let value: Int64 = 50_000_000
+
+        var existingA = NoteRow(
+            id: NoteRowID(),
+            vaultID: vaultID,
+            txid: txid,
+            blockHeight: height,
+            pool: .orchard,
+            direction: .incoming,
+            valueZatoshis: value,
+            classification: Classification(kind: .income, party: "Client A", source: .user)
+        )
+        var existingB = NoteRow(
+            id: NoteRowID(),
+            vaultID: vaultID,
+            txid: txid,
+            blockHeight: height,
+            pool: .orchard,
+            direction: .incoming,
+            valueZatoshis: value,
+            classification: Classification(kind: .expense, party: "Vendor B", source: .user)
+        )
+        // New stable IDs simulate identity migration; semantic keys collide.
+        let importedA = NoteRow(
+            id: NoteRowID(),
+            vaultID: vaultID,
+            txid: txid,
+            blockHeight: height,
+            pool: .orchard,
+            direction: .incoming,
+            valueZatoshis: value
+        )
+        let importedB = NoteRow(
+            id: NoteRowID(),
+            vaultID: vaultID,
+            txid: txid,
+            blockHeight: height,
+            pool: .orchard,
+            direction: .incoming,
+            valueZatoshis: value
+        )
+
+        let merged = ZashiSDKDatabaseImporter.mergeImportedNotesPreservingClassifications(
+            existing: [existingA, existingB],
+            imported: [importedA, importedB]
+        )
+
+        #expect(merged.count == 2)
+        #expect(merged.allSatisfy { $0.classification == nil })
+        #expect(Set(merged.map(\.id)) == Set([importedA.id, importedB.id]))
+    }
+
+    @Test
     func rejectsMultipleAccountsInsteadOfChoosingFirst() throws {
         let url = try Self.makeFixtureDatabase(noteCount: 0)
         defer { try? FileManager.default.removeItem(at: url) }
