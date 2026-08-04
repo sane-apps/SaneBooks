@@ -1,7 +1,7 @@
 # SESSION_HANDOFF — SaneBooks
 
 **Updated:** 2026-08-04 ET (GitHub DMG lane A shipped)
-**Branch:** `main` · remote `sane-apps/SaneBooks` · HEAD `8583fbd` · tag `v0.1.0`
+**Branch:** `main` · remote `sane-apps/SaneBooks` · HEAD `a2a2b3e` · tag `v0.1.0` (binary built from `8583fbd`)
 
 ## Current outcome
 
