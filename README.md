@@ -1,10 +1,22 @@
 # SaneBooks
 
-Private books for shielded Zcash — Mac-native, local-first.
+<p align="center">
+  <img src="docs/marketing/v0.1.0/app-icon.png" width="88" alt="SaneBooks" />
+</p>
 
-Import a **viewing key**, classify income / change / expense, and share a scoped **proof pack** with your accountant. SaneBooks **cannot spend ZEC**.
+**Private books for shielded Zcash** — Mac-native, local-first. Import a viewing key, classify income / change / expense, and share a scoped proof pack with your accountant. **Cannot spend ZEC.**
 
-**100% Transparent Code** under [PolyForm Shield](LICENSE). Not casual “open source.”
+**[Download notarized v0.1.0](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0)** · **100% Transparent Code** under [PolyForm Shield](LICENSE) (not casual “open source”)
+
+| Welcome | Ledger | Proof pack |
+|:---:|:---:|:---:|
+| <img src="docs/marketing/v0.1.0/01-welcome.png" width="280" alt="Welcome" /> | <img src="docs/marketing/v0.1.0/02-ledger.png" width="280" alt="Ledger" /> | <img src="docs/marketing/v0.1.0/03-proof-pack.png" width="280" alt="Proof pack" /> |
+
+| Share with disclosure | Accountant Reader |
+|:---:|:---:|
+| <img src="docs/marketing/v0.1.0/04-share-disclosure.png" width="320" alt="Share disclosure" /> | <img src="docs/marketing/v0.1.0/05-reader.png" width="320" alt="Reader" /> |
+
+CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs team treasury. **SaneBooks** is the Mac CPA layer: change ≠ income, and an expiring `.sanebooks` pack — not a permanent UFVK.
 
 ## The problem
 
