@@ -205,11 +205,18 @@ public enum ZashiSDKDatabaseImporter: Sendable {
         let exact = Dictionary(grouping: existing, by: \.id)
             .compactMapValues { $0.count == 1 ? $0[0] : nil }
         let legacy = Dictionary(grouping: existing, by: LegacyIdentity.init(note:))
+        let importedLegacyCounts = Dictionary(grouping: imported, by: LegacyIdentity.init(note:))
+            .mapValues(\.count)
 
         return imported.map { importedNote in
             var merged = importedNote
-            let semanticMatches = legacy[LegacyIdentity(note: importedNote)] ?? []
-            guard let old = exact[importedNote.id] ?? (semanticMatches.count == 1 ? semanticMatches[0] : nil) else {
+            let key = LegacyIdentity(note: importedNote)
+            let semanticMatches = legacy[key] ?? []
+            // Require uniqueness on both sides so equal-value dual outputs in one
+            // tx cannot copy one note's classification onto another.
+            let uniqueSemanticRematch =
+                semanticMatches.count == 1 && importedLegacyCounts[key] == 1
+            guard let old = exact[importedNote.id] ?? (uniqueSemanticRematch ? semanticMatches[0] : nil) else {
                 return merged
             }
             merged.classification = old.classification

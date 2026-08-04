@@ -1,0 +1,185 @@
+---
+version: 1
+app: SaneBooks
+actions:
+- id: welcome-import-ufvk-or-zashi
+  title: Welcome and Import accept UFVK paste or Zashi/Zodl database
+  surfaces:
+  - Welcome
+  - Import
+  steps:
+  - Launch SaneBooks to Welcome.
+  - Choose Import Viewing Key or Import Zashi / Zodl database.
+  - Paste a viewing key or pick a wallet database, then Continue.
+  assertions:
+  - Seed and spending-key paste are rejected with plain-language errors.
+  - Successful import reaches Sync or Ledger with a vault banner.
+  evidence:
+  - SaneBooksUITests import journeys
+  - outputs/e2e/2026-08-04/final-green/cropped/welcome.png
+  required_proof_level: runtime_visual
+  required_evidence_types:
+  - mini_runtime
+  - screenshot
+  - log
+  historical_failure_classes:
+  - activation_noop
+  - menu_entry_missing
+  - data_loss_or_unexpected_mutation
+  functional_state:
+    description: Fresh vault or demo vault ready for import.
+    setup_steps:
+    - Prefer forced-mock or ephemeral key store for automated runs.
+  user_inputs:
+  - Launch SaneBooks to Welcome.
+  - Choose Import Viewing Key or Import Zashi / Zodl database.
+  - Paste a viewing key or pick a wallet database, then Continue.
+  expected_outputs:
+  - Seed and spending-key paste are rejected with plain-language errors.
+  - Successful import reaches Sync or Ledger with a vault banner.
+
+- id: ledger-classify-and-search
+  title: Ledger search, classify, and detail save work
+  surfaces:
+  - Ledger
+  - Transaction detail
+  steps:
+  - Open the ledger for an active vault.
+  - Search and select a note.
+  - Edit classification / memo / pack inclusion and Save.
+  assertions:
+  - Search changes visible rows.
+  - Saved classification persists after relaunch within the same vault.
+  evidence:
+  - SaneBooksUITests ledger journeys
+  - outputs/e2e/2026-08-04/final-green/cropped/ledger.png
+  required_proof_level: runtime_visual
+  required_evidence_types:
+  - mini_runtime
+  - screenshot
+  historical_failure_classes:
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - state_count_drift
+  functional_state:
+    description: Vault with representative classified and untagged notes.
+    setup_steps:
+    - Load demo or imported fixture history before the sweep.
+  user_inputs:
+  - Open the ledger for an active vault.
+  - Search and select a note.
+  - Edit classification / memo / pack inclusion and Save.
+  expected_outputs:
+  - Search changes visible rows.
+  - Saved classification persists after relaunch within the same vault.
+
+- id: proof-pack-share-reader
+  title: Proof pack build, share, and Reader round trip
+  surfaces:
+  - Proof pack builder
+  - Share
+  - Reader
+  steps:
+  - Choose New Proof Pack from ledger or Dock.
+  - Review disclosure, set password or plaintext warning, Save.
+  - Open the saved pack in Reader.
+  assertions:
+  - Disclosure lists what leaves the vault.
+  - Encrypted pack opens only with the correct password.
+  - Reader shows classified rows without a viewing key.
+  evidence:
+  - outputs/e2e/2026-08-04/final-green/cropped/proof-pack.png
+  - outputs/e2e/2026-08-04/final-green/cropped/share.png
+  - outputs/e2e/2026-08-04/final-green/cropped/reader.png
+  required_proof_level: runtime_visual
+  required_evidence_types:
+  - mini_runtime
+  - screenshot
+  - log
+  historical_failure_classes:
+  - data_loss_or_unexpected_mutation
+  - activation_noop
+  functional_state:
+    description: Vault with at least one pack-includable income note.
+    setup_steps:
+    - Classify sample notes before opening the builder.
+  user_inputs:
+  - Choose New Proof Pack from ledger or Dock.
+  - Review disclosure, set password or plaintext warning, Save.
+  - Open the saved pack in Reader.
+  expected_outputs:
+  - Disclosure lists what leaves the vault.
+  - Encrypted pack opens only with the correct password.
+  - Reader shows classified rows without a viewing key.
+
+- id: discreet-settings-destructive
+  title: Discreet mode, text size, and remove-vault confirmation
+  surfaces:
+  - Ledger privacy control
+  - Settings
+  steps:
+  - Toggle Discreet and confirm amounts mask.
+  - Open Settings, change text size, confirm Extra Large remains reachable.
+  - Remove vault only through the confirmation alert.
+  assertions:
+  - Discreet masks amounts in ledger and detail.
+  - Text size persists across relaunch.
+  - Remove vault requires confirmation and clears local vault state.
+  evidence:
+  - outputs/e2e/2026-08-04/final-green/cropped/ledger-accessibility-text.png
+  - Feature settings persistence test
+  required_proof_level: runtime_visual
+  required_evidence_types:
+  - mini_runtime
+  - screenshot
+  - fixture
+  historical_failure_classes:
+  - persistence_or_relaunch_reset
+  - data_loss_or_unexpected_mutation
+  - layout_visual_regression
+  functional_state:
+    description: Active vault with visible amounts before Discreet toggle.
+    setup_steps:
+    - Ensure Settings opens from app menu or Dock.
+  user_inputs:
+  - Toggle Discreet and confirm amounts mask.
+  - Open Settings, change text size, confirm Extra Large remains reachable.
+  - Remove vault only through the confirmation alert.
+  expected_outputs:
+  - Discreet masks amounts in ledger and detail.
+  - Text size persists across relaunch.
+  - Remove vault requires confirmation and clears local vault state.
+
+- id: dock-menu-keyboard
+  title: Dock menu and Cmd-N/I/O reach core actions
+  surfaces:
+  - Dock menu
+  - App menu
+  - Keyboard shortcuts
+  steps:
+  - Use Dock menu for Settings, Import, Open Proof Pack, New Proof Pack.
+  - Exercise Cmd-N, Cmd-I, and Cmd-O where applicable.
+  assertions:
+  - Dock and menu actions open the intended routes without duplicate windows.
+  - Keyboard shortcuts reach Import / pack / Reader paths.
+  evidence:
+  - SaneBooksUITests keyboard journeys
+  - outputs/e2e/2026-08-04/final-green/cropped/keyboard-reader.png
+  required_proof_level: runtime_visual
+  required_evidence_types:
+  - mini_runtime
+  - screenshot
+  historical_failure_classes:
+  - menu_entry_missing
+  - shortcut_focus_or_dispatch
+  - duplicate_or_stale_menu_item
+  functional_state:
+    description: App running with an active vault preferred.
+    setup_steps:
+    - Keep a single SaneBooks instance frontmost.
+  user_inputs:
+  - Use Dock menu for Settings, Import, Open Proof Pack, New Proof Pack.
+  - Exercise Cmd-N, Cmd-I, and Cmd-O where applicable.
+  expected_outputs:
+  - Dock and menu actions open the intended routes without duplicate windows.
+  - Keyboard shortcuts reach Import / pack / Reader paths.
