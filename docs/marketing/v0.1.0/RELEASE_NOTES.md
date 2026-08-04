@@ -5,7 +5,7 @@
 CipherPay gets you paid privately. ZBooks runs team treasury. **SaneBooks** is the CPA layer: classify change so it is not income, then hand your accountant an expiring `.sanebooks` pack — not a permanent viewing key.
 
 <p align="center">
-  <img src="https://github.com/sane-apps/SaneBooks/releases/download/v0.1.0/app-icon.png" width="96" alt="SaneBooks icon" />
+  <img src="https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/app-icon.png" width="96" alt="SaneBooks icon" />
 </p>
 
 ## Download
@@ -39,31 +39,31 @@ Unzip → open `SaneBooks.app`. Gatekeeper should accept it (Notarized Developer
 
 Import a viewing key (or pull history from Zashi / Zodl). The app refuses spend keys and seed phrases.
 
-![Welcome — import a viewing key](https://github.com/sane-apps/SaneBooks/releases/download/v0.1.0/01-welcome.png)
+![Welcome — import a viewing key](https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/01-welcome.png)
 
 ### 2. Classify the ledger
 
 Income, expenses, and change as separate kinds. YTD totals stay readable; Discreet mode hides balances when you share your screen.
 
-![Ledger with classified ZEC rows](https://github.com/sane-apps/SaneBooks/releases/download/v0.1.0/02-ledger.png)
+![Ledger with classified ZEC rows](https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/02-ledger.png)
 
 ### 3. Scope a proof pack
 
 Pick the date range that belongs in the handoff. Only notes confirmed in that window go into the pack.
 
-![New Proof Pack — date range](https://github.com/sane-apps/SaneBooks/releases/download/v0.1.0/03-proof-pack.png)
+![New Proof Pack — date range](https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/03-proof-pack.png)
 
 ### 4. Disclose on purpose
 
 Before save: what is included, what is left out, who it is for, and when it expires. Encrypted pack, CSV, or PDF — you choose how much surface area leaves the Mac.
 
-![Share Proof Pack — disclosure audit](https://github.com/sane-apps/SaneBooks/releases/download/v0.1.0/04-share-disclosure.png)
+![Share Proof Pack — disclosure audit](https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/04-share-disclosure.png)
 
 ### 5. Accountant opens Reader
 
 No vault key. No chain sync. Unlock the `.sanebooks` file with the passphrase you shared out of band.
 
-![SaneBooks Reader](https://github.com/sane-apps/SaneBooks/releases/download/v0.1.0/05-reader.png)
+![SaneBooks Reader](https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/05-reader.png)
 
 ---
 
