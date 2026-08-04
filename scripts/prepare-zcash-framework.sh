@@ -11,10 +11,50 @@ if [ -z "${TARGET_BUILD_DIR:-}" ] || [ -z "${FRAMEWORKS_FOLDER_PATH:-}" ]; then
 fi
 
 framework="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libzcashlc.framework"
-donor="${TARGET_BUILD_DIR}/libzcashlc.framework"
+
+# Archive installs into InstallationBuildProductsLocation/Applications, where
+# there is no sibling flat framework. Debug/unit builds keep the donor beside
+# the app under TARGET_BUILD_DIR. Prefer any donor that still has Headers.
+resolve_donor() {
+  local candidate
+  for candidate in \
+    "${TARGET_BUILD_DIR}/libzcashlc.framework" \
+    "${BUILT_PRODUCTS_DIR:-}/libzcashlc.framework" \
+    "${CONFIGURATION_BUILD_DIR:-}/libzcashlc.framework"
+  do
+    if [ -z "${candidate}" ] || [ "${candidate}" = "${framework}" ]; then
+      continue
+    fi
+    if [ -d "${candidate}/Headers" ] || [ -d "${candidate}/Versions/A/Headers" ]; then
+      printf '%s\n' "${candidate}"
+      return 0
+    fi
+  done
+  for candidate in \
+    "${TARGET_BUILD_DIR}/libzcashlc.framework" \
+    "${BUILT_PRODUCTS_DIR:-}/libzcashlc.framework" \
+    "${CONFIGURATION_BUILD_DIR:-}/libzcashlc.framework"
+  do
+    if [ -z "${candidate}" ] || [ "${candidate}" = "${framework}" ]; then
+      continue
+    fi
+    if [ -d "${candidate}" ]; then
+      printf '%s\n' "${candidate}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+donor=""
+if donor="$(resolve_donor)"; then
+  :
+else
+  donor=""
+fi
 
 if [ ! -d "${framework}" ]; then
-  if [ -d "${donor}" ]; then
+  if [ -n "${donor}" ] && [ -d "${donor}" ]; then
     mkdir -p "$(dirname "${framework}")"
     cp -R "${donor}" "${framework}"
   else
@@ -23,22 +63,41 @@ if [ ! -d "${framework}" ]; then
   fi
 fi
 
-if [ -f "${framework}/Versions/Current/Resources/Info.plist" ] \
-  && [ -e "${framework}/Versions/Current/libzcashlc" ]; then
+layout_complete() {
+  [ -f "${framework}/Versions/Current/Resources/Info.plist" ] \
+    && [ -e "${framework}/Versions/Current/libzcashlc" ] \
+    && [ -d "${framework}/Versions/Current/Headers" ] \
+    && [ -d "${framework}/Versions/Current/Modules" ]
+}
+
+if layout_complete; then
   echo "libzcashlc already uses the required versioned macOS framework layout"
   exit 0
+fi
+
+if [ -z "${donor}" ]; then
+  echo "error: no libzcashlc donor framework found (checked TARGET_BUILD_DIR, BUILT_PRODUCTS_DIR, CONFIGURATION_BUILD_DIR)"
+  exit 1
 fi
 
 # Recover from a half-repaired tree by reseeding flat files from the donor product.
 seed_from_donor() {
   local name="$1"
+  local donor_source=""
   if [ -e "${framework}/${name}" ] || [ -e "${framework}/Versions/A/${name}" ] \
     || [ -e "${framework}/Versions/A/Resources/${name}" ]; then
     return 0
   fi
   if [ -e "${donor}/${name}" ]; then
-    cp -R "${donor}/${name}" "${framework}/${name}"
+    donor_source="${donor}/${name}"
+  elif [ -e "${donor}/Versions/A/${name}" ]; then
+    donor_source="${donor}/Versions/A/${name}"
+  elif [ -e "${donor}/Versions/A/Resources/${name}" ]; then
+    donor_source="${donor}/Versions/A/Resources/${name}"
+  else
+    return 0
   fi
+  cp -R "${donor_source}" "${framework}/${name}"
 }
 
 seed_from_donor libzcashlc
@@ -55,7 +114,7 @@ move_if_needed() {
     return
   fi
   if [ ! -e "${source_path}" ]; then
-    echo "error: refusing to repair unexpected libzcashlc layout; missing ${source_path}"
+    echo "error: refusing to repair unexpected libzcashlc layout; missing ${source_path} (donor=${donor})"
     exit 1
   fi
   mv "${source_path}" "${destination_path}"
@@ -72,4 +131,9 @@ ln -sfn Versions/Current/Resources "${framework}/Resources"
 ln -sfn Versions/Current/Headers "${framework}/Headers"
 ln -sfn Versions/Current/Modules "${framework}/Modules"
 
-echo "Repaired embedded libzcashlc into a versioned macOS framework layout"
+if ! layout_complete; then
+  echo "error: libzcashlc repair finished but layout is still incomplete at ${framework}"
+  exit 1
+fi
+
+echo "Repaired embedded libzcashlc into a versioned macOS framework layout (donor=${donor})"
