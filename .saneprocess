@@ -28,7 +28,7 @@ release:
   min_system_version: "14.0"
   upgrade_path_test:
     scheme: SaneBooks
-    test_selector: SaneBooksTests/AppModelTests/settingsPersistAcrossModelRelaunch
+    test_selector: "SaneBooksTests/AppModel safety and settings/settingsPersistAcrossModelRelaunch()"
     from_version: "0.0.1"
     timeout_seconds: 900
   reconcile:
