@@ -1,20 +1,27 @@
 # SaneBooks
 
 <p align="center">
-  <img src="docs/marketing/v0.1.0/app-icon.png" width="88" alt="SaneBooks" />
+  <img src="docs/marketing/v0.1.0/app-icon.png" width="96" alt="SaneBooks" />
 </p>
 
 **Private books for shielded Zcash** — Mac-native, local-first. Import a viewing key, classify income / change / expense, and share a scoped proof pack with your accountant. **Cannot spend ZEC.**
 
 **[Download notarized v0.1.0](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0)** · **100% Transparent Code** under [PolyForm Shield](LICENSE) (not casual “open source”)
 
-| Welcome | Ledger | Proof pack |
-|:---:|:---:|:---:|
-| <img src="docs/marketing/v0.1.0/01-welcome.png" width="280" alt="Welcome" /> | <img src="docs/marketing/v0.1.0/02-ledger.png" width="280" alt="Ledger" /> | <img src="docs/marketing/v0.1.0/03-proof-pack.png" width="280" alt="Proof pack" /> |
+### Welcome
+<img src="docs/marketing/v0.1.0/01-welcome.png" alt="SaneBooks welcome — import a viewing key" width="1092" />
 
-| Share with disclosure | Accountant Reader |
-|:---:|:---:|
-| <img src="docs/marketing/v0.1.0/04-share-disclosure.png" width="320" alt="Share disclosure" /> | <img src="docs/marketing/v0.1.0/05-reader.png" width="320" alt="Reader" /> |
+### Ledger
+<img src="docs/marketing/v0.1.0/02-ledger.png" alt="Classified ZEC ledger" width="1092" />
+
+### Proof pack
+<img src="docs/marketing/v0.1.0/03-proof-pack.png" alt="New proof pack date range" width="1092" />
+
+### Share with disclosure
+<img src="docs/marketing/v0.1.0/04-share-disclosure.png" alt="Share proof pack disclosure audit" width="1092" />
+
+### Accountant Reader
+<img src="docs/marketing/v0.1.0/05-reader.png" alt="SaneBooks Reader unlock" width="1092" />
 
 CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs team treasury. **SaneBooks** is the Mac CPA layer: change ≠ income, and an expiring `.sanebooks` pack — not a permanent UFVK.
 
@@ -88,7 +95,7 @@ xcodegen generate
 
 Direct SwiftPM commands are focused diagnostics only, not release or E2E proof. Debug runs without the sandbox; the Release configuration enables App Sandbox, outbound networking, and user-selected files.
 
-The current Mini audit is green for **109 Swift tests in 13 suites** and **8 executed macOS UI journeys** (with the private-wallet fixture journey explicitly skipped when no local fixture is supplied). This is Debug/test evidence, not sandboxed Release clearance.
+Public distribution is the notarized [GitHub Release v0.1.0](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0). Mini `verify --ui` was green before that ship (122 tests including UI journeys). Sparkle auto-update and a marketing site remain off in this lane.
 
 ## Screenshots / visual audit
 
