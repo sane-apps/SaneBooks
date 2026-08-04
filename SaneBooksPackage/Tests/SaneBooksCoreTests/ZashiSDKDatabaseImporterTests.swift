@@ -138,7 +138,7 @@ struct ZashiSDKDatabaseImporterTests {
             txid: txid,
             blockHeight: height,
             pool: .orchard,
-            direction: .incoming,
+            direction: .inbound,
             valueZatoshis: value,
             classification: Classification(kind: .income, party: "Client A", source: .user)
         )
@@ -148,7 +148,7 @@ struct ZashiSDKDatabaseImporterTests {
             txid: txid,
             blockHeight: height,
             pool: .orchard,
-            direction: .incoming,
+            direction: .inbound,
             valueZatoshis: value,
             classification: Classification(kind: .expense, party: "Vendor B", source: .user)
         )
@@ -159,7 +159,7 @@ struct ZashiSDKDatabaseImporterTests {
             txid: txid,
             blockHeight: height,
             pool: .orchard,
-            direction: .incoming,
+            direction: .inbound,
             valueZatoshis: value
         )
         let importedB = NoteRow(
@@ -168,7 +168,7 @@ struct ZashiSDKDatabaseImporterTests {
             txid: txid,
             blockHeight: height,
             pool: .orchard,
-            direction: .incoming,
+            direction: .inbound,
             valueZatoshis: value
         )
 
