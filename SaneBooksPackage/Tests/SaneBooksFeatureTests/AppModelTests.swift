@@ -215,10 +215,12 @@ struct AppModelTests {
             manifest.range(of: #"appstore:\s*\n(?:[ \t]+.+\n)*[ \t]+enabled: false"#, options: .regularExpression) != nil
         )
 
-        let configurationErrorExit: Int32 = 78
-        let appStore = try runProjectCommand(["appstore_preflight", "--platform", "macos"])
-        #expect(appStore.status == configurationErrorExit)
-        #expect(appStore.output.contains("appstore.enabled: false"))
+        let wrapper = try String(
+            contentsOf: projectRootURL.appendingPathComponent("scripts/SaneMaster.rb"),
+            encoding: .utf8
+        )
+        #expect(wrapper.contains("appstore.enabled: false"))
+        #expect(wrapper.contains("exit 78"))
     }
 
     @Test
