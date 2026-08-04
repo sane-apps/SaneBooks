@@ -3,7 +3,12 @@ import SaneBooksCore
 @preconcurrency import ZcashLightClientKit
 
 enum ZcashSDKNoteMapper {
-    static func pool(from outputPool: ZcashTransaction.Output.Pool) -> ShieldedPool {
+    struct MappingResult: Sendable {
+        var rows: [NoteRow]
+        var encounteredUnknownPool: Bool
+    }
+
+    static func pool(from outputPool: ZcashTransaction.Output.Pool) -> ShieldedPool? {
         switch outputPool {
         case .sapling:
             return .sapling
@@ -16,7 +21,7 @@ enum ZcashSDKNoteMapper {
             if raw == 4 {
                 return .ironwood
             }
-            return .ironwood
+            return nil
         }
     }
 
@@ -38,18 +43,27 @@ enum ZcashSDKNoteMapper {
         isChange ? .changeCandidate : .inbound
     }
 
-    static func stableID(vaultID: VaultID, txid: Data, outputIndex: Int) -> NoteRowID {
-        var material = txid
-        material.append(contentsOf: withUnsafeBytes(of: UInt32(outputIndex).bigEndian) { Array($0) })
-        return NoteRowID.stable(vaultID: vaultID, txid: material)
+    static func stableID(
+        vaultID: VaultID,
+        txid: Data,
+        pool: ShieldedPool,
+        outputIndex: Int
+    ) -> NoteRowID {
+        NoteRowID.stableOutput(
+            vaultID: vaultID,
+            txid: txid,
+            pool: pool,
+            outputIndex: UInt32(clamping: outputIndex)
+        )
     }
 
     static func noteRows(
         vaultID: VaultID,
         synchronizer: Synchronizer
-    ) async -> [NoteRow] {
+    ) async -> MappingResult {
         let transactions = await synchronizer.receivedTransactions
         var rows: [NoteRow] = []
+        var encounteredUnknownPool = false
         rows.reserveCapacity(transactions.count)
 
         for transaction in transactions {
@@ -62,14 +76,23 @@ enum ZcashSDKNoteMapper {
                     continue
                 }
                 let txid = transaction.rawID
+                guard let shieldedPool = pool(from: output.pool) else {
+                    encounteredUnknownPool = true
+                    continue
+                }
                 rows.append(
                     NoteRow(
-                        id: stableID(vaultID: vaultID, txid: txid, outputIndex: output.index),
+                        id: stableID(
+                            vaultID: vaultID,
+                            txid: txid,
+                            pool: shieldedPool,
+                            outputIndex: output.index
+                        ),
                         vaultID: vaultID,
                         txid: txid,
                         blockHeight: height,
                         blockTime: nil,
-                        pool: pool(from: output.pool),
+                        pool: shieldedPool,
                         direction: direction(isChange: output.isChange),
                         valueZatoshis: output.value.amount,
                         memo: memoPayload(from: output.memo)
@@ -78,11 +101,12 @@ enum ZcashSDKNoteMapper {
             }
         }
 
-        return rows.sorted { lhs, rhs in
+        let sorted = rows.sorted { lhs, rhs in
             if lhs.blockHeight != rhs.blockHeight {
                 return lhs.blockHeight > rhs.blockHeight
             }
             return lhs.txidHex > rhs.txidHex
         }
+        return MappingResult(rows: sorted, encounteredUnknownPool: encounteredUnknownPool)
     }
 }

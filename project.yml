@@ -12,8 +12,6 @@ options:
 packages:
   SaneBooksPackage:
     path: SaneBooksPackage
-  SaneUI:
-    path: ../../infra/SaneUI
 
 settings:
   DEAD_CODE_STRIPPING: YES
@@ -56,6 +54,11 @@ schemes:
     build:
       targets:
         SaneBooks: all
+        SaneBooksTests: [test]
+    test:
+      targets:
+        - SaneBooksTests
+        - SaneBooksUITests
     run:
       config: Debug
     archive:
@@ -73,6 +76,8 @@ targets:
         excludes:
           - "**/*.md"
           - "Info.plist"
+          - "PrivacyInfo.xcprivacy"
+      - SaneBooks/PrivacyInfo.xcprivacy
     settings:
       base:
         INFOPLIST_FILE: SaneBooks/Info.plist
@@ -87,18 +92,77 @@ targets:
         MACOSX_DEPLOYMENT_TARGET: "14.0"
         ARCHS: arm64
         VALID_ARCHS: arm64
-        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_STYLE: Manual
         CODE_SIGN_INJECT_BASE_ENTITLEMENTS: YES
         GENERATE_INFOPLIST_FILE: NO
       configs:
         Debug:
           CODE_SIGN_IDENTITY: "-"
+          DEVELOPMENT_TEAM: ""
+          PROVISIONING_PROFILE_SPECIFIER: ""
           CODE_SIGN_ENTITLEMENTS: SaneBooks/SaneBooks.debug.entitlements
         Release:
           DEVELOPMENT_TEAM: M78L6FXD48
           CODE_SIGN_IDENTITY: "Developer ID Application"
           CODE_SIGN_ENTITLEMENTS: SaneBooks/SaneBooks.entitlements
+    postBuildScripts:
+      - script: |
+          "${SRCROOT}/scripts/prepare-zcash-framework.sh"
+        name: Repair embedded libzcashlc macOS framework
+        basedOnDependencyAnalysis: false
     dependencies:
       - package: SaneBooksPackage
         product: SaneBooksFeature
-      - package: SaneUI
+
+  SaneBooksTests:
+    type: bundle.unit-test
+    platform: macOS
+    bundleId: com.saneapps.SaneBooksTests
+    deploymentTarget:
+      macOS: "14.0"
+    sources:
+      - path: SaneBooksPackage/Tests/SaneBooksCoreTests
+      - path: SaneBooksPackage/Tests/SaneBooksSyncTests
+      - path: SaneBooksPackage/Tests/SaneBooksExportTests
+      - path: SaneBooksPackage/Tests/SaneBooksFeatureTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        CODE_SIGNING_ALLOWED: NO
+    dependencies:
+      - package: SaneBooksPackage
+        product: SaneBooksCore
+      - package: SaneBooksPackage
+        product: SaneBooksSync
+      - package: SaneBooksPackage
+        product: SaneBooksExport
+      - package: SaneBooksPackage
+        product: SaneBooksFeature
+    postBuildScripts:
+      - script: |
+          "${SRCROOT}/scripts/prepare-zcash-framework.sh"
+        name: Repair embedded libzcashlc macOS framework
+        basedOnDependencyAnalysis: false
+
+  SaneBooksUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    bundleId: com.saneapps.SaneBooksUITests
+    deploymentTarget:
+      macOS: "14.0"
+    sources:
+      - path: SaneBooksUITests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        TEST_TARGET_NAME: SaneBooks
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: "-"
+        DEVELOPMENT_TEAM: ""
+        PROVISIONING_PROFILE_SPECIFIER: ""
+    dependencies:
+      - target: SaneBooks

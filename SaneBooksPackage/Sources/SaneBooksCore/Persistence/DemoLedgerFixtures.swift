@@ -11,7 +11,11 @@ public enum DemoLedgerFixtures {
         let cal = Calendar.current
         func date(_ y: Int, _ m: Int, _ d: Int, _ h: Int = 14, _ min: Int = 0) -> Date {
             var c = DateComponents()
-            c.year = y; c.month = m; c.day = d; c.hour = h; c.minute = min
+            c.year = y
+            c.month = m
+            c.day = d
+            c.hour = h
+            c.minute = min
             return cal.date(from: c) ?? Date()
         }
 
@@ -113,7 +117,7 @@ public enum DemoLedgerFixtures {
                     asOf: date(2026, 6, 15),
                     source: .oracleSnapshot
                 )
-            )
+            ),
         ]
     }
 }

@@ -17,7 +17,7 @@ public struct SaneBooksBrandMark: View {
                         colors: [
                             SaneBooksTheme.inkElevated,
                             SaneBooksTheme.ink,
-                            SaneBooksTheme.inkMid
+                            SaneBooksTheme.inkMid,
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing

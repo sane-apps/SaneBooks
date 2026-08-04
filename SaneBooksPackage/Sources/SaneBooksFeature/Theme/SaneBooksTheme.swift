@@ -36,7 +36,7 @@ public struct SaneBooksInkBackground: View {
                 colors: [
                     SaneBooksTheme.gold.opacity(0.14),
                     SaneBooksTheme.goldDeep.opacity(0.06),
-                    Color.clear
+                    Color.clear,
                 ],
                 center: .topTrailing,
                 startRadius: 20,
@@ -45,7 +45,7 @@ public struct SaneBooksInkBackground: View {
             RadialGradient(
                 colors: [
                     SaneBooksTheme.inkElevated.opacity(0.85),
-                    Color.clear
+                    Color.clear,
                 ],
                 center: .bottomLeading,
                 startRadius: 10,
@@ -55,7 +55,7 @@ public struct SaneBooksInkBackground: View {
                 colors: [
                     SaneBooksTheme.inkMid.opacity(0.55),
                     Color.clear,
-                    SaneBooksTheme.gold.opacity(0.04)
+                    SaneBooksTheme.gold.opacity(0.04),
                 ],
                 startPoint: .top,
                 endPoint: .bottom

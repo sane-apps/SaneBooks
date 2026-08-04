@@ -6,11 +6,11 @@ public struct SyncProgressView: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             Text("Syncing vault…")
-                .font(.title2.bold())
+                .saneBooksFont(size: SaneBooksType.display, weight: .bold)
                 .foregroundStyle(.white)
 
             Text("Scanning shielded history")
-                .font(.system(size: SaneBooksType.body, weight: .semibold))
+                .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
                 .foregroundStyle(.white)
 
             if let cursor = model.cursor {
@@ -18,7 +18,7 @@ public struct SyncProgressView: View {
 
                 HStack(spacing: 8) {
                     Text("\(Int((cursor.progressFraction * 100).rounded()))%")
-                        .font(.system(size: SaneBooksType.body, weight: .bold))
+                        .saneBooksFont(size: SaneBooksType.body, weight: .bold)
                         .foregroundStyle(Color.saneBooksAccent)
                     Text("Block \(cursor.scannedThroughHeight.formatted())")
                     if let tip = cursor.chainTipHeight {
@@ -29,7 +29,7 @@ public struct SyncProgressView: View {
                     }
                     Text("· \(cursor.status.displayName)")
                 }
-                .font(.system(size: SaneBooksType.body, weight: .medium))
+                .saneBooksFont(size: SaneBooksType.body, weight: .medium)
                 .foregroundStyle(.white)
 
                 if cursor.isDemo {
@@ -38,12 +38,12 @@ public struct SyncProgressView: View {
             } else {
                 accentProgressBar(fraction: 0.08)
                 Text("Starting sync…")
-                    .font(.system(size: SaneBooksType.body, weight: .medium))
+                    .saneBooksFont(size: SaneBooksType.body, weight: .medium)
                     .foregroundStyle(.white)
             }
 
             Text("You can leave this window open. Tagging unlocks when notes appear.")
-                .font(.system(size: SaneBooksType.body, weight: .medium))
+                .saneBooksFont(size: SaneBooksType.body, weight: .medium)
                 .foregroundStyle(SaneBooksTheme.pageIvory)
 
             HStack {
@@ -79,7 +79,7 @@ public struct SyncProgressView: View {
             Image(systemName: "info.circle.fill")
                 .foregroundStyle(Color.saneBooksAccent)
             Text("Demo sample — not your live wallet")
-                .font(.system(size: SaneBooksType.body, weight: .semibold))
+                .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
                 .foregroundStyle(.white)
         }
         .padding(14)

@@ -41,11 +41,12 @@ Mac-native, local-first accountant layer for shielded Zcash: import a viewing ke
 ## Build, Test, Release (Mini-first)
 
 ```bash
-cd ~/SaneApps/apps/SaneBooks/SaneBooksPackage
-SANEBOOKS_USE_LOCAL_SANEUI=1 swift build
-SANEBOOKS_USE_LOCAL_SANEUI=1 swift test
-
 cd ~/SaneApps/apps/SaneBooks
 xcodegen generate
-open SaneBooks.xcodeproj
+./scripts/SaneMaster.rb verify --timeout 1800
+./scripts/SaneMaster.rb launch
 ```
+
+Direct `swift test`, raw `xcodebuild`, and manual `.app` launch are diagnostics only and never final proof. The canonical Xcode action includes package, app-model, and UI-test targets; the wrapper must report a nonzero selected-test count. `scripts/prepare-zcash-framework.sh` repairs only the embedded destination framework after Xcode's copy phase; never mutate a package cache checkout.
+
+Pack format v2 deliberately rejects legacy v1 because v1 exposed unauthenticated private metadata and used a fast passphrase derivation. CSV/PDF are plaintext and non-expiring. Do not weaken or blur those UI warnings.

@@ -43,6 +43,10 @@ public actor BlockedSyncFacade: SyncFacade {
         }
     }
 
+    public func purge(vaultID: VaultID) async throws {
+        cursors.removeValue(forKey: vaultID.uuid)
+    }
+
     public func rescan(vaultID: VaultID, from height: UInt32) async throws {
         _ = height
         try await start(vaultID: vaultID)

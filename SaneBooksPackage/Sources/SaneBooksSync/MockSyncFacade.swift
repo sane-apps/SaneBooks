@@ -69,6 +69,12 @@ public actor MockSyncFacade: SyncFacade {
         }
     }
 
+    public func purge(vaultID: VaultID) async throws {
+        cursors.removeValue(forKey: vaultID.uuid)
+        notes.removeValue(forKey: vaultID.uuid)
+        cancelled.remove(vaultID.uuid)
+    }
+
     public func rescan(vaultID: VaultID, from height: UInt32) async throws {
         if var cursor = cursors[vaultID.uuid] {
             cursor.birthdayHeight = height

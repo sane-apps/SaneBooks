@@ -63,40 +63,37 @@ public struct PackDisclosureSummary: Sendable, Equatable {
         )
     }
 
-    /// Short lines for Share UI / PDF footer honesty.
+    /// Short, plain-language lines for the Share UI and PDF footer.
     public var auditLines: [String] {
         var lines: [String] = []
-        lines.append("\(rowCount) tagged rows in this date range")
+        lines.append("\(rowCount) labeled transactions in this date range")
         lines.append(
             String(
-                format: "Income %.4f ZEC · Expense %.4f ZEC · Fees %.4f ZEC",
+                format: "Income %.4f ZEC · Expenses %.4f ZEC · Fees %.4f ZEC",
                 NSDecimalNumber(decimal: incomeZEC).doubleValue,
                 NSDecimalNumber(decimal: expenseZEC).doubleValue,
                 NSDecimalNumber(decimal: feeZEC).doubleValue
             )
         )
         if includesMemos {
-            lines.append("Memos included")
+            lines.append("Transaction memos included")
         } else {
-            lines.append("Memos left out")
+            lines.append("Transaction memos left out")
         }
-        lines.append(includesChange ? "Change included" : "Change left out (not counted as income)")
-        if !pools.isEmpty {
-            lines.append("Payment pools: \(pools.joined(separator: ", "))")
-        }
+        lines.append(includesChange ? "Transfers and change included" : "Transfers and change left out")
         if untaggedExcludedCount > 0 {
-            lines.append("\(untaggedExcludedCount) untagged rows left out")
+            lines.append("\(untaggedExcludedCount) unlabeled transactions left out")
         }
         if partialHistory {
             lines.append("History may be incomplete")
         }
         if let recipientLabel, !recipientLabel.isEmpty {
-            lines.append("For: \(recipientLabel)")
+            lines.append("Prepared for \(recipientLabel)")
         }
         if let expiresAt {
             lines.append("Expires \(expiresAt.formatted(date: .abbreviated, time: .omitted))")
         }
-        lines.append("View only — cannot spend funds")
+        lines.append("Read-only — cannot move funds")
         return lines
     }
 }

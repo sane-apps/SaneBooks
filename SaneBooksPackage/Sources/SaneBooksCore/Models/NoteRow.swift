@@ -1,5 +1,43 @@
 import Foundation
 
+/// Shared boundary for text that becomes an accounting label or exported evidence.
+/// Directional/zero-width controls are rejected instead of being allowed to spoof
+/// names, rows, CSV cells, or PDF labels while leaving normal Unicode intact.
+public enum EvidenceTextPolicy {
+    public static let maximumIdentityBytes = 512
+    public static let maximumMemoBytes = 4 * 1024
+
+    public static func isValidIdentity(
+        _ value: String,
+        maximumBytes: Int = maximumIdentityBytes
+    ) -> Bool {
+        value.utf8.count <= maximumBytes
+            && !value.unicodeScalars.contains(where: { isForbidden($0.value, allowMemoWhitespace: false) })
+    }
+
+    public static func isValidMemo(
+        _ value: String,
+        maximumBytes: Int = maximumMemoBytes
+    ) -> Bool {
+        value.utf8.count <= maximumBytes
+            && !value.unicodeScalars.contains(where: { isForbidden($0.value, allowMemoWhitespace: true) })
+    }
+
+    private static func isForbidden(_ scalar: UInt32, allowMemoWhitespace: Bool) -> Bool {
+        if allowMemoWhitespace, scalar == 0x09 || scalar == 0x0A || scalar == 0x0D {
+            return false
+        }
+        if scalar < 0x20 || (0x7F ... 0x9F).contains(scalar) {
+            return true
+        }
+        return scalar == 0x061C
+            || (0x200B ... 0x200F).contains(scalar)
+            || (0x202A ... 0x202E).contains(scalar)
+            || (0x2060 ... 0x206F).contains(scalar)
+            || scalar == 0xFEFF
+    }
+}
+
 public struct NoteRowID: Hashable, Codable, Sendable {
     public let uuid: UUID
 
@@ -40,6 +78,22 @@ public struct NoteRowID: Hashable, Codable, Sendable {
             UInt8(truncatingIfNeeded: h2)
         ))
         return NoteRowID(uuid: uuid)
+    }
+
+    /// Canonical identity for a shielded output across database import and live SDK sync.
+    /// Pool is part of the identity because pool-specific output indexes can overlap.
+    public static func stableOutput(
+        vaultID: VaultID,
+        txid: Data,
+        pool: ShieldedPool,
+        outputIndex: UInt32
+    ) -> NoteRowID {
+        var material = txid
+        material.append(0)
+        material.append(contentsOf: pool.rawValue.utf8)
+        material.append(0)
+        material.append(contentsOf: withUnsafeBytes(of: outputIndex.bigEndian) { Array($0) })
+        return .stable(vaultID: vaultID, txid: material)
     }
 }
 
@@ -183,11 +237,13 @@ public struct NoteRowDraft: Codable, Sendable, Equatable {
     }
 
     public func asNoteRow(stableIndex: Int = 0) -> NoteRow {
-        var material = txid
-        material.append(contentsOf: withUnsafeBytes(of: UInt32(stableIndex).bigEndian) { Array($0) })
-        material.append(contentsOf: Array(pool.rawValue.utf8))
         return NoteRow(
-            id: .stable(vaultID: vaultID, txid: material),
+            id: .stableOutput(
+                vaultID: vaultID,
+                txid: txid,
+                pool: pool,
+                outputIndex: UInt32(clamping: stableIndex)
+            ),
             vaultID: vaultID,
             txid: txid,
             blockHeight: blockHeight,

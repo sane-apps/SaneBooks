@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
-# Bound wait for ≥1 note on LiveProbeKey after dust send. Mini-first.
+# Canonical funded Ironwood receive gate. It is expected to fail until the
+# public view-only probe key has at least one confirmed Ironwood receive.
 set -euo pipefail
+
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$ROOT/SaneBooksPackage"
-export SANEBOOKS_USE_LOCAL_SANEUI=1
+
+if [[ "${SANEBOOKS_FUNDED_LIVE_RECEIPT:-0}" != "1" ]]; then
+  echo "Refusing an unfunded/accidental live receipt run." >&2
+  echo "After the owner funds the public view-only probe address, rerun with SANEBOOKS_FUNDED_LIVE_RECEIPT=1." >&2
+  exit 1
+fi
+
 export SANEBOOKS_LIVE_LWD=1
-rm -rf "${HOME}/Library/Application Support/SaneBooks/zcash-sdk" 2>/dev/null || true
-echo "live-probe-after-fund: starting (max ~20 min)"
-# Reuse package test filter — expect catch-up; note count checked via companion watch if needed
-swift test --filter liveProbeKeyImportsAndSyncs
-echo "live-probe-after-fund: base smoke ok — run SaneBooksWatch-style note wait next if notes still 0"
+export SANEBOOKS_FUNDED_LIVE_RECEIPT=1
+
+cd "$ROOT"
+exec ./scripts/SaneMaster.rb verify --timeout 1800

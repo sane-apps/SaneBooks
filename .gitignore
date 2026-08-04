@@ -11,6 +11,7 @@ DerivedData/
 *.xcuserstate
 *.xcuserstatedata
 xcuserdata/
+.claude/sop-verify-state.json
 
 # Packs must never be committed (may contain confidential ledger rows)
 *.sanebooks

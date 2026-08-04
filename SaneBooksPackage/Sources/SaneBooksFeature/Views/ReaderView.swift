@@ -9,6 +9,7 @@ public struct ReaderView: View {
     @Bindable var model: AppModel
     @State private var passphrase = ""
     @State private var pendingURL: URL?
+    @State private var statusMessage: String?
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -28,20 +29,24 @@ public struct ReaderView: View {
             } else {
                 HStack {
                     Text("SaneBooks Reader · Proof Pack")
-                        .font(.title2.bold())
+                        .saneBooksFont(size: SaneBooksType.display, weight: .bold)
                         .foregroundStyle(.white)
                     Spacer()
                     Button("Close") { model.goWelcome() }
                         .buttonStyle(.plain)
                         .foregroundStyle(.white)
-                        .font(.system(size: 14, weight: .semibold))
+                        .saneBooksFont(size: 14, weight: .semibold)
                 }
             }
 
             if let result = model.readerResult {
-                packContents(result)
+                ScrollView(.vertical) {
+                    packContents(result)
+                        .padding(.bottom, 8)
+                }
             } else {
                 unlockForm
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             }
         }
         .padding(28)
@@ -49,53 +54,112 @@ public struct ReaderView: View {
 
     private var unlockForm: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("Open a proof pack your accountant shared with you. No wallet key needed.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
+            HStack(alignment: .top, spacing: 16) {
+                Image(systemName: "lock.doc.fill")
+                    .saneBooksFont(size: 26, weight: .semibold)
+                    .foregroundStyle(Color.saneBooksAccent)
+                    .frame(width: 54, height: 54)
+                    .background(Circle().fill(Color.saneBooksAccent.opacity(0.14)))
+                    .accessibilityHidden(true)
 
-            ActionButton("Choose File…", style: .secondary) {
-                let panel = NSOpenPanel()
-                panel.allowedContentTypes = [UTType(filenameExtension: "sanebooks") ?? .data]
-                panel.allowsMultipleSelection = false
-                if panel.runModal() == .OK {
-                    pendingURL = panel.url
-                    model.readerError = nil
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Open an encrypted proof pack")
+                        .saneBooksFont(size: SaneBooksType.display, weight: .bold)
+                        .foregroundStyle(.white)
+                    Text("Open a proof pack your accountant shared with you. No wallet key needed.")
+                        .saneBooksFont(size: SaneBooksType.body, weight: .medium)
+                        .foregroundStyle(.white)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
 
-            if let pendingURL {
-                SaneBooksStatusBanner(kind: .info, message: pendingURL.lastPathComponent)
+            Divider()
+                .overlay(Color.white.opacity(0.18))
+
+            HStack(spacing: 12) {
+                ActionButton("Choose File…", style: .secondary) {
+                    let panel = NSOpenPanel()
+                    panel.allowedContentTypes = [UTType(filenameExtension: "sanebooks") ?? .data]
+                    panel.allowsMultipleSelection = false
+                    if panel.runModal() == .OK {
+                        pendingURL = panel.url
+                        model.readerError = nil
+                        statusMessage = nil
+                    }
+                }
+
+                if let pendingURL {
+                    Text(pendingURL.lastPathComponent)
+                        .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                } else {
+                    Text("Select a .sanebooks file")
+                        .saneBooksFont(size: SaneBooksType.body, weight: .medium)
+                        .foregroundStyle(.white)
+                }
             }
 
-            SecureField("Passphrase", text: $passphrase)
-                .textFieldStyle(.plain)
-                .padding(12)
-                .background(Color.white.opacity(0.06))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .foregroundStyle(.white)
+            if pendingURL == nil {
+                Label("Passphrase entry unlocks after you choose a file", systemImage: "2.circle.fill")
+                    .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
+                    .foregroundStyle(.white)
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            } else {
+                SecureField("Passphrase", text: $passphrase)
+                    .textFieldStyle(.plain)
+                    .padding(12)
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .foregroundStyle(.white)
+            }
 
             if let err = model.readerError {
                 SaneBooksStatusBanner(kind: .error, message: err)
             }
 
-            ActionButton("Unlock") {
-                guard let pendingURL else {
-                    model.readerError = "Choose a proof pack file first."
-                    return
+            HStack(spacing: 16) {
+                ActionButton("Unlock") {
+                    guard let pendingURL else {
+                        model.readerError = "Choose a proof pack file first."
+                        return
+                    }
+                    model.openPack(url: pendingURL, passphrase: passphrase)
+                    if model.readerError == nil {
+                        statusMessage = "File authentication, expiry, and internal accounting consistency verified. This does not verify who created it or prove chain completeness."
+                    }
                 }
-                model.openPack(url: pendingURL, passphrase: passphrase)
-            }
-            .disabled(pendingURL == nil || passphrase.isEmpty)
-            .opacity(pendingURL == nil || passphrase.isEmpty ? 0.45 : 1)
+                .disabled(pendingURL == nil || passphrase.isEmpty)
 
-            Spacer(minLength: 0)
+                Spacer(minLength: 8)
+
+                Label("Read-only · cannot spend", systemImage: "eye.fill")
+                    .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
+                    .foregroundStyle(Color.saneBooksAccentSoft)
+            }
         }
+        .padding(24)
+        .frame(maxWidth: 620, alignment: .leading)
+        .background(
+            SaneGlassRoundedBackground(
+                cornerRadius: 18,
+                tint: SaneBooksTheme.panelTint,
+                edgeTint: SaneBooksTheme.goldSoft,
+                tintStrength: 0.22,
+                glowOpacity: 0.08
+            )
+        )
     }
 
     private func packContents(_ result: PackOpenResult) -> some View {
         let header = result.header
         let rows = result.payload.rows
         let rollups = result.payload.rollups
+        let sortedCategories = rollups.byCategory.sorted(by: { $0.key < $1.key })
 
         return VStack(alignment: .leading, spacing: 16) {
             SaneBooksStatusBanner(
@@ -103,45 +167,82 @@ public struct ReaderView: View {
                 message: "Pack unlocked · Read-only · No spend capability · No live chain sync"
             )
 
+            if let statusMessage {
+                SaneBooksStatusBanner(kind: .success, message: statusMessage)
+            }
+            if let readerError = model.readerError {
+                SaneBooksStatusBanner(kind: .error, message: readerError)
+            }
+
             Text(header.vaultDisplayName)
-                .font(.title3.bold())
+                .saneBooksFont(size: 18, weight: .bold)
                 .foregroundStyle(.white)
+                .lineLimit(2)
+                .truncationMode(.middle)
             Text("Range \(header.rangeStart.formatted(date: .abbreviated, time: .omitted)) → \(header.rangeEnd.formatted(date: .abbreviated, time: .omitted)) · Expires \(header.expiresAt.formatted(date: .abbreviated, time: .omitted))")
-                .font(.system(size: 14, weight: .medium))
+                .saneBooksFont(size: 14, weight: .medium)
                 .foregroundStyle(.white)
 
             HStack(spacing: 28) {
                 Text("Income \(formatZEC(rollups.incomeZEC)) ZEC")
                 Text("Expenses \(formatZEC(rollups.expenseZEC)) ZEC")
             }
-            .font(.system(size: 14, weight: .semibold))
+            .saneBooksFont(size: 14, weight: .semibold)
             .foregroundStyle(.white)
 
             Text("Category rollup")
-                .font(.system(size: 14, weight: .semibold))
+                .saneBooksFont(size: 14, weight: .semibold)
                 .foregroundStyle(.white)
-            ForEach(rollups.byCategory.sorted(by: { $0.key < $1.key }), id: \.key) { item in
+            ForEach(sortedCategories.prefix(50), id: \.key) { item in
                 Text("\(item.key) …… \(formatZEC(item.value)) ZEC")
-                    .font(.system(size: 14, weight: .medium))
+                    .saneBooksFont(size: 14, weight: .medium)
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            }
+            if sortedCategories.count > 50 {
+                Text("\(sortedCategories.count - 50) more categories are preserved in the export.")
+                    .saneBooksFont(size: 14, weight: .semibold)
                     .foregroundStyle(.white)
             }
 
-            List(rows) { row in
-                HStack(spacing: 16) {
-                    Text(row.date.formatted(date: .abbreviated, time: .omitted))
-                        .frame(width: 72, alignment: .leading)
-                    Text(row.kind.displayName)
-                        .frame(width: 80, alignment: .leading)
-                    Spacer()
-                    Text("\(formatZEC(row.amountZEC)) ZEC")
-                    Text(row.party ?? "—")
-                        .frame(width: 120, alignment: .trailing)
+            ScrollView([.horizontal, .vertical]) {
+                LazyVStack(spacing: 0) {
+                    ForEach(rows) { row in
+                        HStack(spacing: 16) {
+                            Text(row.date.formatted(date: .abbreviated, time: .omitted))
+                                .frame(width: 100, alignment: .leading)
+                            Text(row.kind.displayName)
+                                .frame(width: 100, alignment: .leading)
+                            Text("\(formatZEC(row.amountZEC)) ZEC")
+                                .frame(width: 150, alignment: .trailing)
+                            Text(row.party ?? "—")
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                                .frame(width: 180, alignment: .leading)
+                            Text(row.txidTruncated)
+                                .saneBooksFont(size: 13, weight: .medium, design: .monospaced)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                                .frame(width: 180, alignment: .leading)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 9)
+                        .frame(minWidth: 760, alignment: .leading)
+                        .background(Color.white.opacity(0.04))
+                        .overlay(alignment: .bottom) {
+                            Divider().overlay(Color.white.opacity(0.16))
+                        }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(
+                            "\(row.kind.displayName), \(formatZEC(row.amountZEC)) ZEC, \(row.date.formatted(date: .abbreviated, time: .omitted)), \(row.party ?? "no party")"
+                        )
+                    }
                 }
-                .font(.system(size: 14, weight: .medium))
+                .saneBooksFont(size: 14, weight: .medium)
                 .foregroundStyle(.white)
-                .listRowBackground(Color.clear)
             }
-            .scrollContentBackground(.hidden)
+            .frame(minHeight: 180, maxHeight: 360)
 
             HStack(spacing: 16) {
                 ActionButton("Export CSV", style: .secondary) {
@@ -150,18 +251,44 @@ public struct ReaderView: View {
                     panel.allowedContentTypes = [.commaSeparatedText]
                     guard panel.runModal() == .OK, let url = panel.url else { return }
                     let csv = CSVExporter.export(rows: rows)
-                    try? csv.write(to: url, atomically: true, encoding: .utf8)
+                    do {
+                        try csv.write(to: url, atomically: true, encoding: .utf8)
+                        model.readerError = nil
+                        statusMessage = "Saved plaintext CSV to \(url.lastPathComponent). It does not expire."
+                    } catch {
+                        statusMessage = nil
+                        model.readerError = "CSV could not be saved. \(error.localizedDescription)"
+                    }
                 }
                 ActionButton("Export PDF", style: .secondary) {
                     let panel = NSSavePanel()
                     panel.nameFieldStringValue = "pack.pdf"
                     panel.allowedContentTypes = [.pdf]
                     guard panel.runModal() == .OK, let url = panel.url else { return }
-                    try? model.exportReaderPDF(to: url)
+                    do {
+                        try model.exportReaderPDF(to: url)
+                        model.readerError = nil
+                        statusMessage = "Saved plaintext PDF to \(url.lastPathComponent). It does not expire."
+                    } catch {
+                        statusMessage = nil
+                        model.readerError = "PDF could not be saved. \(error.localizedDescription)"
+                    }
                 }
-                ActionButton("Check file", style: .secondary) {}
+                ActionButton("Check file", style: .secondary) {
+                    guard let pendingURL else {
+                        model.readerError = "The original encrypted file is no longer selected. Choose it again to verify."
+                        statusMessage = nil
+                        return
+                    }
+                    model.openPack(url: pendingURL, passphrase: passphrase)
+                    if model.readerError == nil {
+                        statusMessage = "Re-read and verified file integrity for \(pendingURL.lastPathComponent). Sender identity is not verified."
+                    } else {
+                        statusMessage = nil
+                    }
+                }
                 Text("File ID \(String(result.payload.integrity.plaintextCanonicalHash.prefix(12)))…")
-                    .font(.system(size: 14, design: .monospaced))
+                    .saneBooksFont(size: 14, design: .monospaced)
                     .foregroundStyle(.white)
             }
         }

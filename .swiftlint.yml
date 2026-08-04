@@ -1,0 +1,42 @@
+# SaneApps Canonical SwiftLint Configuration
+# Source of truth: infra/SaneProcess/templates/swiftlint.yml
+
+disabled_rules:
+  - trailing_whitespace
+  - todo
+  - identifier_name
+  - line_length
+  - type_body_length
+  - function_body_length
+  - cyclomatic_complexity
+  - nesting
+  - shorthand_operator
+
+file_length:
+  warning: 800
+  error: 1000
+
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - force_cast
+  - force_try
+
+force_cast: error
+force_try: error
+
+excluded:
+  - Carthage
+  - Pods
+  - DerivedData
+  - .build
+  - SaneBooksPackage/.build
+  - .swiftpm
+  - SourcePackages
+  - Tests
+  - Scripts
+  - scripts
+  - build
+  - outputs
+  - vendor
+  - node_modules

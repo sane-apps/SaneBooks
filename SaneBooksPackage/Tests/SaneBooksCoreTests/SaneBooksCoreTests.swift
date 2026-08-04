@@ -1,17 +1,20 @@
 import Foundation
 @testable import SaneBooksCore
+import Security
 import Testing
 
 @Suite("ViewingKeyValidator")
 struct ViewingKeyValidatorTests {
     let validator = ViewingKeyValidator()
 
-    @Test func rejectsBIP39Seed() {
+    @Test
+    func rejectsBIP39Seed() {
         let seed = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
         #expect(validator.validate(seed, selectedNetwork: .mainnet) == .rejectSeed)
     }
 
-    @Test func rejectsSecretExtendedKey() {
+    @Test
+    func rejectsSecretExtendedKey() {
         let result = validator.validate(
             "secret-extended-key-main1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
             selectedNetwork: .mainnet
@@ -19,11 +22,13 @@ struct ViewingKeyValidatorTests {
         #expect(result == .rejectSpendingKey)
     }
 
-    @Test func rejectsSecretSharingKey() {
+    @Test
+    func rejectsSecretSharingKey() {
         #expect(validator.validate("secret-sharing-key-main1qqqq", selectedNetwork: .mainnet) == .rejectSpendingKey)
     }
 
-    @Test func acceptsUFVKMainnet() {
+    @Test
+    func acceptsUFVKMainnet() {
         let key = "uview1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
         let result = validator.validate(key, selectedNetwork: .mainnet)
         guard case let .accept(kind, network, hrp, fingerprint, mode) = result else {
@@ -37,7 +42,8 @@ struct ViewingKeyValidatorTests {
         #expect(fingerprint.hasPrefix("uview:"))
     }
 
-    @Test func acceptsLiveProbeUFVK() {
+    @Test
+    func acceptsLiveProbeUFVK() {
         let result = validator.validate(LiveProbeKey.mainnetUFVK, selectedNetwork: .mainnet)
         guard case let .accept(kind, network, hrp, _, mode) = result else {
             Issue.record("Expected accept, got \(result)")
@@ -51,12 +57,14 @@ struct ViewingKeyValidatorTests {
         #expect(LiveProbeKey.mainnetUFVK.count > 400)
     }
 
-    @Test func networkMismatch() {
+    @Test
+    func networkMismatch() {
         let key = "uviewtest1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
         #expect(validator.validate(key, selectedNetwork: .mainnet) == .networkMismatch(detected: .testnet))
     }
 
-    @Test func acceptsUIVK() {
+    @Test
+    func acceptsUIVK() {
         let key = "uivk1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
         let result = validator.validate(key, selectedNetwork: .mainnet)
         guard case let .accept(kind, _, _, _, mode) = result else {
@@ -70,19 +78,22 @@ struct ViewingKeyValidatorTests {
 
 @Suite("ZIP302")
 struct ZIP302Tests {
-    @Test func emptyMemo() {
+    @Test
+    func emptyMemo() {
         var data = Data([0xF6])
         data.append(Data(repeating: 0, count: 10))
         #expect(ZIP302MemoDecoder.decode(data) == .empty)
     }
 
-    @Test func utf8ZeroPadded() {
+    @Test
+    func utf8ZeroPadded() {
         var data = Data("hello".utf8)
         data.append(Data(repeating: 0, count: 20))
         #expect(ZIP302MemoDecoder.decode(data) == .text("hello"))
     }
 
-    @Test func opaqueBinary() {
+    @Test
+    func opaqueBinary() {
         #expect(ZIP302MemoDecoder.decode(Data([0xFF, 0x01, 0x02, 0x03])) == .opaque(Data([0x01, 0x02, 0x03])))
     }
 }
@@ -102,10 +113,11 @@ struct ClassificationEngineTests {
         )
     }
 
-    @Test func ufvkSameTxInboundOutboundSuggestsChange() {
+    @Test
+    func ufvkSameTxInboundOutboundSuggestsChange() {
         let notes = [
             note(txidByte: 0x11, direction: .outbound, value: 50_000_000),
-            note(txidByte: 0x11, direction: .inbound, value: 49_000_000)
+            note(txidByte: 0x11, direction: .inbound, value: 49_000_000),
         ]
         let result = ClassificationEngine.suggest(notes: notes, vaultMode: .bookkeeper, keyKind: .ufvk)
         let change = result.first { $0.suggestedClassification == .change }
@@ -113,10 +125,11 @@ struct ClassificationEngineTests {
         #expect(change?.classification?.source == .autoChange)
     }
 
-    @Test func uivkNeverAutoChange() throws {
+    @Test
+    func uivkNeverAutoChange() throws {
         let notes = [
             note(txidByte: 0x22, direction: .outbound),
-            note(txidByte: 0x22, direction: .inbound)
+            note(txidByte: 0x22, direction: .inbound),
         ]
         let result = ClassificationEngine.suggest(notes: notes, vaultMode: .receivables, keyKind: .uivk)
         let inbound = try #require(result.first { $0.direction == .inbound })
@@ -125,7 +138,8 @@ struct ClassificationEngineTests {
         #expect(inbound.suggestedClassification == .income)
     }
 
-    @Test func incomeTotalsOnlyIncome() {
+    @Test
+    func incomeTotalsOnlyIncome() {
         var income = note(txidByte: 0x33, direction: .inbound, value: 100_000_000)
         income.classification = Classification(kind: .income, source: .user)
         var change = note(txidByte: 0x34, direction: .changeCandidate, value: 50_000_000)
@@ -133,7 +147,8 @@ struct ClassificationEngineTests {
         #expect(ClassificationEngine.incomeTotalZatoshis(notes: [income, change]) == 100_000_000)
     }
 
-    @Test func applyRulesTagsMemoContains() {
+    @Test
+    func applyRulesTagsMemoContains() {
         var income = note(txidByte: 0x55, direction: .inbound, value: 10_000_000)
         income.memo = .text("INV-441 retainer")
         income.suggestedClassification = .income
@@ -144,7 +159,8 @@ struct ClassificationEngineTests {
         #expect(result[0].classification?.subtag == "Invoice")
     }
 
-    @Test func applyRulesSkipsUserClassification() {
+    @Test
+    func applyRulesSkipsUserClassification() {
         var income = note(txidByte: 0x56, direction: .inbound, value: 10_000_000)
         income.memo = .text("INV-999")
         income.classification = Classification(kind: .expense, party: "Manual", source: .user)
@@ -156,12 +172,14 @@ struct ClassificationEngineTests {
 
 @Suite("VaultModeBanner")
 struct VaultModeBannerTests {
-    @Test func showsUpgradeForReceivables() {
+    @Test
+    func showsUpgradeForReceivables() {
         #expect(VaultModeBanner.shouldShowUpgradeBanner(mode: .receivables))
         #expect(!VaultModeBanner.shouldShowUpgradeBanner(mode: .bookkeeper))
     }
 
-    @Test func canUpgradeSameNetwork() {
+    @Test
+    func canUpgradeSameNetwork() {
         let vault = Vault(
             displayName: "R",
             network: .mainnet,
@@ -175,90 +193,86 @@ struct VaultModeBannerTests {
     }
 }
 
-@Suite("InMemoryStores")
-struct StoreTests {
-    @Test func viewingKeyStoreRoundTrip() throws {
-        let store = InMemoryViewingKeyStore()
-        let id = VaultID()
-        try store.save("uview1qqq", for: id)
-        #expect(try store.load(for: id) == "uview1qqq")
-        try store.delete(for: id)
-        #expect(try store.load(for: id) == nil)
+@Suite("Keychain update safety")
+struct KeychainUpdateSafetyTests {
+    @Test
+    func updatesExistingItemWithoutDeletingOrAdding() throws {
+        let recorder = KeychainOperationRecorder(updateStatuses: [errSecSuccess])
+        let store = KeychainViewingKeyStore(operations: recorder.operations)
+
+        try store.save("replacement-viewing-key", for: VaultID())
+
+        #expect(recorder.calls == ["update"])
     }
 
-    @Test func fileLedgerPersistsFingerprintOnly() throws {
-        let tmp = FileManager.default.temporaryDirectory
-            .appendingPathComponent("SaneBooksTest-\(UUID().uuidString)", isDirectory: true)
-        defer { try? FileManager.default.removeItem(at: tmp) }
-
-        let store = try FileLedgerStore(rootURL: tmp)
-        let vault = Vault(
-            displayName: "Test",
-            network: .mainnet,
-            keyKind: .ufvk,
-            keyFingerprint: "uview:aabbccddeeff0011",
-            mode: .bookkeeper
+    @Test
+    func addsOnlyWhenUpdateReportsNotFound() throws {
+        let recorder = KeychainOperationRecorder(
+            updateStatuses: [errSecItemNotFound],
+            addStatuses: [errSecSuccess]
         )
-        try store.upsertVault(vault)
-        try store.upsertNotes([
-            NoteRow(
-                vaultID: vault.id,
-                txid: Data(repeating: 1, count: 32),
-                blockHeight: 10,
-                pool: .sapling,
-                direction: .inbound,
-                valueZatoshis: 1
-            )
-        ])
+        let store = KeychainViewingKeyStore(operations: recorder.operations)
 
-        let reloaded = try FileLedgerStore(rootURL: tmp)
-        #expect(try reloaded.vault(id: vault.id)?.keyFingerprint == "uview:aabbccddeeff0011")
-        let json = try String(contentsOf: store.ledgerFileURL, encoding: .utf8)
-        #expect(!json.contains("uview1qqq"))
-        #expect(json.contains("uview:aabbccddeeff0011"))
+        try store.save("first-viewing-key", for: VaultID())
+
+        #expect(recorder.calls == ["update", "add"])
     }
 
-    @Test func shareHistoryAppendAndList() throws {
-        let store = InMemoryLedgerStore()
-        #expect(try store.shareHistory().isEmpty)
-        let entry = ShareHistoryEntry(
-            recipientLabel: "Accountant",
-            rangeStart: Date(timeIntervalSince1970: 1_700_000_000),
-            rangeEnd: Date(timeIntervalSince1970: 1_800_000_000),
-            integrityHash: "deadbeef",
-            format: .pdf,
-            rowCount: 3,
-            vaultFingerprint: "uview:aabb"
+    @Test
+    func failedUpdateKeepsOldItemAndDoesNotDelete() {
+        let recorder = KeychainOperationRecorder(updateStatuses: [errSecAuthFailed])
+        let store = KeychainViewingKeyStore(operations: recorder.operations)
+
+        do {
+            try store.save("must-not-replace-old-key", for: VaultID())
+            Issue.record("Expected failed keychain update to throw")
+        } catch {
+            #expect(recorder.calls == ["update"])
+        }
+    }
+
+    @Test
+    func retriesUpdateWhenAnotherWriterWinsAddRace() throws {
+        let recorder = KeychainOperationRecorder(
+            updateStatuses: [errSecItemNotFound, errSecSuccess],
+            addStatuses: [errSecDuplicateItem]
         )
-        try store.appendShareHistory(entry)
-        let listed = try store.shareHistory()
-        #expect(listed.count == 1)
-        #expect(listed[0].recipientLabel == "Accountant")
-        #expect(listed[0].format == .pdf)
-        #expect(listed[0].rowCount == 3)
+        let store = KeychainViewingKeyStore(operations: recorder.operations)
+
+        try store.save("race-safe-viewing-key", for: VaultID())
+
+        #expect(recorder.calls == ["update", "add", "update"])
+    }
+}
+
+private final class KeychainOperationRecorder: @unchecked Sendable {
+    private(set) var calls: [String] = []
+    private var updateStatuses: [OSStatus]
+    private var addStatuses: [OSStatus]
+
+    init(updateStatuses: [OSStatus], addStatuses: [OSStatus] = []) {
+        self.updateStatuses = updateStatuses
+        self.addStatuses = addStatuses
     }
 
-    @Test func fileLedgerPersistsShareHistoryAndActiveVault() throws {
-        let tmp = FileManager.default.temporaryDirectory
-            .appendingPathComponent("SaneBooksHist-\(UUID().uuidString)", isDirectory: true)
-        defer { try? FileManager.default.removeItem(at: tmp) }
-
-        let store = try FileLedgerStore(rootURL: tmp)
-        let v1 = Vault(displayName: "A", network: .mainnet, keyKind: .ufvk, keyFingerprint: "uview:aaaa", mode: .bookkeeper)
-        let v2 = Vault(displayName: "B", network: .mainnet, keyKind: .ufvk, keyFingerprint: "uview:bbbb", mode: .bookkeeper)
-        try store.upsertVault(v1)
-        try store.upsertVault(v2)
-        try store.setActiveVaultID(v2.id)
-        try store.appendShareHistory(ShareHistoryEntry(
-            rangeStart: Date(),
-            rangeEnd: Date(),
-            format: .csv,
-            rowCount: 1
-        ))
-
-        let reloaded = try FileLedgerStore(rootURL: tmp)
-        #expect(try reloaded.allVaults().count == 2)
-        #expect(try reloaded.activeVaultID() == v2.id)
-        #expect(try reloaded.shareHistory().count == 1)
+    var operations: KeychainOperations {
+        KeychainOperations(
+            update: { [self] _, _ in
+                calls.append("update")
+                return updateStatuses.removeFirst()
+            },
+            add: { [self] _, _ in
+                calls.append("add")
+                return addStatuses.removeFirst()
+            },
+            copyMatching: { [self] _, _ in
+                calls.append("copy")
+                return errSecItemNotFound
+            },
+            delete: { [self] _ in
+                calls.append("delete")
+                return errSecSuccess
+            }
+        )
     }
 }

@@ -1,5 +1,5 @@
 {
-  "originHash" : "78e446d88a87ee91b298ab598140aebe0f6527157a81621fc2f338b2bd0e1182",
+  "originHash" : "ab74badc1462372b01690885cdb7fcd350d8297ee821b21a3013498bbec7710e",
   "pins" : [
     {
       "identity" : "grpc-swift",
@@ -8,6 +8,14 @@
       "state" : {
         "revision" : "6a8927df5a91710b414caba4f8a088dead4633db",
         "version" : "1.27.5"
+      }
+    },
+    {
+      "identity" : "saneui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sane-apps/SaneUI.git",
+      "state" : {
+        "revision" : "0894c053345a86b549ea1ee329a4ff3b20826061"
       }
     },
     {

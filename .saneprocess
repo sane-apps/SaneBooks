@@ -1,0 +1,54 @@
+# SaneProcess compliance manifest
+name: SaneBooks
+type: macos_app
+scheme: SaneBooks
+project: SaneBooks.xcodeproj
+bundle_id: com.saneapps.SaneBooks
+
+build:
+  xcodegen: true
+
+tests:
+  unit_dir: SaneBooksPackage/Tests
+  unit_target: SaneBooksTests
+  unit_scheme: SaneBooks
+  unit_destination: "platform=macOS"
+  verify_timeout_seconds: 1800
+
+# Distribution is intentionally fail-closed while SaneBooks is pre-release.
+# Replace the reserved .invalid hosts only after owned infrastructure is live.
+release:
+  enabled: false
+  team_id: M78L6FXD48
+  signing_identity: "Developer ID Application"
+  dist_host: dist.sanebooks.invalid
+  site_host: sanebooks.invalid
+  r2_bucket: sanebar-downloads
+  use_sparkle: false
+  min_system_version: "14.0"
+
+appstore:
+  enabled: false
+
+commands:
+  verify: ./scripts/SaneMaster.rb verify
+  test_mode: ./scripts/SaneMaster.rb tm
+  lint: ./scripts/SaneMaster.rb lint
+  clean: ./scripts/SaneMaster.rb clean
+  launch: ./scripts/SaneMaster.rb launch
+  logs: ./scripts/SaneMaster.rb logs
+
+docs:
+  - AGENTS.md
+  - README.md
+  - DEVELOPMENT.md
+  - ARCHITECTURE.md
+  - SESSION_HANDOFF.md
+
+mcps:
+  - apple-docs
+  - context7
+  - github
+  - xcode
+
+website: false

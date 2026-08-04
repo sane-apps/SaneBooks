@@ -1,5 +1,6 @@
 import Foundation
 import SaneBooksCore
+import ZcashLightClientKit
 
 /// Pinned ZcashLightClientKit identity for capability reporting and docs.
 public enum LinkedZcashSDK: Sendable {
@@ -10,6 +11,23 @@ public enum LinkedZcashSDK: Sendable {
     /// Sapling activation — used only when the vault has no birthday.
     public static let mainnetDefaultBirthday: UInt32 = 419_200
     public static let testnetDefaultBirthday: UInt32 = 280_000
+
+    /// The linked Rust backend performs the ZIP-316 checksum and network validation.
+    public static func isValidViewingKey(
+        _ encoding: String,
+        kind: ViewingKeyKind,
+        network: SaneBooksCore.ZcashNetwork
+    ) -> Bool {
+        let sdkNetwork: NetworkType = network == .mainnet ? .mainnet : .testnet
+        switch kind {
+        case .ufvk:
+            return (try? UnifiedFullViewingKey(encoding: encoding, network: sdkNetwork)) != nil
+        case .uivk:
+            return (try? UnifiedIncomingViewingKey(encoding: encoding, network: sdkNetwork)) != nil
+        case .legacySaplingFVK, .legacySaplingIVK:
+            return false
+        }
+    }
 
     public static var linkedCapabilityReport: CapabilityReport {
         CapabilityReport(
@@ -22,7 +40,7 @@ public enum LinkedZcashSDK: Sendable {
                 "ZcashLightClientKit \(revision) linked (Ironwood #1806 closed).",
                 "View-only UFVK import via Synchronizer.importAccount(purpose: .viewOnly).",
                 "UIVK import is not available in the public SDK — receivables mode stays degraded.",
-                "Output pool raw value 4 is treated as Ironwood until the SDK names it."
+                "Output pool raw value 4 is treated as Ironwood until the SDK names it.",
             ]
         )
     }
@@ -33,14 +51,14 @@ public struct SyncAccountCredentials: Sendable, Equatable {
     public var vaultID: VaultID
     public var viewingKey: String
     public var keyKind: ViewingKeyKind
-    public var network: ZcashNetwork
+    public var network: SaneBooksCore.ZcashNetwork
     public var birthdayHeight: UInt32
 
     public init(
         vaultID: VaultID,
         viewingKey: String,
         keyKind: ViewingKeyKind,
-        network: ZcashNetwork,
+        network: SaneBooksCore.ZcashNetwork,
         birthdayHeight: UInt32
     ) {
         self.vaultID = vaultID
