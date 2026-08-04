@@ -131,9 +131,24 @@ ln -sfn Versions/Current/Resources "${framework}/Resources"
 ln -sfn Versions/Current/Headers "${framework}/Headers"
 ln -sfn Versions/Current/Modules "${framework}/Modules"
 
+# Xcode often codesigns the flat embed before this script runs. Moving files
+# under Versions/A leaves a stale root _CodeSignature ("unsealed contents")
+# that invalidates the outer app signature and notarization.
+rm -rf "${framework}/_CodeSignature"
+
 if ! layout_complete; then
   echo "error: libzcashlc repair finished but layout is still incomplete at ${framework}"
   exit 1
+fi
+
+if [ "${CODE_SIGNING_ALLOWED:-YES}" != "NO" ] \
+  && [ -n "${EXPANDED_CODE_SIGN_IDENTITY:-}" ] \
+  && [ "${EXPANDED_CODE_SIGN_IDENTITY}" != "-" ]; then
+  codesign --force --sign "${EXPANDED_CODE_SIGN_IDENTITY}" \
+    --timestamp \
+    --options runtime \
+    "${framework}"
+  echo "Re-signed repaired libzcashlc framework with ${EXPANDED_CODE_SIGN_IDENTITY_NAME:-${EXPANDED_CODE_SIGN_IDENTITY}}"
 fi
 
 echo "Repaired embedded libzcashlc into a versioned macOS framework layout (donor=${donor})"
