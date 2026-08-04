@@ -28,14 +28,9 @@ release:
   min_system_version: "14.0"
   upgrade_path_test:
     scheme: SaneBooks
-    test_selector: "SaneBooksTests/AppModel safety and settings/settingsPersistAcrossModelRelaunch()"
+    test_selector: "SaneBooksTests/AppModelTests/settingsPersistAcrossModelRelaunch()"
     from_version: "0.0.1"
     timeout_seconds: 900
-  reconcile:
-    enabled: true
-    peer_host: mini
-    peer_repo_path: /Users/stephansmac/SaneApps/apps/SaneBooks
-    peer_branch: main
 
 appstore:
   enabled: false
