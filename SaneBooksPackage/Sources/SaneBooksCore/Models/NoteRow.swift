@@ -182,8 +182,12 @@ public struct NoteRowDraft: Codable, Sendable, Equatable {
         self.noteCommitment = noteCommitment
     }
 
-    public func asNoteRow() -> NoteRow {
-        NoteRow(
+    public func asNoteRow(stableIndex: Int = 0) -> NoteRow {
+        var material = txid
+        material.append(contentsOf: withUnsafeBytes(of: UInt32(stableIndex).bigEndian) { Array($0) })
+        material.append(contentsOf: Array(pool.rawValue.utf8))
+        return NoteRow(
+            id: .stable(vaultID: vaultID, txid: material),
             vaultID: vaultID,
             txid: txid,
             blockHeight: blockHeight,

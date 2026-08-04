@@ -1,23 +1,36 @@
 # SESSION_HANDOFF — SaneBooks
 
-**Updated:** 2026-08-03 (submit prep — funding gate)  
-**Branch:** `main` (public remote in progress)
+**Updated:** 2026-08-03 (Zashi DB import + peer upgrades)  
+**Branch:** `main` · remote `sane-apps/SaneBooks`
 
-## Done
-- Live SDK `2.7.0-rc.4`; probe UFVK catch-up tip **3435350** on `zec.rocks`
-- **38/38** unit tests; mock visual audit
-- `docs/LIVE_PROBE_FUNDING.md` — how to get a note without inventing a key
-- Grant draft updated to match reality (catch-up proven; receive pending)
+## Done this pass
 
-## Blocked on owner (step 1 of submit order)
-Probe account has **0 ZEC**. Send any tiny mainnet amount to:
+### Mini E2E — gold theme + Zashi import (2026-08-03)
+- Imported real Zashi `data.db` on Mini → **10 notes**, vault **Zashi (imported)**
+- Tagged 7 as Income (Client · E2E); pack disclosure: **18.2458 ZEC**, 3 untagged excluded
+- Screenshots + verdict: `outputs/visual-audit-sanebooks/gold-zashi-e2e/` (`VERDICT.md`, `LOG_RECEIPT.txt`)
+- Layout fixes from visual audit: Import Zashi CTA primary; Share sticky Save; pack range = full history
 
+### Visual: Zcash-familiar gold theme
+- `SaneBooksTheme` — ZEC gold `#F4B728` / soft `#FDC63E` / deep `#C8880A` on warm ink
+- App-local `.saneBooksBrand()`; SaneUI optional `saneBrandAccent` (other apps unchanged)
+- Dock icon: closed ivory ledger + horizontal gold band on warm ink (book-first; old shield/keyhole read as “eye of Sauron”)
+
+## Still open for grant submit
+1. Owner sets budget `$X` in `docs/GRANT_PROPOSAL.md` (**not invented**)
+2. Forum + FPF issue when attestation is ready
+
+## Run
+```bash
+# Import path
+open SaneBooks → Import → Import Zashi / Zodl database… → pick data.db
+
+# Tests
+cd SaneBooksPackage && SANEBOOKS_USE_LOCAL_SANEUI=1 swift test
+# Optional real DB (do not paste UFVK):
+SANEBOOKS_ZASHI_DB=/path/to/data.db swift test --filter realZashiDBOptional
 ```
-u1l9f0l4348negsncgr9pxd9d3qaxagmqv3lnexcplmufpq7muffvfaue6ksevfvd7wrz7xrvn95rc5zjtn7ugkmgh5rnxswmcj30y0pw52pn0zjvy38rn2esfgve64rj5pcmazxgpyuj
-```
 
-Then say **sent** — agent will sync → classify → pack → Mini screenshots.
-
-## Also need before forum submit
-- Owner sets grant **$X**
-- Notarized/Sparkle release (optional for grant if attestation scopes to source+proof)
+## Shown to owner
+- Prior: live LWD catch-up on probe key (0 historical notes)
+- This pass: Zashi `data.db` import path verified on Mini via unit test (≥10 notes)

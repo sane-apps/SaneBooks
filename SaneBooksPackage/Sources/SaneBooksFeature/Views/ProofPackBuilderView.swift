@@ -65,6 +65,22 @@ public struct ProofPackBuilderView: View {
         .foregroundStyle(.white)
         .onAppear {
             includeMemos = model.includeMemosByDefault
+            if let draft = model.packDraft {
+                rangeStart = draft.rangeStart
+                rangeEnd = draft.rangeEnd
+                includeIncome = draft.includedKinds.contains(.income)
+                includeExpense = draft.includedKinds.contains(.expense)
+                includeFee = draft.includedKinds.contains(.fee)
+                includeChange = draft.includeChange
+                includeMemos = draft.includeMemos
+            } else {
+                // Prefer full synced history when notes predate calendar YTD.
+                let dated = model.notes.compactMap(\.blockTime)
+                if let minDate = dated.min(), let maxDate = dated.max() {
+                    rangeStart = minDate
+                    rangeEnd = maxDate
+                }
+            }
         }
     }
 
@@ -83,7 +99,7 @@ public struct ProofPackBuilderView: View {
         HStack(spacing: 8) {
             ZStack {
                 Circle()
-                    .fill(step == index ? Color.saneAccent : Color.white.opacity(step > index ? 0.22 : 0.10))
+                    .fill(step == index ? Color.saneBooksAccent : Color.white.opacity(step > index ? 0.22 : 0.10))
                     .frame(width: 22, height: 22)
                 if step > index {
                     Image(systemName: "checkmark")
@@ -104,7 +120,7 @@ public struct ProofPackBuilderView: View {
 
     private func connector(active: Bool) -> some View {
         Rectangle()
-            .fill(active ? Color.saneAccent.opacity(0.55) : Color.white.opacity(0.14))
+            .fill(active ? Color.saneBooksAccent.opacity(0.55) : Color.white.opacity(0.14))
             .frame(width: 36, height: 2)
             .padding(.trailing, 12)
     }
@@ -209,7 +225,7 @@ public struct ProofPackBuilderView: View {
                 if preview.partialHistory {
                     Text("History may be incomplete before your birthday or while sync is behind tip. Income totals could under-report. Pack will be marked partialHistory.")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.saneAccent)
+                        .foregroundStyle(Color.saneBooksAccent)
                         .fixedSize(horizontal: false, vertical: true)
                     Toggle("I acknowledge partial history", isOn: $model.acknowledgePartialHistory)
                         .font(.system(size: 14, weight: .semibold))
@@ -320,7 +336,7 @@ private struct DateRangeRow: View {
                 Spacer(minLength: 0)
                 Image(systemName: "calendar")
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Color.saneAccent)
+                    .foregroundStyle(Color.saneBooksAccent)
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 14)

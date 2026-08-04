@@ -57,7 +57,7 @@ public struct SaneBooksTopNav<Trailing: View>: View {
                         Text("Ledger")
                     }
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Color.saneAccent)
+                    .foregroundStyle(Color.saneBooksAccent)
                 }
                 .buttonStyle(.plain)
                 Spacer(minLength: 8)
@@ -103,12 +103,12 @@ public struct SaneBooksTopNav<Trailing: View>: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 14, weight: selected ? .bold : .semibold))
-                .foregroundStyle(selected ? Color.saneAccent : .white)
+                .foregroundStyle(selected ? Color.saneBooksAccent : .white)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
                 .background(
                     RoundedRectangle(cornerRadius: 6)
-                        .fill(selected ? Color.saneAccent.opacity(0.16) : Color.clear)
+                        .fill(selected ? Color.saneBooksAccent.opacity(0.16) : Color.clear)
                 )
         }
         .buttonStyle(.plain)
@@ -178,21 +178,21 @@ struct SaneBooksStatusBanner: View {
 
     private var iconColor: Color {
         switch kind {
-        case .success, .info: Color.saneAccent
+        case .success, .info: Color.saneBooksAccent
         case .error: Color.orange
         }
     }
 
     private var backgroundColor: Color {
         switch kind {
-        case .success, .info: Color.saneAccent.opacity(0.12)
+        case .success, .info: Color.saneBooksAccent.opacity(0.12)
         case .error: Color.orange.opacity(0.14)
         }
     }
 
     private var borderColor: Color {
         switch kind {
-        case .success, .info: Color.saneAccent.opacity(0.35)
+        case .success, .info: Color.saneBooksAccent.opacity(0.35)
         case .error: Color.orange.opacity(0.4)
         }
     }

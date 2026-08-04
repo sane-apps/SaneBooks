@@ -13,7 +13,7 @@ struct SaneBooksApp: App {
                     model.applyE2ESceneIfNeeded()
                 }
         }
-        .defaultSize(width: 980, height: 640)
+        .defaultSize(width: 1040, height: 720)
         .commands {
             CommandGroup(replacing: .newItem) {
                 Button("New Proof Pack") {
@@ -58,6 +58,7 @@ struct SaneBooksApp: App {
         Settings {
             SettingsView(model: model)
                 .frame(minWidth: 620, minHeight: 420)
+                .saneBooksBrand()
         }
     }
 }

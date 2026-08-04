@@ -10,11 +10,11 @@ public struct ContentView: View {
 
     public var body: some View {
         ZStack {
-            SaneGradientBackground()
-                .ignoresSafeArea()
+            SaneBooksInkBackground()
             routeContent
         }
-        .frame(minWidth: 980, minHeight: 640)
+        .frame(minWidth: 1040, minHeight: 720)
+        .saneBooksBrand()
     }
 
     @ViewBuilder

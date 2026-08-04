@@ -47,9 +47,15 @@ public struct TransactionDetailView: View {
             }
 
             HStack(alignment: .firstTextBaseline) {
-                Text("\(note.direction == .outbound ? "-" : "+")\(formatZEC(abs(note.amountZEC))) ZEC")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundStyle(.white)
+                if model.discreetMode {
+                    Text("•••• ZEC")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(.white)
+                } else {
+                    Text("\(note.direction == .outbound ? "-" : "+")\(formatZEC(abs(note.amountZEC))) ZEC")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(.white)
+                }
                 Spacer()
                 if let date = note.blockTime {
                     Text(date.formatted(date: .abbreviated, time: .shortened))
@@ -58,7 +64,7 @@ public struct TransactionDetailView: View {
                 }
             }
 
-            if let fiat = note.fiatMark?.amount(forZEC: abs(note.amountZEC)) {
+            if !model.discreetMode, let fiat = note.fiatMark?.amount(forZEC: abs(note.amountZEC)) {
                 Text("≈ $\(formatFiat(fiat)) at confirmation")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
@@ -154,6 +160,6 @@ public struct TransactionDetailView: View {
             updated.memo = .text(memo)
         }
         updated.includeInPacksByDefault = includeInPacks
-        model.saveNote(updated)
+        model.saveNote(updated, advanceUntaggedQueue: model.filters.untaggedOnly)
     }
 }

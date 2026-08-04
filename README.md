@@ -26,6 +26,7 @@ Community signal: [Is anyone actually using viewing keys for business accounting
 
 - **Not a wallet** — no seeds, no spending keys, no send UI
 - **Not CipherPay** — CipherPay is merchant checkout / IVK payment detect; SaneBooks starts after money arrives
+- **Not ZBooks** — [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) is team/DAO treasury + SIWZ + approved ZIP 321 payouts (web). SaneBooks is solo owner → CPA on a local Mac with expiring proof packs
 - **Not tax software** — we export accountant-ready rows; the CPA owns filing
 - **Not “temporary UFVK access”** — viewing keys are irrevocable; share **packs**, not raw keys
 

@@ -69,6 +69,10 @@ public final class AppModel {
     public var includeMemosByDefault = false
     public var truncateTxidsInUI = true
     public var requirePassphraseToOpenVault = true
+    /// Pendrake-style screen-share mode: hide ZEC/USD amounts in the ledger UI.
+    public var discreetMode = false
+    /// Prefill for proof-pack recipient label (CPA name).
+    public var defaultRecipientLabel = "Accountant — Acme CPA"
 
     private let store: any LedgerStore
     private let keyStore: any ViewingKeyStore
@@ -135,7 +139,15 @@ public final class AppModel {
     }
 
     /// Launch-arg driven routes for Mini visual / E2E captures (`--e2e-scene=`).
+    /// Optional `--e2e-import-db=/path/to/data.db` imports a Zashi/Zodl SDK database first.
     public func applyE2ESceneIfNeeded(_ arguments: [String] = ProcessInfo.processInfo.arguments) {
+        if let dbArg = arguments.first(where: { $0.hasPrefix("--e2e-import-db=") }) {
+            let path = String(dbArg.dropFirst("--e2e-import-db=".count))
+            if !path.isEmpty {
+                importZashiSDKDatabase(at: URL(fileURLWithPath: path))
+            }
+        }
+
         let scene = arguments
             .first { $0.hasPrefix("--e2e-scene=") }
             .map { String($0.dropFirst("--e2e-scene=".count)) }
@@ -149,11 +161,101 @@ public final class AppModel {
             route = .importKey
         case "sync", "ledger", "detail", "pack", "share":
             bootstrapDemoVaultForE2E(then: scene ?? "ledger")
+        case "zashi-ledger":
+            bootstrapZashiImportForE2E(then: "ledger")
+        case "zashi-detail":
+            bootstrapZashiImportForE2E(then: "detail")
+        case "zashi-pack":
+            bootstrapZashiImportForE2E(then: "pack")
+        case "zashi-share":
+            bootstrapZashiImportForE2E(then: "share")
         case "reader":
             route = .reader
         default:
             break
         }
+    }
+
+    /// After `--e2e-import-db=`, tag a few rows and jump to ledger/pack/share for Mini captures.
+    private func bootstrapZashiImportForE2E(then scene: String) {
+        guard vault != nil, !notes.isEmpty else {
+            importError = importError ?? "E2E Zashi import produced no notes — check --e2e-import-db= path."
+            route = .importKey
+            return
+        }
+        tagSampleNotesForE2E(limit: 5)
+        switch scene {
+        case "detail":
+            if let first = notes.first {
+                openNote(first.id)
+            } else {
+                route = .ledger
+            }
+        case "pack":
+            prepareImportedHistoryPackDraft()
+            route = .proofPackBuilder
+        case "share":
+            prepareImportedHistoryPackDraft()
+            acknowledgePartialHistory = true
+            if var draft = packDraft {
+                draft.acknowledgePartialHistory = true
+                packDraft = draft
+            }
+            route = .sharePack
+        default:
+            route = .ledger
+        }
+    }
+
+    /// Tag a handful of inbound notes as Income so proof packs are non-empty.
+    private func tagSampleNotesForE2E(limit: Int) {
+        guard let vault else { return }
+        var updated = notes
+        var tagged = 0
+        for i in updated.indices where tagged < limit {
+            guard updated[i].direction == .inbound || updated[i].direction == .changeCandidate else { continue }
+            if updated[i].effectiveKind != .untagged, updated[i].classification?.source == .user {
+                continue
+            }
+            updated[i].classification = Classification(
+                kind: .income,
+                party: "Client",
+                subtag: "E2E",
+                notes: "Mini visual audit sample tag",
+                source: .user
+            )
+            tagged += 1
+        }
+        do {
+            try store.replaceNotes(vaultID: vault.id, with: updated)
+            notes = updated
+        } catch {
+            importError = error.localizedDescription
+        }
+    }
+
+    /// Pack range spans all dated notes (Zashi history is not limited to calendar YTD).
+    public func prepareImportedHistoryPackDraft() {
+        guard let vault else { return }
+        let dated = notes.compactMap(\.blockTime)
+        let start = dated.min() ?? Date(timeIntervalSince1970: 1_700_000_000)
+        let end = dated.max() ?? Date()
+        let expires = Calendar.current.date(byAdding: .day, value: defaultPackExpiryDays, to: Date()) ?? Date()
+        var draft = PackBuilder.buildDraft(
+            vault: vault,
+            notes: notes,
+            rangeStart: start,
+            rangeEnd: end,
+            includedKinds: [.income, .expense, .fee],
+            includeMemos: includeMemosByDefault,
+            includeChange: false,
+            excludeTags: [],
+            cursor: cursor,
+            recipientLabel: defaultRecipientLabel.isEmpty ? nil : defaultRecipientLabel,
+            expiresAt: expires
+        )
+        draft.acknowledgePartialHistory = acknowledgePartialHistory
+        packDraft = draft
     }
 
     private func bootstrapDemoVaultForE2E(then scene: String) {
@@ -220,7 +322,7 @@ public final class AppModel {
             includeChange: false,
             excludeTags: [],
             cursor: cursor,
-            recipientLabel: "Accountant — Acme CPA",
+            recipientLabel: defaultRecipientLabel.isEmpty ? nil : defaultRecipientLabel,
             expiresAt: expires
         )
         draft.acknowledgePartialHistory = acknowledgePartialHistory
@@ -253,6 +355,93 @@ public final class AppModel {
         importBirthdayText = ""
         importError = nil
         pendingForceMock = true
+    }
+
+    /// Import a Zashi/Zodl SDK `data.db` (UFVK + scanned notes) without a multi-hour rescan.
+    public func importZashiSDKDatabase(at url: URL) {
+        importError = nil
+        pendingForceMock = false
+        do {
+            // Peek UFVK fingerprint first so we reuse an existing vault id when present.
+            let peekID = VaultID()
+            let peek = try ZashiSDKDatabaseImporter.importDatabase(at: url, vaultID: peekID)
+            let outcome = validator.validate(peek.ufvk, selectedNetwork: .mainnet)
+            guard case let .accept(kind, network, _, fingerprint, mode) = outcome else {
+                importError = "SDK database UFVK failed validation."
+                return
+            }
+
+            let existing = try store.allVaults().first(where: { $0.keyFingerprint == fingerprint })
+            let vaultID = existing?.id ?? peekID
+            let imported = vaultID == peekID
+                ? peek
+                : try ZashiSDKDatabaseImporter.importDatabase(at: url, vaultID: vaultID)
+
+            let activeVault: Vault
+            if var kept = existing {
+                if kept.displayName.hasPrefix("My books") || kept.displayName.hasPrefix("Incoming") {
+                    kept.displayName = imported.accountName == "(unnamed)"
+                        ? kept.displayName
+                        : "\(imported.accountName) (imported)"
+                }
+                kept.birthdayHeight = imported.birthdayHeight
+                try keyStore.save(imported.ufvk, for: kept.id)
+                try store.upsertVault(kept)
+                activeVault = kept
+            } else {
+                let newVault = Vault(
+                    id: vaultID,
+                    displayName: imported.accountName == "(unnamed)"
+                        ? Self.defaultVaultDisplayName(
+                            mode: mode,
+                            network: network,
+                            fingerprint: fingerprint,
+                            isDemo: false
+                        )
+                        : "\(imported.accountName) (imported)",
+                    network: network,
+                    keyKind: kind,
+                    keyFingerprint: fingerprint,
+                    birthdayHeight: imported.birthdayHeight,
+                    mode: mode
+                )
+                try keyStore.save(imported.ufvk, for: newVault.id)
+                try store.upsertVault(newVault)
+                activeVault = newVault
+            }
+
+            try store.setActiveVaultID(activeVault.id)
+            var classified = ClassificationEngine.suggest(
+                notes: imported.notes,
+                vaultMode: activeVault.mode,
+                keyKind: activeVault.keyKind
+            )
+            classified = ClassificationEngine.applyRules(activeVault.tagRules, to: classified)
+            try store.replaceNotes(vaultID: activeVault.id, with: classified)
+            vault = activeVault
+            vaults = try store.allVaults()
+            notes = classified
+            let tip = classified.map(\.blockHeight).max() ?? imported.birthdayHeight
+            cursor = SyncCursor(
+                vaultID: activeVault.id,
+                birthdayHeight: imported.birthdayHeight,
+                scannedThroughHeight: tip,
+                chainTipHeight: tip,
+                lastSuccessAt: Date(),
+                lwdURL: URL(string: lwdURLString) ?? LinkedZcashSDK.defaultMainnetLWD,
+                status: .caughtUp,
+                poolsSynced: Set(classified.map(\.pool)),
+                capabilityReport: LinkedZcashSDK.linkedCapabilityReport,
+                isDemo: false,
+                progressFraction: 1,
+                noteCount: classified.count
+            )
+            importKeyText = ""
+            filters = LedgerFilters()
+            route = .ledger
+        } catch {
+            importError = error.localizedDescription
+        }
     }
 
     /// Real ECC SDK mainnet UFVK → live lightwalletd sync (no mock).
@@ -690,6 +879,28 @@ public final class AppModel {
         notes.filter { $0.effectiveKind == .untagged }.count
     }
 
+    /// Focus the untagged review queue (filter + open first untagged row).
+    public func beginUntaggedReview() {
+        filters.untaggedOnly = true
+        filters.kind = nil
+        if let first = notes.first(where: { $0.effectiveKind == .untagged }) {
+            openNote(first.id)
+        }
+    }
+
+    /// After tagging a note, open the next untagged row (or return to filtered ledger).
+    public func advanceUntaggedReview(after savedID: NoteRowID? = nil) {
+        filters.untaggedOnly = true
+        let remaining = notes.filter { note in
+            note.effectiveKind == .untagged && note.id != savedID
+        }
+        if let next = remaining.first {
+            openNote(next.id)
+        } else {
+            route = .ledger
+        }
+    }
+
     public var incomeYTD: Decimal {
         ClassificationEngine.incomeYTD(notes: notes, year: Calendar.current.component(.year, from: Date()))
     }
@@ -711,7 +922,7 @@ public final class AppModel {
         notes.first { $0.id == id }
     }
 
-    public func saveNote(_ note: NoteRow) {
+    public func saveNote(_ note: NoteRow, advanceUntaggedQueue: Bool = false) {
         guard let vault else { return }
         var updated = note
         if var classification = updated.classification {
@@ -722,7 +933,11 @@ public final class AppModel {
         do {
             try store.upsertNotes([updated])
             notes = try store.notes(vaultID: vault.id)
-            route = .ledger
+            if advanceUntaggedQueue, filters.untaggedOnly {
+                advanceUntaggedReview(after: updated.id)
+            } else {
+                route = .ledger
+            }
         } catch {
             importError = error.localizedDescription
         }

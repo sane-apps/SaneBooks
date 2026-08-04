@@ -13,8 +13,7 @@ packages:
   SaneBooksPackage:
     path: SaneBooksPackage
   SaneUI:
-    url: https://github.com/sane-apps/SaneUI.git
-    revision: 7f87b04bd74c6903a34e715ff46adf583d854f87
+    path: ../../infra/SaneUI
 
 settings:
   DEAD_CODE_STRIPPING: YES
