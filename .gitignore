@@ -26,3 +26,6 @@ outputs/visual-audit-sanebooks/**/*.log
 *.log
 build_log*.txt
 test_output*.txt
+
+# Release artifacts (local Mini pipeline output)
+releases/

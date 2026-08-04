@@ -1,7 +1,7 @@
 # SESSION_HANDOFF — SaneBooks
 
 **Updated:** 2026-08-04 ET (GitHub DMG lane A shipped)
-**Branch:** `main` · remote `sane-apps/SaneBooks` · HEAD `a2a2b3e` · tag `v0.1.0` (binary built from `8583fbd`)
+**Branch:** `main` · remote `sane-apps/SaneBooks` · HEAD `ee5cc42` · tag `v0.1.0` (binary built from `8583fbd`)
 
 ## Current outcome
 
@@ -11,7 +11,7 @@ Public notarized GitHub Release **v0.1.0** is live for lane A (Sparkle and Mac A
 - Asset: `SaneBooks-0.1.0.zip` (sha256 `54b922814f0269f94609b483d948b7cb2706a6b8cdc3254756a8e1142b964fe8`)
 - Notary Accepted: `fcd6111b-0267-48f2-9797-866fac68ac06`
 - Journey 10 receipt: `outputs/journey10/journey10-receipt-latest.json`
-- SaneProcess supporting fixes: `83820359` (RELEASE_ENABLED), `df890b40` (notary fail-closed), `56aae852` (GitHub-only asset upload)
+- SaneProcess supporting fixes: `83820359` (RELEASE_ENABLED), `df890b40` (notary fail-closed), `56aae852`/`3c43626` (GitHub-only asset upload)
 
 ## Verification
 
