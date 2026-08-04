@@ -227,7 +227,10 @@ class SaneBooksCustomerUIActionSweep
     out, status = Open3.capture2e(SANEMASTER, 'customer_ui_contract', '--json', '--no-exit')
     raise "Could not read customer UI contract report: #{out}" unless status.success?
 
-    JSON.parse(out)
+    json_text = out[/\{.*\}/m]
+    raise "Could not find JSON in customer UI contract output: #{out}" if json_text.nil?
+
+    JSON.parse(json_text)
   end
 
   def write_transcript
