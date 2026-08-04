@@ -1,6 +1,7 @@
 #!/bin/bash
 # Repair Xcode's embedded libzcashlc copy into Apple's required versioned
 # macOS framework layout after the package copy phase flattens symlinks.
+# Destination-only: never mutate a package cache checkout.
 
 set -euo pipefail
 
@@ -10,16 +11,40 @@ if [ -z "${TARGET_BUILD_DIR:-}" ] || [ -z "${FRAMEWORKS_FOLDER_PATH:-}" ]; then
 fi
 
 framework="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libzcashlc.framework"
+donor="${TARGET_BUILD_DIR}/libzcashlc.framework"
 
 if [ ! -d "${framework}" ]; then
-  echo "error: embedded libzcashlc framework is missing at ${framework}"
-  exit 1
+  if [ -d "${donor}" ]; then
+    mkdir -p "$(dirname "${framework}")"
+    cp -R "${donor}" "${framework}"
+  else
+    echo "error: embedded libzcashlc framework is missing at ${framework}"
+    exit 1
+  fi
 fi
 
-if [ -f "${framework}/Versions/Current/Resources/Info.plist" ]; then
+if [ -f "${framework}/Versions/Current/Resources/Info.plist" ] \
+  && [ -e "${framework}/Versions/Current/libzcashlc" ]; then
   echo "libzcashlc already uses the required versioned macOS framework layout"
   exit 0
 fi
+
+# Recover from a half-repaired tree by reseeding flat files from the donor product.
+seed_from_donor() {
+  local name="$1"
+  if [ -e "${framework}/${name}" ] || [ -e "${framework}/Versions/A/${name}" ] \
+    || [ -e "${framework}/Versions/A/Resources/${name}" ]; then
+    return 0
+  fi
+  if [ -e "${donor}/${name}" ]; then
+    cp -R "${donor}/${name}" "${framework}/${name}"
+  fi
+}
+
+seed_from_donor libzcashlc
+seed_from_donor Info.plist
+seed_from_donor Headers
+seed_from_donor Modules
 
 mkdir -p "${framework}/Versions/A/Resources"
 
