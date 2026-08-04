@@ -367,7 +367,7 @@ public final class AppModel {
             let peek = try ZashiSDKDatabaseImporter.importDatabase(at: url, vaultID: peekID)
             let outcome = validator.validate(peek.ufvk, selectedNetwork: .mainnet)
             guard case let .accept(kind, network, _, fingerprint, mode) = outcome else {
-                importError = "SDK database UFVK failed validation."
+                importError = "That wallet export could not be read. Pick a Zashi or Zodl private-data file and try again."
                 return
             }
 
@@ -627,7 +627,7 @@ public final class AppModel {
             return
         }
         guard VaultModeBanner.canUpgrade(current: current, newMode: mode, newNetwork: network) else {
-            importError = "Upgrade requires a full viewing key (uview…) on the same network. New fingerprint is OK — this replaces the vault key."
+            importError = "Upgrade needs a full viewing key on the same network. Your books stay; only the key is replaced."
             return
         }
         let keyMaterial = importKeyText.trimmingCharacters(in: .whitespacesAndNewlines)

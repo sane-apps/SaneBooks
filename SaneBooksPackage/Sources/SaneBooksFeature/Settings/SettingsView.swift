@@ -73,7 +73,7 @@ public struct SettingsView: View {
                     if model.vaults.isEmpty {
                         CompactRow("Status", icon: "info.circle", iconColor: SaneSettingsIconSemantic.general.color) {
                             Text("No vault imported")
-                                .font(.system(size: 14, weight: .medium))
+                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                 .foregroundStyle(.white)
                         }
                     } else {
@@ -84,16 +84,16 @@ public struct SettingsView: View {
                             CompactRow(vault.displayName, icon: "tray.full", iconColor: SaneSettingsIconSemantic.general.color) {
                                 HStack(spacing: 10) {
                                     Text(truncatedFingerprint(vault.keyFingerprint))
-                                        .font(.system(size: 14, weight: .medium, design: .monospaced))
+                                        .font(.system(size: SaneTypography.bodySize, weight: .medium, design: .monospaced))
                                         .foregroundStyle(.white)
                                     if model.vault?.id == vault.id {
                                         Text("Active")
-                                            .font(.system(size: 14, weight: .bold))
+                                            .font(.system(size: SaneTypography.bodySize, weight: .bold))
                                             .foregroundStyle(Color.saneBooksAccent)
                                     } else {
                                         Button("Switch") { model.switchVault(vault.id) }
                                             .buttonStyle(.plain)
-                                            .font(.system(size: 14, weight: .semibold))
+                                            .font(.system(size: SaneTypography.bodySize, weight: .semibold))
                                             .foregroundStyle(Color.saneBooksAccent)
                                     }
                                 }
@@ -103,7 +103,7 @@ public struct SettingsView: View {
                         CompactRow("Add vault", icon: "plus.circle", iconColor: SaneSettingsIconSemantic.general.color) {
                             Button("Import…") { model.addAnotherVault() }
                                 .buttonStyle(.plain)
-                                .font(.system(size: 14, weight: .semibold))
+                                .font(.system(size: SaneTypography.bodySize, weight: .semibold))
                                 .foregroundStyle(Color.saneBooksAccent)
                         }
                     }
@@ -113,20 +113,20 @@ public struct SettingsView: View {
                     CompactSection("Active vault", icon: "eye.fill", iconColor: SaneSettingsIconSemantic.general.color) {
                         CompactRow("Network", icon: "network", iconColor: SaneSettingsIconSemantic.general.color) {
                             Text(vault.network.displayName)
-                                .font(.system(size: 14, weight: .medium))
+                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                 .foregroundStyle(.white)
                         }
                         CompactDivider()
                         CompactRow("Mode", icon: "book.fill", iconColor: SaneSettingsIconSemantic.general.color) {
                             Text(vault.mode == .bookkeeper ? "Bookkeeper" : "Receivables")
-                                .font(.system(size: 14, weight: .medium))
+                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                 .foregroundStyle(.white)
                         }
                         CompactDivider()
                         CompactRow("Remove vault", icon: "trash", iconColor: .red) {
                             Button("Remove…") { model.removeVault() }
                                 .buttonStyle(.plain)
-                                .font(.system(size: 14, weight: .semibold))
+                                .font(.system(size: SaneTypography.bodySize, weight: .semibold))
                                 .foregroundStyle(.red)
                         }
                     }
@@ -143,29 +143,29 @@ public struct SettingsView: View {
                     CompactRow("Sync now", icon: "play.fill", iconColor: SaneSettingsIconSemantic.sync.color) {
                         Button("Sync Now") { model.syncNow() }
                             .buttonStyle(.plain)
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.system(size: SaneTypography.bodySize, weight: .semibold))
                             .foregroundStyle(Color.saneBooksAccent)
                             .disabled(model.vault == nil)
                     }
                     CompactDivider()
                     CompactRow("Status", icon: "dot.radiowaves.left.and.right", iconColor: SaneSettingsIconSemantic.sync.color) {
                         Text(model.cursor?.status.displayName ?? "Idle")
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
                             .foregroundStyle(.white)
                     }
                     CompactDivider()
                     CompactRow("Lightwalletd URL", icon: "server.rack", iconColor: SaneSettingsIconSemantic.sync.color) {
                         TextField("https://…", text: $model.lwdURLString)
                             .textFieldStyle(.plain)
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
                             .foregroundStyle(.white)
                             .frame(width: 220)
                     }
                     if let cursor = model.cursor {
                         CompactDivider()
                         CompactRow("Birthday", icon: "calendar", iconColor: SaneSettingsIconSemantic.sync.color) {
-                            Text("block \(cursor.birthdayHeight.formatted())")
-                                .font(.system(size: 14, weight: .medium))
+                            Text("start \(cursor.birthdayHeight.formatted())")
+                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                 .foregroundStyle(.white)
                         }
                     }
@@ -175,19 +175,19 @@ public struct SettingsView: View {
                     let report = model.capabilityReport ?? model.cursor?.capabilityReport
                     CompactRow("Ironwood", icon: "leaf", iconColor: SaneSettingsIconSemantic.sync.color) {
                         Text(report?.supportsIronwood == true ? "Supported" : "Unavailable")
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
                             .foregroundStyle(.white)
                     }
                     CompactDivider()
-                    CompactRow("SDK", icon: "shippingbox", iconColor: SaneSettingsIconSemantic.sync.color) {
+                    CompactRow("Sync engine", icon: "shippingbox", iconColor: SaneSettingsIconSemantic.sync.color) {
                         Text(report?.sdkRevision ?? "—")
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
                             .foregroundStyle(.white)
                     }
                     CompactDivider()
-                    CompactRow("Mainnet safe", icon: "checkmark.seal", iconColor: SaneSettingsIconSemantic.sync.color) {
+                    CompactRow("Ready for live books", icon: "checkmark.seal", iconColor: SaneSettingsIconSemantic.sync.color) {
                         Text(report?.mainnetSafe == true ? "Yes" : "No")
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
                             .foregroundStyle(.white)
                     }
                     CompactDivider()
@@ -198,14 +198,14 @@ public struct SettingsView: View {
                                 ? "None yet"
                                 : pools.map(\.displayName).sorted().joined(separator: ", ")
                         )
-                        .font(.system(size: 14, weight: .medium))
+                        .font(.system(size: SaneTypography.bodySize, weight: .medium))
                         .foregroundStyle(.white)
                     }
                     if report?.mainnetSafe != true {
                         CompactDivider()
                         CompactRow("Notice", icon: "exclamationmark.triangle", iconColor: .orange) {
-                            Text("Mainnet complete sync is capability-blocked — check SDK notes")
-                                .font(.system(size: 14, weight: .semibold))
+                            Text("Full live sync is not available in this build yet. You can still use a wallet export or the demo ledger.")
+                                .font(.system(size: SaneTypography.bodySize, weight: .semibold))
                                 .foregroundStyle(.white)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -214,7 +214,7 @@ public struct SettingsView: View {
                         CompactDivider()
                         CompactRow("Notes", icon: "text.alignleft", iconColor: SaneSettingsIconSemantic.sync.color) {
                             Text(notes.joined(separator: " "))
-                                .font(.system(size: 14, weight: .medium))
+                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                 .foregroundStyle(.white)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -249,7 +249,7 @@ public struct SettingsView: View {
                     CompactRow("Default CPA recipient", icon: "person.text.rectangle", iconColor: SaneSettingsIconSemantic.content.color) {
                         TextField("Accountant — …", text: $model.defaultRecipientLabel)
                             .textFieldStyle(.plain)
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
                             .foregroundStyle(.white)
                             .frame(width: 220)
                     }
@@ -259,7 +259,7 @@ public struct SettingsView: View {
                     if model.shareHistory.isEmpty {
                         CompactRow("History", icon: "tray", iconColor: SaneSettingsIconSemantic.content.color) {
                             Text("No shares yet. Save a proof pack to record one.")
-                                .font(.system(size: 14, weight: .medium))
+                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                 .foregroundStyle(.white)
                         }
                     } else {
@@ -270,14 +270,14 @@ public struct SettingsView: View {
                             CompactRow(entry.recipientLabel ?? "Unlabeled", icon: "doc", iconColor: SaneSettingsIconSemantic.content.color) {
                                 VStack(alignment: .trailing, spacing: 2) {
                                     Text("\(entry.format.displayName) · \(entry.rowCount) rows")
-                                        .font(.system(size: 14, weight: .medium))
+                                        .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                         .foregroundStyle(.white)
                                     Text(entry.createdAt.formatted(date: .abbreviated, time: .shortened))
-                                        .font(.system(size: 14, weight: .medium))
+                                        .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                         .foregroundStyle(.white)
                                     if let exp = entry.expiresAt {
                                         Text("Expires \(exp.formatted(date: .abbreviated, time: .omitted))")
-                                            .font(.system(size: 14, weight: .medium))
+                                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                             .foregroundStyle(.white)
                                     }
                                 }
@@ -295,11 +295,11 @@ public struct SettingsView: View {
                             CompactRow("Contains \"\(rule.memoContains)\"", icon: "text.magnifyingglass", iconColor: SaneSettingsIconSemantic.content.color) {
                                 HStack(spacing: 8) {
                                     Text("→ \(rule.kind.displayName)\(rule.party.map { " · \($0)" } ?? "")")
-                                        .font(.system(size: 14, weight: .medium))
+                                        .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                         .foregroundStyle(.white)
                                     Button("Delete") { model.deleteTagRule(id: rule.id) }
                                         .buttonStyle(.plain)
-                                        .font(.system(size: 14, weight: .semibold))
+                                        .font(.system(size: SaneTypography.bodySize, weight: .semibold))
                                         .foregroundStyle(.red)
                                 }
                             }
@@ -309,12 +309,12 @@ public struct SettingsView: View {
                             VStack(alignment: .trailing, spacing: 8) {
                                 TextField("Memo contains", text: $newRuleMemo)
                                     .textFieldStyle(.plain)
-                                    .font(.system(size: 14, weight: .medium))
+                                    .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                     .foregroundStyle(.white)
                                     .frame(width: 140)
                                 TextField("Party (optional)", text: $newRuleParty)
                                     .textFieldStyle(.plain)
-                                    .font(.system(size: 14, weight: .medium))
+                                    .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                     .foregroundStyle(.white)
                                     .frame(width: 140)
                                 Picker("Kind", selection: $newRuleKind) {
@@ -335,7 +335,7 @@ public struct SettingsView: View {
                                     newRuleParty = ""
                                 }
                                 .buttonStyle(.plain)
-                                .font(.system(size: 14, weight: .semibold))
+                                .font(.system(size: SaneTypography.bodySize, weight: .semibold))
                                 .foregroundStyle(Color.saneBooksAccent)
                                 .disabled(newRuleMemo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                             }
@@ -343,7 +343,7 @@ public struct SettingsView: View {
                     } else {
                         CompactRow("Rules", icon: "info.circle", iconColor: SaneSettingsIconSemantic.content.color) {
                             Text("Import a vault to add memo rules.")
-                                .font(.system(size: 14, weight: .medium))
+                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
                                 .foregroundStyle(.white)
                         }
                     }
@@ -359,7 +359,7 @@ public struct SettingsView: View {
                 CompactSection("Appearance", icon: "paintbrush.fill", iconColor: SaneSettingsIconSemantic.appearance.color) {
                     CompactRow("Theme", icon: "circle.lefthalf.filled", iconColor: SaneSettingsIconSemantic.appearance.color) {
                         Text("System")
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
                             .foregroundStyle(.white)
                     }
                 }
@@ -409,7 +409,7 @@ public struct SettingsView: View {
                             }
                         }
                         .buttonStyle(.plain)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: SaneTypography.bodySize, weight: .semibold))
                         .foregroundStyle(Color.saneBooksAccent)
                         .disabled(model.vault == nil)
                     }
@@ -425,7 +425,7 @@ public struct SettingsView: View {
                 CompactSection("License", icon: "checkmark.seal.fill", iconColor: SaneSettingsIconSemantic.license.color) {
                     CompactRow("Status", icon: "key.fill", iconColor: SaneSettingsIconSemantic.license.color) {
                         Text("Direct download — license stub")
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
                             .foregroundStyle(.white)
                     }
                 }

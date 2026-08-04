@@ -49,7 +49,7 @@ public struct ReaderView: View {
 
     private var unlockForm: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("Open a .sanebooks pack without a vault key.")
+            Text("Open a proof pack your accountant shared with you. No wallet key needed.")
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.white)
 
@@ -80,7 +80,7 @@ public struct ReaderView: View {
 
             ActionButton("Unlock") {
                 guard let pendingURL else {
-                    model.readerError = "Choose a .sanebooks file first."
+                    model.readerError = "Choose a proof pack file first."
                     return
                 }
                 model.openPack(url: pendingURL, passphrase: passphrase)
@@ -159,8 +159,8 @@ public struct ReaderView: View {
                     guard panel.runModal() == .OK, let url = panel.url else { return }
                     try? model.exportReaderPDF(to: url)
                 }
-                ActionButton("Verify integrity", style: .secondary) {}
-                Text("sha256:\(String(result.payload.integrity.plaintextCanonicalHash.prefix(12)))…")
+                ActionButton("Check file", style: .secondary) {}
+                Text("File ID \(String(result.payload.integrity.plaintextCanonicalHash.prefix(12)))…")
                     .font(.system(size: 14, design: .monospaced))
                     .foregroundStyle(.white)
             }

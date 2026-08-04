@@ -74,7 +74,7 @@ public struct CapabilityReport: Codable, Sendable, Equatable {
             supportsOrchard: true,
             supportsIronwood: true,
             mainnetSafe: true,
-            notes: ["Demo ledger — not chain data"]
+            notes: ["Sample ledger — not your live wallet"]
         )
     }
 }

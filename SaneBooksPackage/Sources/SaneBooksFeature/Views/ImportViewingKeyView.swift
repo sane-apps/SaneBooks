@@ -10,7 +10,7 @@ public struct ImportViewingKeyView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text(model.importAsUpgrade ? "Upgrade to Full Viewing Key" : "Import Viewing Key")
-                    .font(.title2.bold())
+                    .font(.system(size: SaneBooksType.display, weight: .bold))
                     .foregroundStyle(.white)
                 Spacer()
                 Button("Cancel") {
@@ -22,29 +22,33 @@ public struct ImportViewingKeyView: View {
                     }
                 }
                 .buttonStyle(.plain)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: SaneBooksType.body, weight: .semibold))
                 .foregroundStyle(.white)
             }
-            .padding(.bottom, 16)
+            .padding(.bottom, 12)
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 14) {
                     if model.importAsUpgrade {
                         SaneBooksStatusBanner(
                             kind: .info,
-                            message: "Paste a Unified Full Viewing Key (uview…) for the same network. A new fingerprint is expected — this replaces the vault key; notes stay on this vault."
+                            message: "Paste a full viewing key for the same network. Your books stay on this Mac; only the key is replaced."
                         )
                     }
 
-                    Text("Viewing key")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.white)
+                    if !model.importAsUpgrade {
+                        fastestPathCard
+                    }
+
+                    Text("Or paste a viewing key")
+                        .font(.system(size: SaneBooksType.body, weight: .semibold))
+                        .foregroundStyle(Color.saneBooksAccentSoft)
 
                     TextEditor(text: $model.importKeyText)
-                        .font(.system(size: 14, design: .monospaced))
+                        .font(.system(size: SaneBooksType.body, design: .monospaced))
                         .scrollContentBackground(.hidden)
-                        .padding(12)
-                        .frame(height: 72)
+                        .padding(10)
+                        .frame(minHeight: 52, maxHeight: 72)
                         .background(Color.white.opacity(0.06))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                         .foregroundStyle(.white)
@@ -56,7 +60,7 @@ public struct ImportViewingKeyView: View {
 
                     HStack(spacing: 16) {
                         Text("Network")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.system(size: SaneBooksType.body, weight: .semibold))
                             .foregroundStyle(.white)
                         Picker("Network", selection: $model.importNetwork) {
                             ForEach(ZcashNetwork.allCases, id: \.self) { net in
@@ -68,36 +72,27 @@ public struct ImportViewingKeyView: View {
                         .foregroundStyle(.white)
                     }
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Wallet birthday (optional)")
-                            .font(.system(size: 14, weight: .semibold))
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Wallet start date (optional)")
+                            .font(.system(size: SaneBooksType.body, weight: .semibold))
                             .foregroundStyle(.white)
-                        TextField("Block height or YYYY-MM-DD", text: $model.importBirthdayText)
+                        TextField("Date or start height (optional)", text: $model.importBirthdayText)
                             .textFieldStyle(.plain)
-                            .padding(12)
+                            .padding(10)
                             .background(Color.white.opacity(0.06))
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             .foregroundStyle(.white)
-                        Text("Speeds first sync")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(.white)
+                        Text("Helps the first sync go faster. Never paste a seed phrase.")
+                            .font(.system(size: SaneBooksType.body, weight: .medium))
+                            .foregroundStyle(SaneBooksTheme.pageIvory.opacity(0.9))
 
                         DisclosureGroup(isExpanded: $model.showBirthdayHelp) {
                             birthdayWizardCopy
                         } label: {
-                            Text("How to find birthday / viewing key")
-                                .font(.system(size: 14, weight: .semibold))
+                            Text("Where do I find this in my wallet?")
+                                .font(.system(size: SaneBooksType.body, weight: .semibold))
                                 .foregroundStyle(Color.saneBooksAccent)
                         }
-                    }
-
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Accepted: Unified Full Viewing Key (uview…)")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(.white)
-                        Text("Rejected: seeds, spending keys, transparent-only keys")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(.white)
                     }
 
                     if let err = model.importError {
@@ -105,11 +100,15 @@ public struct ImportViewingKeyView: View {
                     }
 
                     if !model.importAsUpgrade {
-                        demoKeyCard
+                        liveAndDemoRow
                     }
                 }
+                .padding(.bottom, 8)
             }
-
+        }
+        .padding(.horizontal, 28)
+        .padding(.top, 20)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
             HStack {
                 Spacer()
                 ActionButton(model.importAsUpgrade ? "Upgrade Key" : "Continue") {
@@ -118,97 +117,62 @@ public struct ImportViewingKeyView: View {
                 .disabled(model.importKeyText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 .opacity(model.importKeyText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.45 : 1)
             }
-            .padding(.top, 16)
+            .padding(.horizontal, 28)
+            .padding(.top, 10)
+            .padding(.bottom, 14)
+            .frame(maxWidth: .infinity)
+            .background(SaneBooksTheme.ink.opacity(0.97))
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(Color.saneBooksAccent.opacity(0.28))
+                    .frame(height: 1)
+            }
         }
-        .padding(32)
         .alert("Incoming-only viewing key", isPresented: $model.showDegradedConfirm) {
             Button("Continue anyway") { model.confirmDegradedImport() }
             Button("Cancel", role: .cancel) { model.cancelDegradedImport() }
         } message: {
-            Text("Incoming-only keys cannot detect change or expenses reliably. Income totals may be overstated. Prefer a Unified Full Viewing Key (uview…) for full bookkeeping.")
+            Text("An incoming-only key can miss change and expenses, so income may look too high. Prefer a full viewing key for complete books.")
         }
     }
 
     private var birthdayWizardCopy: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Zodl")
-                .font(.system(size: 14, weight: .bold))
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Zodl: open More → export private data or sub-keys → copy the viewing key only (not the seed).")
+                .font(.system(size: SaneBooksType.body, weight: .medium))
                 .foregroundStyle(.white)
-            Text("1. Open Zodl → Settings / Account.")
-                .font(.system(size: 14, weight: .medium))
+            Text("YWallet: open Backup / Show Viewing Key for the account → copy the viewing key.")
+                .font(.system(size: SaneBooksType.body, weight: .medium))
                 .foregroundStyle(.white)
-            Text("2. Export Unified Full Viewing Key (uview…) — never the seed.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-            Text("3. Copy wallet birthday (block height) from restore / account details if shown.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-            Text("Docs: https://zodl.app (link text only)")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-
-            Text("YWallet")
-                .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(.white)
-            Text("1. Open YWallet → Account / Advanced.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-            Text("2. Export viewing key for this account (UFVK preferred).")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-            Text("3. Note birthday height used at wallet creation / restore.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-            Text("Docs: https://ywallet.app (link text only)")
-                .font(.system(size: 14, weight: .medium))
+            Text("Zashi: export private data, then use Import from Zashi / Zodl above.")
+                .font(.system(size: SaneBooksType.body, weight: .medium))
                 .foregroundStyle(.white)
         }
-        .padding(.top, 8)
+        .padding(.top, 6)
     }
 
-    /// Live probe uses the ECC SDK DerivationTool mainnet UFVK against zec.rocks.
-    private var demoKeyCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Fastest path — import scanned notes")
-                .font(.system(size: 14, weight: .semibold))
+    /// Primary owner path — must be fully on-screen without hunting.
+    private var fastestPathCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Fastest — import from your wallet")
+                .font(.system(size: SaneBooksType.body, weight: .semibold))
                 .foregroundStyle(.white)
-            Text("Use a Zashi/Zodl SDK `data.db` export to load UFVK + history without a multi-hour rescan.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
+            Text("Bring in a Zashi or Zodl wallet export to load your viewing key and history without a long re-scan.")
+                .font(.system(size: SaneBooksType.body, weight: .medium))
+                .foregroundStyle(SaneBooksTheme.pageIvory)
                 .fixedSize(horizontal: false, vertical: true)
-            ActionButton("Import Zashi / Zodl database…", icon: "externaldrive", style: .primary) {
+            ActionButton("Import from Zashi / Zodl…", icon: "externaldrive", style: .primary) {
                 showSDKDBImporter = true
             }
-            .frame(maxWidth: 300)
-
-            Text("Or sync live")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
-                .padding(.top, 4)
-            Text(
-                "ECC SDK mainnet test UFVK via lightwalletd (birthday \(LiveProbeKey.defaultBirthday.formatted())). Send dust to the probe UA in docs/LIVE_PROBE_FUNDING.md for a live receive row."
-            )
-            .font(.system(size: 14, weight: .medium))
-            .foregroundStyle(.white)
-            .fixedSize(horizontal: false, vertical: true)
-            HStack(spacing: 12) {
-                ActionButton("Use Live Probe Key", icon: "antenna.radiowaves.left.and.right", style: .secondary) {
-                    model.useLiveProbeKey()
-                }
-                .frame(maxWidth: 220)
-                ActionButton("Offline demo ledger", icon: "sparkles", style: .secondary) {
-                    model.useDemoKey()
-                }
-                .frame(maxWidth: 200)
-            }
+            .frame(maxWidth: 320)
         }
-        .padding(16)
+        .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.saneBooksAccent.opacity(0.12))
+        .background(Color.saneBooksAccent.opacity(0.14))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.saneBooksAccent.opacity(0.4), lineWidth: 1.5)
+                .stroke(Color.saneBooksAccent.opacity(0.45), lineWidth: 1.5)
         )
         .fileImporter(
             isPresented: $showSDKDBImporter,
@@ -232,5 +196,28 @@ public struct ImportViewingKeyView: View {
                 model.importError = error.localizedDescription
             }
         }
+    }
+
+    private var liveAndDemoRow: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Or try without your wallet")
+                .font(.system(size: SaneBooksType.body, weight: .semibold))
+                .foregroundStyle(Color.saneBooksAccentSoft)
+            Text("Use a built-in sample key to sync live, or open an offline demo ledger.")
+                .font(.system(size: SaneBooksType.body, weight: .medium))
+                .foregroundStyle(SaneBooksTheme.pageIvory)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 10) {
+                ActionButton("Try live sample", icon: "antenna.radiowaves.left.and.right", style: .secondary) {
+                    model.useLiveProbeKey()
+                }
+                .frame(maxWidth: 210)
+                ActionButton("Offline demo ledger", icon: "sparkles", style: .secondary) {
+                    model.useDemoKey()
+                }
+                .frame(maxWidth: 190)
+            }
+        }
+        .padding(.top, 4)
     }
 }

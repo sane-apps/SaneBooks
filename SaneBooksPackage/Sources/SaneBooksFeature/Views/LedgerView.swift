@@ -1,6 +1,18 @@
 import SaneBooksCore
 import SwiftUI
 
+/// Shared by header + NoteRowView — keep widths identical.
+private enum LedgerColumns {
+    static let spacing: CGFloat = 10
+    /// Wide enough for "Sep 30, 2025" at 13pt medium — never wrap dates.
+    static let date: CGFloat = 100
+    static let kind: CGFloat = 92
+    static let zec: CGFloat = 96
+    static let usd: CGFloat = 72
+    static let tag: CGFloat = 120
+    static let rowInset: CGFloat = 12
+}
+
 public struct LedgerView: View {
     @Bindable var model: AppModel
 
@@ -11,9 +23,9 @@ public struct LedgerView: View {
                 onVault: { model.route = .ledger },
                 onProofPacks: { model.beginProofPack() }
             )
-            .padding(.bottom, 20)
+            .padding(.bottom, 16)
 
-            VStack(alignment: .leading, spacing: 28) {
+            VStack(alignment: .leading, spacing: 20) {
                 vaultIdentityRow
 
                 if model.showsIVKUpgradeBanner {
@@ -27,13 +39,24 @@ public struct LedgerView: View {
                 summaryPanel
 
                 ledgerPanel
-
-                footerBar
             }
         }
-        .padding(.horizontal, 32)
-        .padding(.top, 24)
-        .padding(.bottom, 28)
+        .padding(.horizontal, 28)
+        .padding(.top, 20)
+        .padding(.bottom, 8)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            footerBar
+                .padding(.horizontal, 28)
+                .padding(.top, 10)
+                .padding(.bottom, 22)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(SaneBooksTheme.ink.opacity(0.96))
+                .overlay(alignment: .top) {
+                    Rectangle()
+                        .fill(Color.saneBooksAccent.opacity(0.35))
+                        .frame(height: 1)
+                }
+        }
     }
 
     // MARK: - Identity
@@ -43,9 +66,9 @@ public struct LedgerView: View {
             if model.vaults.count > 1 {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("BOOKS")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: SaneBooksType.body, weight: .bold))
                         .tracking(0.6)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.saneBooksAccentSoft)
                     Picker("Books", selection: vaultPickerBinding) {
                         ForEach(model.vaults) { v in
                             Text(v.displayName).tag(Optional(v.id))
@@ -57,15 +80,15 @@ public struct LedgerView: View {
             } else if let vault = model.vault {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("BOOKS")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: SaneBooksType.body, weight: .bold))
                         .tracking(0.6)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.saneBooksAccentSoft)
                     Text(vault.displayName)
-                        .font(.system(size: 22, weight: .bold))
+                        .font(.system(size: SaneBooksType.display, weight: .bold))
                         .foregroundStyle(.white)
-                    Text("Viewing-key ledger — not a wallet")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(.white)
+                    Text("Viewing-key books — cannot spend")
+                        .font(.system(size: SaneBooksType.body, weight: .medium))
+                        .foregroundStyle(SaneBooksTheme.pageIvory.opacity(0.85))
                 }
             }
             Spacer(minLength: 0)
@@ -76,7 +99,7 @@ public struct LedgerView: View {
                     model.discreetMode ? "Discreet on" : "Discreet",
                     systemImage: model.discreetMode ? "eye.slash.fill" : "eye.slash"
                 )
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(size: SaneBooksType.body, weight: .semibold))
                 .foregroundStyle(model.discreetMode ? Color.saneBooksAccentSoft : .white)
             }
             .buttonStyle(.plain)
@@ -144,76 +167,84 @@ public struct LedgerView: View {
             summaryStat(
                 title: "Income YTD",
                 zec: model.incomeYTD,
-                usd: incomeUSD
+                usd: incomeUSD,
+                accent: Color.saneBooksAccent
             )
             summaryDivider
             summaryStat(
                 title: "Expenses YTD",
                 zec: model.expenseYTD,
-                usd: expenseUSD
+                usd: expenseUSD,
+                accent: Color.orange
             )
             summaryDivider
             untaggedStat
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 20)
+        .padding(.horizontal, 4)
+        .padding(.vertical, 16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             SaneGlassRoundedBackground(
-                cornerRadius: 14,
+                cornerRadius: 12,
                 tint: SaneBooksTheme.panelTint,
-                tintStrength: 0.18,
-                glowOpacity: 0.08
+                tintStrength: 0.28,
+                glowOpacity: 0.12
             )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(Color.saneBooksAccent.opacity(0.22), lineWidth: 1)
         )
     }
 
     private var summaryDivider: some View {
         Rectangle()
-            .fill(Color.white.opacity(0.14))
-            .frame(width: 1, height: 56)
-            .padding(.horizontal, 28)
+            .fill(Color.saneBooksAccent.opacity(0.28))
+            .frame(width: 1, height: 52)
+            .padding(.horizontal, 22)
     }
 
-    private func summaryStat(title: String, zec: Decimal, usd: Decimal?) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+    private func summaryStat(title: String, zec: Decimal, usd: Decimal?, accent: Color) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
             Text(title.uppercased())
-                .font(.system(size: 14, weight: .bold))
-                .tracking(0.8)
-                .foregroundStyle(Color.white)
+                .font(.system(size: SaneBooksType.body, weight: .bold))
+                .tracking(0.6)
+                .foregroundStyle(accent)
             Text(model.discreetMode ? "•••• ZEC" : "\(formatZEC(zec)) ZEC")
-                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
             Text(model.discreetMode ? "•••• USD*" : (usd.map { "$\(formatFiat($0)) USD*" } ?? "— USD*"))
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Color.white)
+                .font(.system(size: SaneBooksType.body, weight: .semibold))
+                .foregroundStyle(SaneBooksTheme.pageIvory.opacity(0.9))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12)
     }
 
     private var untaggedStat: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             Text("UNTAGGED")
-                .font(.system(size: 14, weight: .bold))
-                .tracking(0.8)
-                .foregroundStyle(Color.white)
+                .font(.system(size: SaneBooksType.body, weight: .bold))
+                .tracking(0.6)
+                .foregroundStyle(model.untaggedCount > 0 ? Color.saneBooksAccentSoft : Color.saneBooksAccent.opacity(0.7))
             Text("\(model.untaggedCount)")
-                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .font(.system(size: 17, weight: .bold, design: .rounded))
                 .foregroundStyle(model.untaggedCount > 0 ? Color.saneBooksAccentSoft : .white)
             if model.untaggedCount > 0 {
                 Button("Review") {
                     model.beginUntaggedReview()
                 }
                 .buttonStyle(.plain)
-                .font(.system(size: 14, weight: .bold))
+                .font(.system(size: SaneBooksType.body, weight: .bold))
                 .foregroundStyle(Color.saneBooksAccentSoft)
             } else {
                 Text("All tagged")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Color.white)
+                    .font(.system(size: SaneBooksType.body, weight: .semibold))
+                    .foregroundStyle(SaneBooksTheme.pageIvory.opacity(0.9))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12)
     }
 
     private var incomeUSD: Decimal? {
@@ -265,7 +296,7 @@ public struct LedgerView: View {
                             ) {
                                 model.openNote(note.id)
                             }
-                            .padding(.horizontal, 12)
+                            .padding(.horizontal, LedgerColumns.rowInset)
                             .padding(.vertical, 4)
                             .background(index % 2 == 0 ? Color.white.opacity(0.04) : Color.clear)
                         }
@@ -311,7 +342,7 @@ public struct LedgerView: View {
             }
 
             Toggle("Untagged only", isOn: $model.filters.untaggedOnly)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: SaneBooksType.body, weight: .semibold))
                 .foregroundStyle(.white)
                 .toggleStyle(.checkbox)
                 .padding(.top, 16)
@@ -320,15 +351,15 @@ public struct LedgerView: View {
 
             TextField("Search memo or tag", text: $model.filters.searchText)
                 .textFieldStyle(.plain)
-                .font(.system(size: 14, weight: .medium))
+                .font(.system(size: SaneBooksType.body, weight: .medium))
                 .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .frame(width: 200)
+                .padding(.vertical, 8)
+                .frame(minWidth: 200, maxWidth: 280)
                 .background(Color.white.opacity(0.10))
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .overlay(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(Color.white.opacity(0.18), lineWidth: 1)
+                        .stroke(Color.saneBooksAccent.opacity(0.35), lineWidth: 1)
                 )
                 .foregroundStyle(.white)
                 .padding(.top, 16)
@@ -338,9 +369,9 @@ public struct LedgerView: View {
     private func labeledControl(_ title: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title.uppercased())
-                .font(.system(size: 14, weight: .bold))
-                .tracking(0.7)
-                .foregroundStyle(Color.white)
+                .font(.system(size: SaneBooksType.body, weight: .bold))
+                .tracking(0.5)
+                .foregroundStyle(Color.saneBooksAccentSoft)
             content()
         }
     }
@@ -368,27 +399,27 @@ public struct LedgerView: View {
     }
 
     private var ledgerHeaderRow: some View {
-        HStack(spacing: 12) {
-            Text("Date").frame(width: 84, alignment: .leading)
-            Text("Type").frame(width: 96, alignment: .leading)
-            Text("ZEC").frame(width: 92, alignment: .trailing)
-            Text("USD*").frame(width: 80, alignment: .trailing)
-            Text("Tag").frame(maxWidth: .infinity, alignment: .leading)
-            Text("Memo").frame(width: 132, alignment: .leading)
+        HStack(spacing: LedgerColumns.spacing) {
+            Text("Date").frame(width: LedgerColumns.date, alignment: .leading)
+            Text("Type").frame(width: LedgerColumns.kind, alignment: .leading)
+            Text("ZEC").frame(width: LedgerColumns.zec, alignment: .trailing)
+            Text("USD*").frame(width: LedgerColumns.usd, alignment: .trailing)
+            Text("Tag").frame(width: LedgerColumns.tag, alignment: .leading)
+            Text("Memo").frame(maxWidth: .infinity, alignment: .leading)
         }
-        .font(.system(size: 14, weight: .bold))
-        .tracking(0.4)
-        .foregroundStyle(.white)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(Color.white.opacity(0.10))
+        .font(.system(size: SaneBooksType.body, weight: .bold))
+        .tracking(0.3)
+        .foregroundStyle(Color.saneBooksAccentSoft)
+        .padding(.horizontal, LedgerColumns.rowInset)
+        .padding(.vertical, 8)
+        .background(Color.saneBooksAccent.opacity(0.12))
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 
     // MARK: - Footer
 
     private var footerBar: some View {
-        HStack(alignment: .center, spacing: 20) {
+        HStack(alignment: .center, spacing: 16) {
             ActionButton("New Proof Pack", icon: "doc.badge.plus") {
                 model.beginProofPack()
             }
@@ -396,12 +427,11 @@ public struct LedgerView: View {
             .opacity(model.vault == nil ? 0.45 : 1)
 
             Text("* USD at confirmation time. Not advice.")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Color.white)
+                .font(.system(size: SaneBooksType.body, weight: .medium))
+                .foregroundStyle(SaneBooksTheme.pageIvory.opacity(0.85))
 
             Spacer(minLength: 0)
         }
-        .padding(.top, 8)
     }
 }
 
@@ -415,49 +445,51 @@ struct NoteRowView: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 12) {
-                Group {
-                    if let date = note.blockTime {
-                        Text(date.formatted(date: .abbreviated, time: .omitted))
-                    } else {
-                        Text("—")
-                    }
-                }
-                .frame(width: 84, alignment: .leading)
+            HStack(spacing: LedgerColumns.spacing) {
+                Text(dateLabel)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.9)
+                    .frame(width: LedgerColumns.date, alignment: .leading)
 
-                Text(kindLabel)
-                    .frame(width: 96, alignment: .leading)
-                    .foregroundStyle(note.effectiveKind == .untagged ? Color.saneBooksAccentSoft : .white)
+                kindChip
+                    .frame(width: LedgerColumns.kind, alignment: .leading)
 
                 Text(discreetMode ? "••••" : formatZEC(abs(note.amountZEC)))
-                    .frame(width: 92, alignment: .trailing)
-                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                    .lineLimit(1)
+                    .frame(width: LedgerColumns.zec, alignment: .trailing)
+                    .font(.system(size: SaneBooksType.body, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(note.effectiveKind == .income ? Color.saneBooksAccentSoft : .white)
 
                 if discreetMode {
                     Text("••••")
-                        .frame(width: 80, alignment: .trailing)
-                        .font(.system(size: 14, weight: .medium, design: .monospaced))
+                        .lineLimit(1)
+                        .frame(width: LedgerColumns.usd, alignment: .trailing)
+                        .font(.system(size: SaneBooksType.body, weight: .medium, design: .monospaced))
                 } else if let fiat = note.fiatMark?.amount(forZEC: abs(note.amountZEC)) {
                     Text("$\(formatFiat(fiat))")
-                        .frame(width: 80, alignment: .trailing)
-                        .font(.system(size: 14, weight: .medium, design: .monospaced))
+                        .lineLimit(1)
+                        .frame(width: LedgerColumns.usd, alignment: .trailing)
+                        .font(.system(size: SaneBooksType.body, weight: .medium, design: .monospaced))
                 } else {
                     Text("—")
-                        .frame(width: 80, alignment: .trailing)
+                        .frame(width: LedgerColumns.usd, alignment: .trailing)
                 }
 
                 Text(tagLabel)
                     .lineLimit(1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .truncationMode(.tail)
+                    .frame(width: LedgerColumns.tag, alignment: .leading)
+                    .help(tagLabel)
 
                 Text(note.memo.displayText ?? "—")
                     .lineLimit(1)
-                    .frame(width: 132, alignment: .leading)
+                    .truncationMode(.tail)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .help(note.memo.displayText ?? "")
             }
-            .font(.system(size: 14, weight: .medium))
+            .font(.system(size: SaneBooksType.body, weight: .medium))
             .foregroundStyle(.white)
-            .padding(.vertical, 11)
-            .padding(.horizontal, 4)
+            .padding(.vertical, 9)
             .contentShape(Rectangle())
             .overlay(alignment: .leading) {
                 if note.effectiveKind == .untagged {
@@ -469,6 +501,44 @@ struct NoteRowView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+
+    private var dateLabel: String {
+        guard let date = note.blockTime else { return "—" }
+        // Fixed pattern so column width is predictable (abbreviated locale forms vary).
+        return date.formatted(
+            .dateTime.month(.abbreviated).day().year().locale(Locale(identifier: "en_US_POSIX"))
+        )
+    }
+
+    private var kindChip: some View {
+        Text(kindLabel)
+            .font(.system(size: 11, weight: .bold))
+            .foregroundStyle(kindChipForeground)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 3)
+            .background(kindChipBackground)
+            .clipShape(Capsule())
+    }
+
+    private var kindChipBackground: Color {
+        switch note.effectiveKind {
+        case .income: Color.saneBooksAccent.opacity(0.22)
+        case .expense: Color.orange.opacity(0.22)
+        case .change: Color.white.opacity(0.12)
+        case .fee: Color.white.opacity(0.10)
+        case .untagged: Color.saneBooksAccentSoft.opacity(0.28)
+        case .excluded: Color.white.opacity(0.08)
+        }
+    }
+
+    private var kindChipForeground: Color {
+        switch note.effectiveKind {
+        case .income: Color.saneBooksAccentSoft
+        case .expense: Color.orange
+        case .change, .fee, .excluded: Color.white
+        case .untagged: Color.saneBooksAccentSoft
+        }
     }
 
     private var kindLabel: String {

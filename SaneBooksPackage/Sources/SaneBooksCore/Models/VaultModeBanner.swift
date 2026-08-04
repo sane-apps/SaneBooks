@@ -10,7 +10,7 @@ public enum VaultModeBanner {
     public static let upgradeCTA = "Upgrade to full viewing key"
 
     public static let upgradeBannerCopy =
-        "Incoming-only key. Expenses and change detection are limited; income may be overstated if change exists."
+        "This is an incoming-only key. Change and expenses may be incomplete, so income can look too high."
 
     /// Replacing a receivables UVK with a UFVK creates a new vault key fingerprint.
     /// Same network required; notes stay — fingerprint change is expected and documented.
