@@ -30,15 +30,15 @@ public enum SaneBooksError: Error, Sendable, Equatable, LocalizedError {
     public var userFacingMessage: String {
         switch self {
         case .seedRejected:
-            "This looks like a seed phrase. SaneBooks only accepts viewing keys (uview…). Never paste a seed."
+            "That looks like a seed phrase. SaneBooks only accepts viewing keys — never paste a seed."
         case .spendingKeyRejected:
-            "This looks like a spending key. SaneBooks only accepts viewing keys (uview…). It cannot spend funds."
+            "That looks like a spending key. SaneBooks only accepts viewing keys and cannot move funds."
         case .garbageKey:
-            "That does not look like a valid viewing key (uview… / uviewtest…)."
+            "That does not look like a viewing key. Paste a viewing key from your wallet, not a seed."
         case let .networkMismatch(expected, detected):
             "This key is for \(detected.displayName). Switch network to \(detected.displayName) or paste a \(expected.displayName) key."
         case .unsupportedKey:
-            "This key type is not supported in v1."
+            "This key type is not supported yet."
         case let .keychain(detail), let .ledger(detail), let .sync(detail), let .pack(detail), let .persistFailed(detail):
             detail
         case let .syncBlocked(reason):
@@ -48,13 +48,13 @@ public enum SaneBooksError: Error, Sendable, Equatable, LocalizedError {
         case .wrongPassphrase:
             "Wrong passphrase."
         case .tampered, .packTampered:
-            "Pack integrity check failed."
+            "This file looks damaged or altered. Ask for a new pack."
         case let .unsupportedSchema(version), let .packUnsupportedVersion(version):
-            "Update SaneBooks to open schema version \(version)."
+            "Update SaneBooks to open this pack (format \(version))."
         case .invalidPack:
-            "Not a valid .sanebooks file."
+            "That is not a SaneBooks proof pack."
         case .noVault:
-            "No vault is open."
+            "No books are open yet."
         case .cancelled:
             "Cancelled."
         }

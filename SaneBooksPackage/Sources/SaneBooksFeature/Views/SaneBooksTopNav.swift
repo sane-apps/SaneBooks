@@ -43,7 +43,7 @@ public struct SaneBooksTopNav<Trailing: View>: View {
                 HStack(spacing: 10) {
                     SaneBooksBrandMark(size: 28)
                     Text("SaneBooks")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.system(size: SaneBooksType.title, weight: .bold))
                         .foregroundStyle(.white)
                 }
                 tabLink("Vault", selected: selected == .vault, action: onVault)
@@ -56,13 +56,13 @@ public struct SaneBooksTopNav<Trailing: View>: View {
                         Image(systemName: "chevron.left")
                         Text("Ledger")
                     }
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(size: SaneBooksType.body, weight: .semibold))
                     .foregroundStyle(Color.saneBooksAccent)
                 }
                 .buttonStyle(.plain)
                 Spacer(minLength: 8)
                 Text(title)
-                    .font(.system(size: 15, weight: .bold))
+                    .font(.system(size: SaneBooksType.title, weight: .bold))
                     .foregroundStyle(.white)
             }
 
@@ -91,18 +91,26 @@ public struct SaneBooksTopNav<Trailing: View>: View {
 
     private var settingsLabel: some View {
         HStack(spacing: 6) {
-            Image(systemName: "gearshape")
+            Image(systemName: "gearshape.fill")
             Text("Settings")
         }
-        .font(.system(size: 14, weight: .semibold))
-        .foregroundStyle(.white)
+        .font(.system(size: SaneBooksType.body, weight: .semibold))
+        .foregroundStyle(Color.saneBooksAccentSoft)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color.saneBooksAccent.opacity(0.14))
+        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .stroke(Color.saneBooksAccent.opacity(0.35), lineWidth: 1)
+        )
         .contentShape(Rectangle())
     }
 
     private func tabLink(_ title: String, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: 14, weight: selected ? .bold : .semibold))
+                .font(.system(size: SaneBooksType.body, weight: selected ? .bold : .semibold))
                 .foregroundStyle(selected ? Color.saneBooksAccent : .white)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
@@ -115,7 +123,7 @@ public struct SaneBooksTopNav<Trailing: View>: View {
     }
 
     private func openSettingsWindow() {
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        NotificationCenter.default.post(name: .saneBooksOpenSettings, object: nil)
     }
 }
 

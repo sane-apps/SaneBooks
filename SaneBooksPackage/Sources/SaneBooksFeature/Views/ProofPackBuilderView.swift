@@ -223,7 +223,7 @@ public struct ProofPackBuilderView: View {
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
                 if preview.partialHistory {
-                    Text("History may be incomplete before your birthday or while sync is behind tip. Income totals could under-report. Pack will be marked partialHistory.")
+                    Text("History may be incomplete if sync is still catching up or this is a sample ledger. Income totals could under-report. Acknowledge before you export.")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(Color.saneBooksAccent)
                         .fixedSize(horizontal: false, vertical: true)

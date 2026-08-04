@@ -164,10 +164,10 @@ struct PackExportTests {
         #expect(summary.incomeZEC == Decimal(string: "1.5"))
         #expect(summary.includesMemos)
         let lines = summary.auditLines
-        #expect(lines.contains(where: { $0.contains("classified rows") }))
+        #expect(lines.contains(where: { $0.contains("tagged rows") }))
         #expect(lines.contains(where: { $0.contains("Memos included") }))
-        #expect(lines.contains(where: { $0.contains("Partial-history") }))
-        #expect(lines.contains(where: { $0.contains("Cannot spend") }))
+        #expect(lines.contains(where: { $0.contains("History may be incomplete") }))
+        #expect(lines.contains(where: { $0.contains("View only") }))
         #expect(lines.contains(where: { $0.contains("Acme CPA") }))
     }
 }

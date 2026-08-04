@@ -4,26 +4,30 @@ public struct WelcomeView: View {
     @Bindable var model: AppModel
 
     public var body: some View {
-        VStack(spacing: 28) {
-            Spacer()
-            SaneBooksBrandMark(size: 88)
-                .padding(.bottom, 8)
-            VStack(spacing: 12) {
+        VStack(spacing: 22) {
+            Spacer(minLength: 24)
+            SaneBooksBrandMark(size: 96)
+                .padding(.bottom, 4)
+            VStack(spacing: 8) {
                 Text("SaneBooks")
-                    .font(.system(size: 36, weight: .bold))
+                    .font(.system(size: SaneBooksType.hero, weight: .bold))
                     .foregroundStyle(.white)
                 Text("Private books for shielded Zcash")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(.system(size: SaneBooksType.title, weight: .semibold))
+                    .foregroundStyle(Color.saneBooksAccentSoft)
             }
 
-            VStack(spacing: 8) {
+            VStack(spacing: 6) {
                 Text("Import a viewing key. Build a ledger. Share a proof")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
+                    .font(.system(size: SaneBooksType.body, weight: .medium))
+                    .foregroundStyle(SaneBooksTheme.pageIvory)
                 Text("pack with your accountant — without spend keys.")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
+                    .font(.system(size: SaneBooksType.body, weight: .medium))
+                    .foregroundStyle(SaneBooksTheme.pageIvory)
+                Text("Fastest: import from Zashi or Zodl — or paste a viewing key.")
+                    .font(.system(size: SaneBooksType.body, weight: .semibold))
+                    .foregroundStyle(Color.saneBooksAccentSoft)
+                    .padding(.top, 4)
             }
             .multilineTextAlignment(.center)
 
@@ -36,25 +40,25 @@ public struct WelcomeView: View {
                 model.showWhatIsViewingKey = true
             }
             .buttonStyle(.plain)
-            .font(.system(size: 14, weight: .semibold))
+            .font(.system(size: SaneBooksType.body, weight: .semibold))
             .foregroundStyle(Color.saneBooksAccent)
 
             Divider()
-                .overlay(Color.white.opacity(0.2))
+                .overlay(Color.saneBooksAccent.opacity(0.35))
                 .padding(.horizontal, 80)
 
             Text("This app cannot spend ZEC. Never paste a seed phrase.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
+                .font(.system(size: SaneBooksType.body, weight: .medium))
+                .foregroundStyle(SaneBooksTheme.pageIvory)
 
             Button("Open Proof Pack Reader") {
                 model.goReader()
             }
             .buttonStyle(.plain)
-            .font(.system(size: 14, weight: .semibold))
+            .font(.system(size: SaneBooksType.body, weight: .semibold))
             .foregroundStyle(Color.saneBooksAccent)
 
-            Spacer()
+            Spacer(minLength: 24)
         }
         .padding(40)
         .sheet(isPresented: $model.showWhatIsViewingKey) {
@@ -63,23 +67,24 @@ public struct WelcomeView: View {
     }
 
     private var whatIsViewingKeySheet: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 14) {
             Text("What is a viewing key?")
-                .font(.title2.bold())
+                .font(.system(size: SaneBooksType.display, weight: .bold))
                 .foregroundStyle(.white)
-            Text("A viewing key lets SaneBooks scan your shielded transaction history and build books. It cannot move funds.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-            Text("Use a Unified Full Viewing Key (uview…) for full bookkeeping. Incoming-only keys (uivk…) work for receivables but cannot detect change or expenses reliably.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
+            Text("A viewing key lets SaneBooks read your private payment history and build books. It cannot move funds.")
+                .font(.system(size: SaneBooksType.body, weight: .medium))
+                .foregroundStyle(SaneBooksTheme.pageIvory)
+            Text("Use a full viewing key for complete books (income, change, and expenses). An incoming-only key can see payments received, but may mis-count change as income.")
+                .font(.system(size: SaneBooksType.body, weight: .medium))
+                .foregroundStyle(SaneBooksTheme.pageIvory)
             Text("Never paste a seed phrase or spending key.")
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: SaneBooksType.body, weight: .semibold))
                 .foregroundStyle(Color.saneBooksAccent)
-            Spacer()
+            Spacer(minLength: 12)
             ActionButton("Close", style: .secondary) {
                 model.showWhatIsViewingKey = false
             }
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding(28)
         .frame(minWidth: 440, minHeight: 320)

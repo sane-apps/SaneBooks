@@ -10,7 +10,7 @@ public struct SyncProgressView: View {
                 .foregroundStyle(.white)
 
             Text("Scanning shielded history")
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: SaneBooksType.body, weight: .semibold))
                 .foregroundStyle(.white)
 
             if let cursor = model.cursor {
@@ -18,18 +18,18 @@ public struct SyncProgressView: View {
 
                 HStack(spacing: 8) {
                     Text("\(Int((cursor.progressFraction * 100).rounded()))%")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: SaneBooksType.body, weight: .bold))
                         .foregroundStyle(Color.saneBooksAccent)
                     Text("Block \(cursor.scannedThroughHeight.formatted())")
                     if let tip = cursor.chainTipHeight {
-                        Text("· tip \(tip.formatted())")
+                        Text("· network tip \(tip.formatted())")
                     }
                     if let eta = cursor.etaSeconds {
                         Text("· ~\(max(1, Int(eta / 60))) min left")
                     }
                     Text("· \(cursor.status.displayName)")
                 }
-                .font(.system(size: 14, weight: .medium))
+                .font(.system(size: SaneBooksType.body, weight: .medium))
                 .foregroundStyle(.white)
 
                 if cursor.isDemo {
@@ -38,20 +38,22 @@ public struct SyncProgressView: View {
             } else {
                 accentProgressBar(fraction: 0.08)
                 Text("Starting sync…")
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: SaneBooksType.body, weight: .medium))
                     .foregroundStyle(.white)
             }
 
             Text("You can leave this window open. Tagging unlocks when notes appear.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
+                .font(.system(size: SaneBooksType.body, weight: .medium))
+                .foregroundStyle(SaneBooksTheme.pageIvory)
 
-            Spacer()
-
-            ActionButton("Cancel sync", style: .secondary) {
-                model.cancelSync()
+            HStack {
+                Spacer(minLength: 0)
+                ActionButton("Cancel sync", style: .secondary) {
+                    model.cancelSync()
+                }
+                .frame(width: 160)
             }
-            .frame(width: 160)
+            .padding(.top, 8)
         }
         .padding(32)
     }
@@ -76,8 +78,8 @@ public struct SyncProgressView: View {
         HStack(spacing: 10) {
             Image(systemName: "info.circle.fill")
                 .foregroundStyle(Color.saneBooksAccent)
-            Text("Demo ledger — not live chain data")
-                .font(.system(size: 14, weight: .semibold))
+            Text("Demo sample — not your live wallet")
+                .font(.system(size: SaneBooksType.body, weight: .semibold))
                 .foregroundStyle(.white)
         }
         .padding(14)

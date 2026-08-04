@@ -15,8 +15,8 @@ public struct ShareProofPackView: View {
     @State private var errorMessage: String?
 
     enum ShareFormat: String, CaseIterable {
-        case sanebooks = "Encrypted SaneBooks pack (.sanebooks)"
-        case csv = "CSV (QuickBooks / spreadsheet)"
+        case sanebooks = "Encrypted pack for your accountant"
+        case csv = "Spreadsheet (CSV)"
         case pdf = "PDF summary"
     }
 
@@ -37,7 +37,7 @@ public struct ShareProofPackView: View {
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(.white)
                         if let hash = model.lastIntegrityHash {
-                            Text("Integrity: sha256:\(String(hash.prefix(8)))…\(String(hash.suffix(4)))")
+                            Text("File check: \(String(hash.prefix(8)))…\(String(hash.suffix(4)))")
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundStyle(.white)
                         }
@@ -45,9 +45,9 @@ public struct ShareProofPackView: View {
                         if draft.partialHistory {
                             SaneBooksStatusBanner(
                                 kind: .error,
-                                message: "History may be incomplete (sync not caught up, capability blocked, or demo ledger). Income totals could under-report. Acknowledge before export."
+                                message: "History may be incomplete (sync still catching up, or a sample ledger). Income totals could under-report. Acknowledge before you export."
                             )
-                            Toggle("I acknowledge partial history", isOn: $model.acknowledgePartialHistory)
+                            Toggle("I understand history may be incomplete", isOn: $model.acknowledgePartialHistory)
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundStyle(.white)
                                 .toggleStyle(.checkbox)

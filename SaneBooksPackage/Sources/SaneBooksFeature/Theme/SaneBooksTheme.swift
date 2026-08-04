@@ -71,3 +71,8 @@ public extension View {
         saneBrandAccent(SaneBooksTheme.gold, soft: SaneBooksTheme.goldSoft)
     }
 }
+
+public extension Notification.Name {
+    /// Posted to open the SwiftUI Settings scene (Dock menu, TopNav fallback).
+    static let saneBooksOpenSettings = Notification.Name("saneBooksOpenSettings")
+}
