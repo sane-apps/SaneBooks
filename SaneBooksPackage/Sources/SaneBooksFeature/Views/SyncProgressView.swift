@@ -19,7 +19,7 @@ public struct SyncProgressView: View {
                 HStack(spacing: 8) {
                     Text("\(Int((cursor.progressFraction * 100).rounded()))%")
                         .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(Color.saneAccent)
+                        .foregroundStyle(Color.saneBooksAccent)
                     Text("Block \(cursor.scannedThroughHeight.formatted())")
                     if let tip = cursor.chainTipHeight {
                         Text("· tip \(tip.formatted())")
@@ -63,7 +63,7 @@ public struct SyncProgressView: View {
                 RoundedRectangle(cornerRadius: 5)
                     .fill(Color.white.opacity(0.12))
                 RoundedRectangle(cornerRadius: 5)
-                    .fill(Color.saneAccent)
+                    .fill(Color.saneBooksAccent)
                     .frame(width: max(8, geo.size.width * clamped))
             }
         }
@@ -75,14 +75,14 @@ public struct SyncProgressView: View {
     private var demoBanner: some View {
         HStack(spacing: 10) {
             Image(systemName: "info.circle.fill")
-                .foregroundStyle(Color.saneAccent)
+                .foregroundStyle(Color.saneBooksAccent)
             Text("Demo ledger — not live chain data")
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.white)
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.saneAccent.opacity(0.15))
+        .background(Color.saneBooksAccent.opacity(0.15))
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }

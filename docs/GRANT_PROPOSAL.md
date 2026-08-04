@@ -54,7 +54,9 @@ Shielded ZEC already supports ZIP 316 viewing keys. Merchant checkout and wallet
 Motivation and community demand are documented in the Jun 2026 forum thread:  
 https://forum.zcashcommunity.com/t/is-anyone-actually-using-viewing-keys-for-business-accounting/56300
 
-Adjacent products cover other lanes (CipherPay = IVK checkout; Zodl/YWallet = spend wallets; Koinly = multi-chain tax SaaS weak on shielded ZEC; ZBooks hackathon = team/DAO treasury + payouts). SaneBooks targets **owner → CPA selective disclosure** on a local Mac.
+**Wedge:** CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs team treasury + approved payouts. SaneBooks is the Mac CPA layer — local books, change≠income, expiring `.sanebooks` packs (Reader), not a permanent raw UFVK.
+
+Adjacent lanes stay adjacent (Zodl/YWallet = spend; Koinly = multi-chain tax SaaS). Full matrix: `docs/COMPETITIVE_POSITIONING.md`.
 
 ### What shipped (verifiable artifacts)
 
@@ -144,7 +146,7 @@ Use only measurable, non-fake metrics. **Do not invent download counts or testim
 | Pack contains no UVK | unit tests (byte scan) | covered |
 | Change excluded from income | unit tests + ledger YTD | covered |
 | Live LWD catch-up | Mini run: tip **3435350**, status caughtUp, LWD `zec.rocks` | **proven** |
-| Live Ironwood **receive** visible | screenshot of ≥1 inbound note after fund/sync | **pending dust send** (`docs/LIVE_PROBE_FUNDING.md`) |
+| Live Ironwood **receive** visible | screenshot of ≥1 inbound note after fund/sync **or** Zashi `data.db` import | **proven** — Mini `gold-zashi-e2e/zashi-ledger.png` (10 notes, Zashi imported) |
 | External CPA pilot | written feedback (if any) | **none claimed** |
 
 ### Proof of completion checklist
@@ -157,7 +159,7 @@ Use only measurable, non-fake metrics. **Do not invent download counts or testim
   `cd SaneBooksPackage && SANEBOOKS_USE_LOCAL_SANEUI=1 swift test`
 - [x] Visual audit: `outputs/visual-audit-sanebooks/` (`e2e-welcome.png` … `e2e-reader.png`, `VERDICT.md`)
 - [x] Live sync catch-up: LWD `zec.rocks`, tip **3435350**, `SESSION_HANDOFF.md`
-- [ ] Live receive screenshot + log (after funding probe UA or importing funded UFVK)
+- [x] Live receive / history screenshot + log — `outputs/visual-audit-sanebooks/gold-zashi-e2e/` + `LOG_RECEIPT.txt`
 - [ ] Forum application thread + FPF GitHub issue (at submission)
 - [x] Conflict disclosure confirmed: none
 

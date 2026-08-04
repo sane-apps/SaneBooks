@@ -89,12 +89,12 @@ public struct SettingsView: View {
                                     if model.vault?.id == vault.id {
                                         Text("Active")
                                             .font(.system(size: 14, weight: .bold))
-                                            .foregroundStyle(Color.saneAccent)
+                                            .foregroundStyle(Color.saneBooksAccent)
                                     } else {
                                         Button("Switch") { model.switchVault(vault.id) }
                                             .buttonStyle(.plain)
                                             .font(.system(size: 14, weight: .semibold))
-                                            .foregroundStyle(Color.saneAccent)
+                                            .foregroundStyle(Color.saneBooksAccent)
                                     }
                                 }
                             }
@@ -104,7 +104,7 @@ public struct SettingsView: View {
                             Button("Import…") { model.addAnotherVault() }
                                 .buttonStyle(.plain)
                                 .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(Color.saneAccent)
+                                .foregroundStyle(Color.saneBooksAccent)
                         }
                     }
                 }
@@ -144,7 +144,7 @@ public struct SettingsView: View {
                         Button("Sync Now") { model.syncNow() }
                             .buttonStyle(.plain)
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(Color.saneAccent)
+                            .foregroundStyle(Color.saneBooksAccent)
                             .disabled(model.vault == nil)
                     }
                     CompactDivider()
@@ -190,6 +190,17 @@ public struct SettingsView: View {
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(.white)
                     }
+                    CompactDivider()
+                    CompactRow("Pools synced", icon: "square.stack.3d.up", iconColor: SaneSettingsIconSemantic.sync.color) {
+                        let pools = model.cursor?.poolsSynced ?? []
+                        Text(
+                            pools.isEmpty
+                                ? "None yet"
+                                : pools.map(\.displayName).sorted().joined(separator: ", ")
+                        )
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(.white)
+                    }
                     if report?.mainnetSafe != true {
                         CompactDivider()
                         CompactRow("Notice", icon: "exclamationmark.triangle", iconColor: .orange) {
@@ -234,6 +245,14 @@ public struct SettingsView: View {
                         iconColor: SaneSettingsIconSemantic.content.color,
                         isOn: $model.includeMemosByDefault
                     )
+                    CompactDivider()
+                    CompactRow("Default CPA recipient", icon: "person.text.rectangle", iconColor: SaneSettingsIconSemantic.content.color) {
+                        TextField("Accountant — …", text: $model.defaultRecipientLabel)
+                            .textFieldStyle(.plain)
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(.white)
+                            .frame(width: 220)
+                    }
                 }
 
                 CompactSection("Share history", icon: "clock.arrow.circlepath", iconColor: SaneSettingsIconSemantic.content.color) {
@@ -317,7 +336,7 @@ public struct SettingsView: View {
                                 }
                                 .buttonStyle(.plain)
                                 .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(Color.saneAccent)
+                                .foregroundStyle(Color.saneBooksAccent)
                                 .disabled(newRuleMemo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                             }
                         }
@@ -361,6 +380,13 @@ public struct SettingsView: View {
                     )
                     CompactDivider()
                     CompactToggle(
+                        label: "Discreet mode (hide amounts)",
+                        icon: "eye.slash",
+                        iconColor: SaneSettingsIconSemantic.rules.color,
+                        isOn: $model.discreetMode
+                    )
+                    CompactDivider()
+                    CompactToggle(
                         label: "Require passphrase to open vault",
                         icon: "lock.fill",
                         iconColor: SaneSettingsIconSemantic.rules.color,
@@ -384,7 +410,7 @@ public struct SettingsView: View {
                         }
                         .buttonStyle(.plain)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.saneAccent)
+                        .foregroundStyle(Color.saneBooksAccent)
                         .disabled(model.vault == nil)
                     }
                 }

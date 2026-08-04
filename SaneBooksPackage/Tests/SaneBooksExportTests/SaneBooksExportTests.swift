@@ -152,4 +152,22 @@ struct PackExportTests {
         caught.isDemo = false
         #expect(!PackBuilder.isPartialHistory(cursor: caught))
     }
+
+    @Test func disclosureSummaryListsRowsAndHonesty() {
+        let draft = sampleDraft(expiresAt: Date(timeIntervalSinceNow: 86400 * 30))
+        var withPartial = draft
+        withPartial.partialHistory = true
+        withPartial.includeMemos = true
+        withPartial.recipientLabel = "Acme CPA"
+        let summary = PackDisclosureSummary.from(draft: withPartial, allNotes: [])
+        #expect(summary.rowCount == 1)
+        #expect(summary.incomeZEC == Decimal(string: "1.5"))
+        #expect(summary.includesMemos)
+        let lines = summary.auditLines
+        #expect(lines.contains(where: { $0.contains("classified rows") }))
+        #expect(lines.contains(where: { $0.contains("Memos included") }))
+        #expect(lines.contains(where: { $0.contains("Partial-history") }))
+        #expect(lines.contains(where: { $0.contains("Cannot spend") }))
+        #expect(lines.contains(where: { $0.contains("Acme CPA") }))
+    }
 }

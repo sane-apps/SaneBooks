@@ -37,7 +37,7 @@ public struct WelcomeView: View {
             }
             .buttonStyle(.plain)
             .font(.system(size: 14, weight: .semibold))
-            .foregroundStyle(Color.saneAccent)
+            .foregroundStyle(Color.saneBooksAccent)
 
             Divider()
                 .overlay(Color.white.opacity(0.2))
@@ -52,7 +52,7 @@ public struct WelcomeView: View {
             }
             .buttonStyle(.plain)
             .font(.system(size: 14, weight: .semibold))
-            .foregroundStyle(Color.saneAccent)
+            .foregroundStyle(Color.saneBooksAccent)
 
             Spacer()
         }
@@ -75,7 +75,7 @@ public struct WelcomeView: View {
                 .foregroundStyle(.white)
             Text("Never paste a seed phrase or spending key.")
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Color.saneAccent)
+                .foregroundStyle(Color.saneBooksAccent)
             Spacer()
             ActionButton("Close", style: .secondary) {
                 model.showWhatIsViewingKey = false
@@ -83,6 +83,6 @@ public struct WelcomeView: View {
         }
         .padding(28)
         .frame(minWidth: 440, minHeight: 320)
-        .background(SaneGradientBackground())
+        .background(SaneBooksInkBackground())
     }
 }

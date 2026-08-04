@@ -110,6 +110,20 @@ exportufvk
 
 ---
 
+## Faster path: Zashi / Zodl `data.db`
+
+If the wallet already synced your history, export/copy the SDK **`data.db`** (Zashi private-data export often includes it) and use **Import → Import Zashi / Zodl database…** in SaneBooks.
+
+That path:
+
+- Reads the UFVK + birthday from `accounts`
+- Imports Orchard / Sapling / Ironwood received notes already scanned by the wallet
+- Skips a multi-hour lightwalletd rescan for historical rows
+
+Still never paste the UFVK into chat or email. Prefer the file picker; Keychain stores the key on-device only.
+
+---
+
 ## Sources (non-exhaustive)
 
 - ZIP 316 — https://zips.z.cash/zip-0316

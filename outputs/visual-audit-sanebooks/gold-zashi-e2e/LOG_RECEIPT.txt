@@ -1,0 +1,11 @@
+host=mini
+captured_at=2026-08-03T20:40:00Z
+notes=10
+kinds=income:7,untagged:3
+height_min=3088955
+height_max=3198303
+vault_name=Zashi (imported)
+ufvk_logged=false
+import_path=Zashi SDK data.db via --e2e-import-db
+disclosure=7 classified rows; income 18.2458 ZEC; 3 untagged excluded
+scenes=welcome,import,zashi-ledger,zashi-detail,zashi-pack,zashi-share

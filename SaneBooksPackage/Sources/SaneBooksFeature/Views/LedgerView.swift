@@ -69,6 +69,18 @@ public struct LedgerView: View {
                 }
             }
             Spacer(minLength: 0)
+            Button {
+                model.discreetMode.toggle()
+            } label: {
+                Label(
+                    model.discreetMode ? "Discreet on" : "Discreet",
+                    systemImage: model.discreetMode ? "eye.slash.fill" : "eye.slash"
+                )
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(model.discreetMode ? Color.saneBooksAccentSoft : .white)
+            }
+            .buttonStyle(.plain)
+            .help("Hide amounts for screen sharing")
         }
     }
 
@@ -97,7 +109,7 @@ public struct LedgerView: View {
                 }
                 .buttonStyle(.plain)
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(Color.saneAccentSoft)
+                .foregroundStyle(Color.saneBooksAccentSoft)
             }
             Spacer(minLength: 0)
         }
@@ -149,7 +161,7 @@ public struct LedgerView: View {
         .background(
             SaneGlassRoundedBackground(
                 cornerRadius: 14,
-                tint: SanePanelChrome.panelTint,
+                tint: SaneBooksTheme.panelTint,
                 tintStrength: 0.18,
                 glowOpacity: 0.08
             )
@@ -169,10 +181,10 @@ public struct LedgerView: View {
                 .font(.system(size: 14, weight: .bold))
                 .tracking(0.8)
                 .foregroundStyle(Color.white)
-            Text("\(formatZEC(zec)) ZEC")
+            Text(model.discreetMode ? "•••• ZEC" : "\(formatZEC(zec)) ZEC")
                 .font(.system(size: 26, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
-            Text(usd.map { "$\(formatFiat($0)) USD*" } ?? "— USD*")
+            Text(model.discreetMode ? "•••• USD*" : (usd.map { "$\(formatFiat($0)) USD*" } ?? "— USD*"))
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(Color.white)
         }
@@ -187,14 +199,14 @@ public struct LedgerView: View {
                 .foregroundStyle(Color.white)
             Text("\(model.untaggedCount)")
                 .font(.system(size: 26, weight: .bold, design: .rounded))
-                .foregroundStyle(model.untaggedCount > 0 ? Color.saneAccentSoft : .white)
+                .foregroundStyle(model.untaggedCount > 0 ? Color.saneBooksAccentSoft : .white)
             if model.untaggedCount > 0 {
                 Button("Review") {
-                    model.filters.untaggedOnly = true
+                    model.beginUntaggedReview()
                 }
                 .buttonStyle(.plain)
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(Color.saneAccentSoft)
+                .foregroundStyle(Color.saneBooksAccentSoft)
             } else {
                 Text("All tagged")
                     .font(.system(size: 14, weight: .semibold))
@@ -246,7 +258,11 @@ public struct LedgerView: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(Array(model.filteredNotes.enumerated()), id: \.element.id) { index, note in
-                            NoteRowView(note: note, truncateTxid: model.truncateTxidsInUI) {
+                            NoteRowView(
+                                note: note,
+                                truncateTxid: model.truncateTxidsInUI,
+                                discreetMode: model.discreetMode
+                            ) {
                                 model.openNote(note.id)
                             }
                             .padding(.horizontal, 12)
@@ -263,7 +279,7 @@ public struct LedgerView: View {
         .background(
             SaneGlassRoundedBackground(
                 cornerRadius: 14,
-                tint: SanePanelChrome.panelTint,
+                tint: SaneBooksTheme.panelTint,
                 tintStrength: 0.18,
                 glowOpacity: 0.08
             )
@@ -394,6 +410,7 @@ public struct LedgerView: View {
 struct NoteRowView: View {
     let note: NoteRow
     let truncateTxid: Bool
+    var discreetMode: Bool = false
     let onTap: () -> Void
 
     var body: some View {
@@ -410,13 +427,17 @@ struct NoteRowView: View {
 
                 Text(kindLabel)
                     .frame(width: 96, alignment: .leading)
-                    .foregroundStyle(note.effectiveKind == .untagged ? Color.saneAccentSoft : .white)
+                    .foregroundStyle(note.effectiveKind == .untagged ? Color.saneBooksAccentSoft : .white)
 
-                Text(formatZEC(abs(note.amountZEC)))
+                Text(discreetMode ? "••••" : formatZEC(abs(note.amountZEC)))
                     .frame(width: 92, alignment: .trailing)
                     .font(.system(size: 14, weight: .semibold, design: .monospaced))
 
-                if let fiat = note.fiatMark?.amount(forZEC: abs(note.amountZEC)) {
+                if discreetMode {
+                    Text("••••")
+                        .frame(width: 80, alignment: .trailing)
+                        .font(.system(size: 14, weight: .medium, design: .monospaced))
+                } else if let fiat = note.fiatMark?.amount(forZEC: abs(note.amountZEC)) {
                     Text("$\(formatFiat(fiat))")
                         .frame(width: 80, alignment: .trailing)
                         .font(.system(size: 14, weight: .medium, design: .monospaced))
@@ -441,7 +462,7 @@ struct NoteRowView: View {
             .overlay(alignment: .leading) {
                 if note.effectiveKind == .untagged {
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.saneAccentSoft)
+                        .fill(Color.saneBooksAccentSoft)
                         .frame(width: 3)
                         .padding(.vertical, 6)
                 }
@@ -476,7 +497,7 @@ struct SyncBanner: View {
             HStack(spacing: 12) {
                 Image(systemName: statusIcon(cursor.status))
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Color.saneAccentSoft)
+                    .foregroundStyle(Color.saneBooksAccentSoft)
                 Text(bannerText(cursor))
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
@@ -490,7 +511,7 @@ struct SyncBanner: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(Color.saneAccent.opacity(0.35), lineWidth: 1)
+                    .stroke(Color.saneBooksAccent.opacity(0.35), lineWidth: 1)
             )
         }
     }

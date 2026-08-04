@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// In-app brand mark matching the dock icon (book + shield + keyhole).
+/// In-app brand mark matching the dock icon: closed ledger + horizontal gold band.
+/// Book-first (accountant). No shield/keyhole/open-eye geometry.
 public struct SaneBooksBrandMark: View {
     public var size: CGFloat = 64
 
@@ -11,63 +12,44 @@ public struct SaneBooksBrandMark: View {
     public var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: size * 0.22, style: .continuous)
-                .fill(Color(red: 0.04, green: 0.09, blue: 0.16))
+                .fill(SaneBooksTheme.inkElevated)
                 .frame(width: size, height: size)
 
-            // Open book
-            HStack(spacing: size * 0.02) {
-                bookPage(flipped: false)
-                bookPage(flipped: true)
-            }
-            .frame(width: size * 0.62, height: size * 0.42)
-            .offset(y: size * 0.04)
+            // Closed ledger cover
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: size * 0.05, style: .continuous)
+                    .fill(SaneBooksTheme.pageIvory)
+                    .frame(width: size * 0.56, height: size * 0.60)
 
-            // Shield
-            SaneBooksShieldShape()
-                .fill(Color.saneAccent)
-                .frame(width: size * 0.28, height: size * 0.34)
-                .overlay {
-                    // Keyhole
-                    VStack(spacing: 0) {
-                        Circle()
-                            .fill(Color.black.opacity(0.85))
-                            .frame(width: size * 0.07, height: size * 0.07)
-                        RoundedRectangle(cornerRadius: 1)
-                            .fill(Color.black.opacity(0.85))
-                            .frame(width: size * 0.035, height: size * 0.08)
-                            .offset(y: -size * 0.01)
+                // Spine
+                RoundedRectangle(cornerRadius: 0)
+                    .fill(SaneBooksTheme.ink.opacity(0.55))
+                    .frame(width: size * 0.06, height: size * 0.60)
+
+                // Title plate + quiet ledger lines (upper gold band, not a pupil)
+                VStack(alignment: .leading, spacing: size * 0.055) {
+                    RoundedRectangle(cornerRadius: size * 0.015, style: .continuous)
+                        .fill(Color.saneBooksAccent)
+                        .frame(height: size * 0.065)
+                        .padding(.leading, size * 0.1)
+                        .padding(.trailing, size * 0.07)
+                        .padding(.top, size * 0.08)
+
+                    Spacer(minLength: 0)
+
+                    ForEach(0 ..< 3, id: \.self) { _ in
+                        Capsule()
+                            .fill(SaneBooksTheme.ink.opacity(0.14))
+                            .frame(height: max(1.2, size * 0.014))
+                            .padding(.leading, size * 0.12)
+                            .padding(.trailing, size * 0.1)
                     }
-                    .offset(y: size * 0.02)
+                    .padding(.bottom, size * 0.08)
                 }
+                .frame(width: size * 0.56, height: size * 0.60)
+            }
+            .frame(width: size * 0.56, height: size * 0.60)
         }
         .accessibilityLabel("SaneBooks")
-    }
-
-    private func bookPage(flipped: Bool) -> some View {
-        RoundedRectangle(cornerRadius: size * 0.03, style: .continuous)
-            .fill(Color.white)
-            .rotationEffect(.degrees(flipped ? 8 : -8))
-    }
-}
-
-private struct SaneBooksShieldShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let w = rect.width
-        let h = rect.height
-        path.move(to: CGPoint(x: w * 0.5, y: 0))
-        path.addLine(to: CGPoint(x: w, y: h * 0.18))
-        path.addLine(to: CGPoint(x: w * 0.92, y: h * 0.58))
-        path.addQuadCurve(
-            to: CGPoint(x: w * 0.5, y: h),
-            control: CGPoint(x: w * 0.88, y: h * 0.88)
-        )
-        path.addQuadCurve(
-            to: CGPoint(x: w * 0.08, y: h * 0.58),
-            control: CGPoint(x: w * 0.12, y: h * 0.88)
-        )
-        path.addLine(to: CGPoint(x: 0, y: h * 0.18))
-        path.closeSubpath()
-        return path
     }
 }
