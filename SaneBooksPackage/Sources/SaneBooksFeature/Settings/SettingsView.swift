@@ -8,7 +8,6 @@ public enum SaneBooksSettingsTab: String, SaneSettingsTab {
     case appearance = "Appearance"
     case privacy = "Privacy"
     case advanced = "Advanced"
-    case license = "License"
     case about = "About"
 
     public var icon: String {
@@ -19,7 +18,6 @@ public enum SaneBooksSettingsTab: String, SaneSettingsTab {
         case .appearance: "paintbrush.fill"
         case .privacy: "hand.raised.fill"
         case .advanced: "gearshape.2.fill"
-        case .license: "checkmark.seal.fill"
         case .about: "info.circle.fill"
         }
     }
@@ -32,7 +30,6 @@ public enum SaneBooksSettingsTab: String, SaneSettingsTab {
         case .appearance: SaneSettingsIconSemantic.appearance.color
         case .privacy: SaneSettingsIconSemantic.rules.color
         case .advanced: SaneSettingsIconSemantic.storage.color
-        case .license: SaneSettingsIconSemantic.license.color
         case .about: SaneSettingsIconSemantic.about.color
         }
     }
@@ -43,6 +40,8 @@ public struct SettingsView: View {
     @State private var newRuleMemo = "INV-"
     @State private var newRuleParty = ""
     @State private var newRuleKind: ClassificationKind = .income
+    @State private var vaultPendingRemoval: Vault?
+    @State private var tagRulePendingDeletion: TagRule?
 
     public init(model: AppModel) {
         self.model = model
@@ -57,12 +56,61 @@ public struct SettingsView: View {
             case .appearance: appearanceTab
             case .privacy: privacyTab
             case .advanced: advancedTab
-            case .license: licenseTab
             case .about: aboutTab
             }
         }
         .task {
             await model.refreshCapability()
+        }
+        .saneBooksTextScale(model.textSize.scale)
+        .alert(
+            "Remove this vault?",
+            isPresented: Binding(
+                get: { vaultPendingRemoval != nil },
+                set: {
+                    if !$0 {
+                        vaultPendingRemoval = nil
+                    }
+                }
+            ),
+            presenting: vaultPendingRemoval
+        ) { pending in
+            Button("Cancel", role: .cancel) {
+                vaultPendingRemoval = nil
+            }
+            Button("Remove vault", role: .destructive) {
+                guard model.vault?.id == pending.id else {
+                    model.importError = "The active vault changed. Nothing was removed."
+                    vaultPendingRemoval = nil
+                    return
+                }
+                model.removeVault()
+                vaultPendingRemoval = nil
+            }
+        } message: { pending in
+            Text("This permanently removes \(pending.displayName), its local classifications, share history association, and stored viewing key. Existing exported files are not deleted. This cannot be undone.")
+        }
+        .alert(
+            "Delete this memo rule?",
+            isPresented: Binding(
+                get: { tagRulePendingDeletion != nil },
+                set: {
+                    if !$0 {
+                        tagRulePendingDeletion = nil
+                    }
+                }
+            ),
+            presenting: tagRulePendingDeletion
+        ) { pending in
+            Button("Cancel", role: .cancel) {
+                tagRulePendingDeletion = nil
+            }
+            Button("Delete rule", role: .destructive) {
+                model.deleteTagRule(id: pending.id)
+                tagRulePendingDeletion = nil
+            }
+        } message: { pending in
+            Text("Memos containing \"\(pending.memoContains)\" will no longer be tagged automatically. Existing classifications are unchanged.")
         }
     }
 
@@ -73,27 +121,28 @@ public struct SettingsView: View {
                     if model.vaults.isEmpty {
                         CompactRow("Status", icon: "info.circle", iconColor: SaneSettingsIconSemantic.general.color) {
                             Text("No vault imported")
-                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                 .foregroundStyle(.white)
                         }
                     } else {
-                        ForEach(Array(model.vaults.enumerated()), id: \.element.id) { index, vault in
+                        ForEach(model.vaults.indices, id: \.self) { index in
+                            let vault = model.vaults[index]
                             if index > 0 {
                                 CompactDivider()
                             }
                             CompactRow(vault.displayName, icon: "tray.full", iconColor: SaneSettingsIconSemantic.general.color) {
                                 HStack(spacing: 10) {
                                     Text(truncatedFingerprint(vault.keyFingerprint))
-                                        .font(.system(size: SaneTypography.bodySize, weight: .medium, design: .monospaced))
+                                        .saneBooksFont(size: SaneTypography.bodySize, weight: .medium, design: .monospaced)
                                         .foregroundStyle(.white)
                                     if model.vault?.id == vault.id {
                                         Text("Active")
-                                            .font(.system(size: SaneTypography.bodySize, weight: .bold))
+                                            .saneBooksFont(size: SaneTypography.bodySize, weight: .bold)
                                             .foregroundStyle(Color.saneBooksAccent)
                                     } else {
                                         Button("Switch") { model.switchVault(vault.id) }
                                             .buttonStyle(.plain)
-                                            .font(.system(size: SaneTypography.bodySize, weight: .semibold))
+                                            .saneBooksFont(size: SaneTypography.bodySize, weight: .semibold)
                                             .foregroundStyle(Color.saneBooksAccent)
                                     }
                                 }
@@ -103,7 +152,7 @@ public struct SettingsView: View {
                         CompactRow("Add vault", icon: "plus.circle", iconColor: SaneSettingsIconSemantic.general.color) {
                             Button("Import…") { model.addAnotherVault() }
                                 .buttonStyle(.plain)
-                                .font(.system(size: SaneTypography.bodySize, weight: .semibold))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .semibold)
                                 .foregroundStyle(Color.saneBooksAccent)
                         }
                     }
@@ -113,20 +162,20 @@ public struct SettingsView: View {
                     CompactSection("Active vault", icon: "eye.fill", iconColor: SaneSettingsIconSemantic.general.color) {
                         CompactRow("Network", icon: "network", iconColor: SaneSettingsIconSemantic.general.color) {
                             Text(vault.network.displayName)
-                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                 .foregroundStyle(.white)
                         }
                         CompactDivider()
                         CompactRow("Mode", icon: "book.fill", iconColor: SaneSettingsIconSemantic.general.color) {
                             Text(vault.mode == .bookkeeper ? "Bookkeeper" : "Receivables")
-                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                 .foregroundStyle(.white)
                         }
                         CompactDivider()
                         CompactRow("Remove vault", icon: "trash", iconColor: .red) {
-                            Button("Remove…") { model.removeVault() }
+                            Button("Remove…") { vaultPendingRemoval = vault }
                                 .buttonStyle(.plain)
-                                .font(.system(size: SaneTypography.bodySize, weight: .semibold))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .semibold)
                                 .foregroundStyle(.red)
                         }
                     }
@@ -143,21 +192,21 @@ public struct SettingsView: View {
                     CompactRow("Sync now", icon: "play.fill", iconColor: SaneSettingsIconSemantic.sync.color) {
                         Button("Sync Now") { model.syncNow() }
                             .buttonStyle(.plain)
-                            .font(.system(size: SaneTypography.bodySize, weight: .semibold))
+                            .saneBooksFont(size: SaneTypography.bodySize, weight: .semibold)
                             .foregroundStyle(Color.saneBooksAccent)
                             .disabled(model.vault == nil)
                     }
                     CompactDivider()
                     CompactRow("Status", icon: "dot.radiowaves.left.and.right", iconColor: SaneSettingsIconSemantic.sync.color) {
-                        Text(model.cursor?.status.displayName ?? "Idle")
-                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                        Text(model.cursor?.status.displayName ?? "Not started this session")
+                            .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                             .foregroundStyle(.white)
                     }
                     CompactDivider()
                     CompactRow("Lightwalletd URL", icon: "server.rack", iconColor: SaneSettingsIconSemantic.sync.color) {
                         TextField("https://…", text: $model.lwdURLString)
                             .textFieldStyle(.plain)
-                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                            .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                             .foregroundStyle(.white)
                             .frame(width: 220)
                     }
@@ -165,7 +214,7 @@ public struct SettingsView: View {
                         CompactDivider()
                         CompactRow("Birthday", icon: "calendar", iconColor: SaneSettingsIconSemantic.sync.color) {
                             Text("start \(cursor.birthdayHeight.formatted())")
-                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                 .foregroundStyle(.white)
                         }
                     }
@@ -174,38 +223,40 @@ public struct SettingsView: View {
                 CompactSection("Capability", icon: "shield.lefthalf.filled", iconColor: SaneSettingsIconSemantic.sync.color) {
                     let report = model.capabilityReport ?? model.cursor?.capabilityReport
                     CompactRow("Ironwood", icon: "leaf", iconColor: SaneSettingsIconSemantic.sync.color) {
-                        Text(report?.supportsIronwood == true ? "Supported" : "Unavailable")
-                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                        Text(report.map { $0.supportsIronwood ? "Supported" : "Unavailable" } ?? "Checking…")
+                            .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                             .foregroundStyle(.white)
                     }
                     CompactDivider()
                     CompactRow("Sync engine", icon: "shippingbox", iconColor: SaneSettingsIconSemantic.sync.color) {
-                        Text(report?.sdkRevision ?? "—")
-                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                        Text(report?.sdkRevision ?? "Checking…")
+                            .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                             .foregroundStyle(.white)
                     }
                     CompactDivider()
                     CompactRow("Ready for live books", icon: "checkmark.seal", iconColor: SaneSettingsIconSemantic.sync.color) {
-                        Text(report?.mainnetSafe == true ? "Yes" : "No")
-                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                        Text(report.map { $0.mainnetSafe ? "Yes" : "No" } ?? "Checking…")
+                            .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                             .foregroundStyle(.white)
                     }
                     CompactDivider()
                     CompactRow("Pools synced", icon: "square.stack.3d.up", iconColor: SaneSettingsIconSemantic.sync.color) {
                         let pools = model.cursor?.poolsSynced ?? []
                         Text(
-                            pools.isEmpty
-                                ? "None yet"
+                            report == nil
+                                ? "Checking…"
+                                : pools.isEmpty
+                                ? "Not synced"
                                 : pools.map(\.displayName).sorted().joined(separator: ", ")
                         )
-                        .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                        .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                         .foregroundStyle(.white)
                     }
-                    if report?.mainnetSafe != true {
+                    if let report, !report.mainnetSafe {
                         CompactDivider()
                         CompactRow("Notice", icon: "exclamationmark.triangle", iconColor: .orange) {
                             Text("Full live sync is not available in this build yet. You can still use a wallet export or the demo ledger.")
-                                .font(.system(size: SaneTypography.bodySize, weight: .semibold))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .semibold)
                                 .foregroundStyle(.white)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -214,7 +265,7 @@ public struct SettingsView: View {
                         CompactDivider()
                         CompactRow("Notes", icon: "text.alignleft", iconColor: SaneSettingsIconSemantic.sync.color) {
                             Text(notes.joined(separator: " "))
-                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                 .foregroundStyle(.white)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -246,10 +297,10 @@ public struct SettingsView: View {
                         isOn: $model.includeMemosByDefault
                     )
                     CompactDivider()
-                    CompactRow("Default CPA recipient", icon: "person.text.rectangle", iconColor: SaneSettingsIconSemantic.content.color) {
-                        TextField("Accountant — …", text: $model.defaultRecipientLabel)
+                    CompactRow("Default recipient", icon: "person.text.rectangle", iconColor: SaneSettingsIconSemantic.content.color) {
+                        TextField("Accountant or firm", text: $model.defaultRecipientLabel)
                             .textFieldStyle(.plain)
-                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                            .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                             .foregroundStyle(.white)
                             .frame(width: 220)
                     }
@@ -259,7 +310,7 @@ public struct SettingsView: View {
                     if model.shareHistory.isEmpty {
                         CompactRow("History", icon: "tray", iconColor: SaneSettingsIconSemantic.content.color) {
                             Text("No shares yet. Save a proof pack to record one.")
-                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                 .foregroundStyle(.white)
                         }
                     } else {
@@ -270,14 +321,14 @@ public struct SettingsView: View {
                             CompactRow(entry.recipientLabel ?? "Unlabeled", icon: "doc", iconColor: SaneSettingsIconSemantic.content.color) {
                                 VStack(alignment: .trailing, spacing: 2) {
                                     Text("\(entry.format.displayName) · \(entry.rowCount) rows")
-                                        .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                        .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                         .foregroundStyle(.white)
                                     Text(entry.createdAt.formatted(date: .abbreviated, time: .shortened))
-                                        .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                        .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                         .foregroundStyle(.white)
                                     if let exp = entry.expiresAt {
                                         Text("Expires \(exp.formatted(date: .abbreviated, time: .omitted))")
-                                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                            .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                             .foregroundStyle(.white)
                                     }
                                 }
@@ -295,12 +346,12 @@ public struct SettingsView: View {
                             CompactRow("Contains \"\(rule.memoContains)\"", icon: "text.magnifyingglass", iconColor: SaneSettingsIconSemantic.content.color) {
                                 HStack(spacing: 8) {
                                     Text("→ \(rule.kind.displayName)\(rule.party.map { " · \($0)" } ?? "")")
-                                        .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                        .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                         .foregroundStyle(.white)
-                                    Button("Delete") { model.deleteTagRule(id: rule.id) }
+                                    Button("Delete") { tagRulePendingDeletion = rule }
                                         .buttonStyle(.plain)
-                                        .font(.system(size: SaneTypography.bodySize, weight: .semibold))
-                                        .foregroundStyle(.red)
+                                        .saneBooksFont(size: SaneTypography.bodySize, weight: .semibold)
+                                        .foregroundStyle(.white)
                                 }
                             }
                         }
@@ -309,12 +360,12 @@ public struct SettingsView: View {
                             VStack(alignment: .trailing, spacing: 8) {
                                 TextField("Memo contains", text: $newRuleMemo)
                                     .textFieldStyle(.plain)
-                                    .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                    .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                     .foregroundStyle(.white)
                                     .frame(width: 140)
                                 TextField("Party (optional)", text: $newRuleParty)
                                     .textFieldStyle(.plain)
-                                    .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                    .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                     .foregroundStyle(.white)
                                     .frame(width: 140)
                                 Picker("Kind", selection: $newRuleKind) {
@@ -335,7 +386,7 @@ public struct SettingsView: View {
                                     newRuleParty = ""
                                 }
                                 .buttonStyle(.plain)
-                                .font(.system(size: SaneTypography.bodySize, weight: .semibold))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .semibold)
                                 .foregroundStyle(Color.saneBooksAccent)
                                 .disabled(newRuleMemo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                             }
@@ -343,7 +394,7 @@ public struct SettingsView: View {
                     } else {
                         CompactRow("Rules", icon: "info.circle", iconColor: SaneSettingsIconSemantic.content.color) {
                             Text("Import a vault to add memo rules.")
-                                .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                                .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                                 .foregroundStyle(.white)
                         }
                     }
@@ -358,9 +409,20 @@ public struct SettingsView: View {
             VStack(alignment: .leading, spacing: 16) {
                 CompactSection("Appearance", icon: "paintbrush.fill", iconColor: SaneSettingsIconSemantic.appearance.color) {
                     CompactRow("Theme", icon: "circle.lefthalf.filled", iconColor: SaneSettingsIconSemantic.appearance.color) {
-                        Text("System")
-                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
+                        Text("Dark gold")
+                            .saneBooksFont(size: SaneTypography.bodySize, weight: .medium)
                             .foregroundStyle(.white)
+                    }
+                    CompactDivider()
+                    CompactRow("Text size", icon: "textformat.size", iconColor: SaneSettingsIconSemantic.appearance.color) {
+                        Picker("Text size", selection: $model.textSize) {
+                            ForEach(SaneBooksTextSize.allCases) { size in
+                                Text(size.displayName).tag(size)
+                            }
+                        }
+                        .labelsHidden()
+                        .frame(width: 140)
+                        .accessibilityIdentifier("sanebooks.appearance.text-size")
                     }
                 }
             }
@@ -385,13 +447,6 @@ public struct SettingsView: View {
                         iconColor: SaneSettingsIconSemantic.rules.color,
                         isOn: $model.discreetMode
                     )
-                    CompactDivider()
-                    CompactToggle(
-                        label: "Require passphrase to open vault",
-                        icon: "lock.fill",
-                        iconColor: SaneSettingsIconSemantic.rules.color,
-                        isOn: $model.requirePassphraseToOpenVault
-                    )
                 }
             }
             .padding(16)
@@ -402,14 +457,14 @@ public struct SettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 CompactSection("Advanced", icon: "gearshape.2.fill", iconColor: SaneSettingsIconSemantic.storage.color) {
-                    CompactRow("Reset sync state", icon: "arrow.counterclockwise", iconColor: SaneSettingsIconSemantic.storage.color) {
-                        Button("Reset…") {
+                    CompactRow("Restart current sync", icon: "arrow.counterclockwise", iconColor: SaneSettingsIconSemantic.storage.color) {
+                        Button("Restart") {
                             if model.vault != nil {
                                 model.syncNow()
                             }
                         }
                         .buttonStyle(.plain)
-                        .font(.system(size: SaneTypography.bodySize, weight: .semibold))
+                        .saneBooksFont(size: SaneTypography.bodySize, weight: .semibold)
                         .foregroundStyle(Color.saneBooksAccent)
                         .disabled(model.vault == nil)
                     }
@@ -419,27 +474,8 @@ public struct SettingsView: View {
         }
     }
 
-    private var licenseTab: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                CompactSection("License", icon: "checkmark.seal.fill", iconColor: SaneSettingsIconSemantic.license.color) {
-                    CompactRow("Status", icon: "key.fill", iconColor: SaneSettingsIconSemantic.license.color) {
-                        Text("Direct download — license stub")
-                            .font(.system(size: SaneTypography.bodySize, weight: .medium))
-                            .foregroundStyle(.white)
-                    }
-                }
-            }
-            .padding(16)
-        }
-    }
-
     private var aboutTab: some View {
-        SaneAboutView(
-            appName: "SaneBooks",
-            githubRepo: "SaneBooks",
-            licenses: [SaneAboutLicenseCatalog.saneUI]
-        )
+        SaneBooksAboutView()
     }
 
     private func truncatedFingerprint(_ fp: String) -> String {

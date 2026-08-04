@@ -8,11 +8,23 @@ struct SaneBooksApp: App {
     @State private var model = AppModel.makeProduction()
 
     var body: some Scene {
-        WindowGroup {
+        mainWindow
+
+        Settings {
+            SettingsView(model: model)
+                .frame(minWidth: 620, minHeight: 420)
+                .saneBooksBrand()
+        }
+    }
+
+    private var mainWindow: some Scene {
+        WindowGroup("SaneBooks", id: "main") {
             ContentView(model: model)
                 .onAppear {
                     appDelegate.model = model
-                    model.applyE2ESceneIfNeeded()
+                    #if DEBUG
+                        model.applyE2ESceneIfNeeded()
+                    #endif
                 }
                 .background(SaneBooksOpenSettingsBridge())
         }
@@ -53,12 +65,6 @@ struct SaneBooksApp: App {
                     .disabled(model.vault == nil)
                 }
             #endif
-        }
-
-        Settings {
-            SettingsView(model: model)
-                .frame(minWidth: 620, minHeight: 420)
-                .saneBooksBrand()
         }
     }
 }

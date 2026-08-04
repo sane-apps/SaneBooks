@@ -115,9 +115,8 @@ public actor LightClientSyncFacade: SyncFacade {
             )
         }
 
-        engine.bind(credentials: credentials, lwdURL: lwdURL)
-        try await engine.start()
-        if let cursor = engine.currentCursor() {
+        try await engine.start(credentials: credentials, lwdURL: lwdURL)
+        if let cursor = engine.currentCursor(), cursor.vaultID == vaultID {
             cursors[vaultID.uuid] = cursor
         }
     }
@@ -127,8 +126,8 @@ public actor LightClientSyncFacade: SyncFacade {
             await mock.cancel(vaultID: vaultID)
             return
         }
-        engine.cancel()
-        if let cursor = engine.currentCursor() {
+        engine.cancel(vaultID: vaultID)
+        if let cursor = engine.currentCursor(), cursor.vaultID == vaultID {
             cursors[vaultID.uuid] = cursor
         } else if var cursor = cursors[vaultID.uuid] {
             cursor.status = .idle
@@ -136,18 +135,27 @@ public actor LightClientSyncFacade: SyncFacade {
         }
     }
 
+    public func purge(vaultID: VaultID) async throws {
+        try await mock.purge(vaultID: vaultID)
+        try engine.purge(vaultID: vaultID)
+        credentialsByVault.removeValue(forKey: vaultID.uuid)
+        cursors.removeValue(forKey: vaultID.uuid)
+    }
+
     public func rescan(vaultID: VaultID, from height: UInt32) async throws {
         if forceMock {
             try await mock.rescan(vaultID: vaultID, from: height)
             return
         }
-        if var credentials = credentialsByVault[vaultID.uuid] {
-            credentials.birthdayHeight = height
-            credentialsByVault[vaultID.uuid] = credentials
-            engine.bind(credentials: credentials, lwdURL: lwdURL)
+        guard var credentials = credentialsByVault[vaultID.uuid] else {
+            throw SaneBooksError.sync(
+                "No viewing key loaded for this vault. Re-import the UFVK, then sync again."
+            )
         }
-        try await engine.rescan(from: height)
-        if let cursor = engine.currentCursor() {
+        credentials.birthdayHeight = height
+        credentialsByVault[vaultID.uuid] = credentials
+        try await engine.rescan(credentials: credentials, lwdURL: lwdURL, from: height)
+        if let cursor = engine.currentCursor(), cursor.vaultID == vaultID {
             cursors[vaultID.uuid] = cursor
         }
     }

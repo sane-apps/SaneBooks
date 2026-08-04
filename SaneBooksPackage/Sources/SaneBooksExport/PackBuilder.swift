@@ -1,37 +1,63 @@
 import Foundation
 import SaneBooksCore
 
-public enum PackBuilder {
-    public static func buildDraft(
-        vault: Vault,
-        notes: [NoteRow],
+public struct PackDraftOptions: Sendable {
+    public var rangeStart: Date
+    public var rangeEnd: Date
+    public var includedKinds: Set<ClassificationKind>
+    public var includeMemos: Bool
+    public var includeChange: Bool
+    public var excludeTags: [String]
+    public var recipientLabel: String?
+    public var expiresAt: Date
+
+    public init(
         rangeStart: Date,
         rangeEnd: Date,
         includedKinds: Set<ClassificationKind>,
         includeMemos: Bool,
         includeChange: Bool,
         excludeTags: [String],
-        cursor: SyncCursor?,
         recipientLabel: String?,
         expiresAt: Date
+    ) {
+        self.rangeStart = rangeStart
+        self.rangeEnd = rangeEnd
+        self.includedKinds = includedKinds
+        self.includeMemos = includeMemos
+        self.includeChange = includeChange
+        self.excludeTags = excludeTags
+        self.recipientLabel = recipientLabel
+        self.expiresAt = expiresAt
+    }
+}
+
+public enum PackBuilder {
+    public static func buildDraft(
+        vault: Vault,
+        notes: [NoteRow],
+        options: PackDraftOptions,
+        cursor: SyncCursor?
     ) -> ProofPackDraft {
         let filtered = notes.filter { note in
             guard let date = note.blockTime else { return false }
-            guard date >= rangeStart, date <= rangeEnd else { return false }
+            guard date >= options.rangeStart, date <= options.rangeEnd else { return false }
             let kind = note.effectiveKind
-            if kind == .change, !includeChange {
+            if kind == .change, !options.includeChange {
                 return false
             }
             if kind == .untagged {
                 return false
             }
-            guard includedKinds.contains(kind) else { return false }
+            guard options.includedKinds.contains(kind) else { return false }
             if let party = note.classification?.party,
-               excludeTags.contains(where: { $0.caseInsensitiveCompare(party) == .orderedSame }) {
+               options.excludeTags.contains(where: { $0.caseInsensitiveCompare(party) == .orderedSame })
+            {
                 return false
             }
             if let sub = note.classification?.subtag,
-               excludeTags.contains(where: { $0.caseInsensitiveCompare(sub) == .orderedSame }) {
+               options.excludeTags.contains(where: { $0.caseInsensitiveCompare(sub) == .orderedSame })
+            {
                 return false
             }
             return note.includeInPacksByDefault
@@ -47,34 +73,20 @@ public enum PackBuilder {
                 amountZEC: zec,
                 amountFiat: note.fiatMark?.amount(forZEC: zec),
                 fiatMark: note.fiatMark,
-                memoText: includeMemos ? note.memo.displayText : nil,
+                memoText: options.includeMemos ? note.memo.displayText : nil,
                 pool: note.pool,
                 txidTruncated: note.txidTruncated
             )
         }
 
-        var byCategory: [String: Decimal] = [:]
-        for row in rows where row.kind == .income || row.kind == .expense {
-            let key = row.subtag ?? row.party ?? row.kind.displayName
-            byCategory[key, default: 0] += row.amountZEC
-        }
-
-        let rollups = ProofPackRollups(
-            incomeZEC: rows.filter { $0.kind == .income }.reduce(0) { $0 + $1.amountZEC },
-            expenseZEC: rows.filter { $0.kind == .expense }.reduce(0) { $0 + $1.amountZEC },
-            feeZEC: rows.filter { $0.kind == .fee }.reduce(0) { $0 + $1.amountZEC },
-            incomeFiat: rows.filter { $0.kind == .income }.compactMap(\.amountFiat).reduce(0, +),
-            expenseFiat: rows.filter { $0.kind == .expense }.compactMap(\.amountFiat).reduce(0, +),
-            fiatCurrency: "USD",
-            byCategory: byCategory
-        )
+        let rollups = PackSemanticValidator.rollups(for: rows, fiatCurrency: "USD")
 
         let attestation = SyncAttestation(
             syncedToHeight: cursor?.scannedThroughHeight ?? 0,
             chainTipAtExport: cursor?.chainTipHeight,
             lwdEndpointFingerprint: cursor.map { String($0.lwdURL.host ?? "unknown") } ?? "demo",
             vaultMode: vault.mode,
-            poolsPresent: Array(cursor?.poolsSynced ?? [.sapling, .orchard, .ironwood]),
+            poolsPresent: Array(Set(rows.map(\.pool))).sorted { $0.rawValue < $1.rawValue },
             ironwoodCapable: cursor?.capabilityReport.supportsIronwood ?? false
         )
 
@@ -83,19 +95,19 @@ public enum PackBuilder {
             vaultFingerprint: vault.keyFingerprint,
             vaultDisplayName: vault.displayName,
             network: vault.network,
-            rangeStart: rangeStart,
-            rangeEnd: rangeEnd,
-            includedKinds: includedKinds,
-            excludeTags: excludeTags,
-            includeMemos: includeMemos,
-            includeChange: includeChange,
+            rangeStart: options.rangeStart,
+            rangeEnd: options.rangeEnd,
+            includedKinds: options.includedKinds,
+            excludeTags: options.excludeTags,
+            includeMemos: options.includeMemos,
+            includeChange: options.includeChange,
             rows: rows,
             rollups: rollups,
             syncAttestation: attestation,
             partialHistory: partial,
             acknowledgePartialHistory: false,
-            recipientLabel: recipientLabel,
-            expiresAt: expiresAt,
+            recipientLabel: options.recipientLabel,
+            expiresAt: options.expiresAt,
             vaultMode: vault.mode
         )
     }
@@ -118,24 +130,29 @@ public enum PackBuilder {
         return false
     }
 
-    /// Seal a draft into `.sanebooks` bytes (HKDF-SHA256 + ChaCha20-Poly1305).
+    /// Seal a draft into `.sanebooks` bytes (PBKDF2-HMAC-SHA256 + ChaCha20-Poly1305).
     public static func build(
         draft: ProofPackDraft,
-        passphrase: String,
-        salt: Data? = nil,
-        nonceData: Data? = nil
+        passphrase: String
     ) throws -> Data {
-        if let salt, let nonceData {
-            return try PackWriter.seal(
-                draft: draft,
-                passphrase: passphrase,
-                salt: salt,
-                nonceData: nonceData
-            ).data
-        }
         let encoded = try PackWriter.seal(draft: draft, passphrase: passphrase)
         try PackBuilder.assertNoUVKMaterial(in: encoded.data)
         return encoded.data
+    }
+
+    /// Deterministic crypto inputs stay internal to the module test surface.
+    static func build(
+        draft: ProofPackDraft,
+        passphrase: String,
+        salt: Data,
+        nonceData: Data
+    ) throws -> Data {
+        try PackWriter.seal(
+            draft: draft,
+            passphrase: passphrase,
+            salt: salt,
+            nonceData: nonceData
+        ).data
     }
 
     public static func assertNoUVKMaterial(in pack: Data) throws {

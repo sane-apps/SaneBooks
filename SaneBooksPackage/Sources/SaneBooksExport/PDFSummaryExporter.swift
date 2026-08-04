@@ -1,181 +1,304 @@
+import AppKit
+import CoreText
 import Foundation
 import SaneBooksCore
 
 /// Multi-page PDF summary for accountant-ready selective disclosure.
-/// Uses an uncompressed PDF 1.4 writer so integrity strings and fingerprints
-/// remain searchable in file bytes (and open in Preview / Acrobat).
+///
+/// Core Text lays out the document into bounded page frames. This keeps long
+/// names, identifiers, and Unicode text inside the printable area while the
+/// system PDF context embeds the fonts Preview needs to render the result.
 public enum PDFSummaryExporter {
-    private static let pageWidth = 612
-    private static let pageHeight = 792
-    private static let margin = 48
-    private static let lineHeight = 14
+    private static let pageSize = CGSize(width: 612, height: 792)
+    private static let horizontalMargin: CGFloat = 48
+    private static let headerBaseline: CGFloat = 744
+    private static let bodyTop: CGFloat = 716
+    private static let bodyBottom: CGFloat = 58
+    private static let footerBaseline: CGFloat = 32
 
-    public static func export(draft: ProofPackDraft, integrityHash: String? = nil) -> Data {
-        let hash = integrityHash ?? "pending"
-        var pages: [[String]] = []
-        var lines: [String] = []
-
-        func flushIfNeeded(reserve: Int = 4) {
-            let maxLines = (pageHeight - margin * 2) / lineHeight - 2
-            if lines.count + reserve > maxLines {
-                pages.append(lines)
-                lines = ["SaneBooks — Proof Pack Summary (cont.)", ""]
+    public static func export(
+        draft: ProofPackDraft,
+        sourcePackPlaintextDigest: String? = nil
+    ) throws -> Data {
+        if let sourcePackPlaintextDigest {
+            guard isSHA256HexDigest(sourcePackPlaintextDigest) else {
+                throw SaneBooksError.pack("Invalid source proof-pack payload digest.")
             }
         }
-
-        lines.append("SaneBooks — Proof Pack Summary")
-        lines.append("")
-        lines.append("CANNOT SPEND — This document cannot spend ZEC. No spending keys are included.")
-        lines.append("")
-        lines.append("Vault fingerprint: \(draft.vaultFingerprint)")
-        lines.append("Vault: \(draft.vaultDisplayName)")
-        lines.append("Network: \(draft.network.displayName) · Mode: \(draft.vaultMode.rawValue)")
-        lines.append("Range: \(isoDate(draft.rangeStart)) → \(isoDate(draft.rangeEnd))")
-        if draft.partialHistory {
-            lines.append("PARTIAL HISTORY — sync was not caught up or history may be incomplete.")
-        }
-        lines.append("")
-        lines.append("Rollups")
-        lines.append(
-            "Income: \(formatDecimal(draft.rollups.incomeZEC)) ZEC · Expenses: \(formatDecimal(draft.rollups.expenseZEC)) ZEC · Fees: \(formatDecimal(draft.rollups.feeZEC)) ZEC"
+        let document = documentText(
+            draft: draft,
+            sourcePackPlaintextDigest: sourcePackPlaintextDigest
         )
-        lines.append("")
-        lines.append("Line items (\(draft.rows.count))")
-        for row in draft.rows {
-            flushIfNeeded()
-            lines.append(
-                "\(isoDate(row.date))  \(row.kind.displayName)  \(formatDecimal(row.amountZEC)) ZEC  \(row.party ?? "—")  \(row.txidTruncated)"
+        let data = try renderPDF(document)
+        try validatePDFData(data)
+        return data
+    }
+
+    /// Refuses to persist an empty or non-PDF rendering result.
+    public static func writeValidatedPDF(_ data: Data, to url: URL) throws {
+        try validatePDFData(data)
+        try data.write(to: url, options: .atomic)
+    }
+
+    public static func validatePDFData(_ data: Data) throws {
+        let header = Data("%PDF".utf8)
+        guard data.count > header.count, data.starts(with: header) else {
+            throw SaneBooksError.pack("Could not create a valid PDF summary.")
+        }
+    }
+
+    private static func documentText(
+        draft: ProofPackDraft,
+        sourcePackPlaintextDigest: String?
+    ) -> NSAttributedString {
+        let document = NSMutableAttributedString()
+
+        document.appendParagraph(
+            "CANNOT SPEND — This document cannot spend ZEC. No spending keys are included.",
+            style: .warning
+        )
+        document.appendParagraph("Vault fingerprint: \(draft.vaultFingerprint)")
+        document.appendParagraph("Vault: \(draft.vaultDisplayName)")
+        document.appendParagraph(
+            "Network: \(draft.network.displayName) · Mode: \(draft.vaultMode.rawValue)"
+        )
+        document.appendParagraph(
+            "Range: \(isoDate(draft.rangeStart)) → \(isoDate(draft.rangeEnd))"
+        )
+        if draft.partialHistory {
+            document.appendParagraph(
+                "PARTIAL HISTORY — sync was not caught up or history may be incomplete.",
+                style: .warning
             )
         }
-        lines.append("")
-        flushIfNeeded(reserve: 8)
-        lines.append("Integrity: sha256:\(hash)")
-        lines.append(
-            "Sync attestation: synced to \(draft.syncAttestation.syncedToHeight) via \(draft.syncAttestation.lwdEndpointFingerprint)."
+
+        document.appendParagraph("Rollups", style: .section)
+        document.appendParagraph(
+            "Income: \(formatDecimal(draft.rollups.incomeZEC)) ZEC · "
+                + "Expenses: \(formatDecimal(draft.rollups.expenseZEC)) ZEC · "
+                + "Fees: \(formatDecimal(draft.rollups.feeZEC)) ZEC"
         )
-        lines.append(draft.syncAttestation.disclaimer)
-        lines.append(
-            "LWD honesty: completeness assumes an honest lightwalletd; omitted compact blocks understate income."
+
+        document.appendParagraph("Line items (\(draft.rows.count))", style: .section)
+        for row in draft.rows {
+            document.appendParagraph(
+                "\(isoDate(row.date))  \(row.kind.displayName)  "
+                    + "\(formatDecimal(row.amountZEC)) ZEC  \(row.party ?? "—")  "
+                    + row.txidTruncated,
+                style: .lineItem
+            )
+        }
+
+        if let sourcePackPlaintextDigest {
+            document.appendParagraph("Source .sanebooks integrity", style: .section)
+            document.appendParagraph(
+                "SHA-256 of canonical plaintext payload (digest field blanked): "
+                    + sourcePackPlaintextDigest,
+                style: .identifier
+            )
+        }
+
+        document.appendParagraph("Sync verification", style: .section)
+        document.appendParagraph(
+            "Sync attestation: synced to \(draft.syncAttestation.syncedToHeight) via "
+                + "\(draft.syncAttestation.lwdEndpointFingerprint)."
         )
-        pages.append(lines)
+        document.appendParagraph(draft.syncAttestation.disclaimer)
+        document.appendParagraph(
+            "LWD honesty: completeness assumes an honest lightwalletd; "
+                + "omitted compact blocks understate income."
+        )
 
-        return buildPDF(pages: pages)
+        return document
     }
 
-    // MARK: - Minimal uncompressed PDF
-
-    private static func buildPDF(pages: [[String]]) -> Data {
-        var objects: [Data] = []
-        // Object 1: Catalog
-        objects.append(Data("<< /Type /Catalog /Pages 2 0 R >>".utf8))
-
-        var pageObjectNumbers: [Int] = []
-        var nextObj = 3 // 1=catalog, 2=pages, then page/content pairs
-
-        var kids: [String] = []
-        var contentObjects: [(pageObj: Int, contentObj: Int, stream: Data)] = []
-
-        for pageLines in pages {
-            let pageObj = nextObj
-            let contentObj = nextObj + 1
-            nextObj += 2
-            pageObjectNumbers.append(pageObj)
-            kids.append("\(pageObj) 0 R")
-            let stream = contentStream(for: pageLines)
-            contentObjects.append((pageObj, contentObj, stream))
+    private static func renderPDF(_ document: NSAttributedString) throws -> Data {
+        let output = NSMutableData()
+        guard let consumer = CGDataConsumer(data: output as CFMutableData) else {
+            throw SaneBooksError.pack("Could not create the PDF output stream.")
         }
 
-        // Object 2: Pages
-        let pagesDict =
-            "<< /Type /Pages /Kids [\(kids.joined(separator: " "))] /Count \(pages.count) >>"
-        // Rebuild objects array properly
-        var numbered: [(Int, Data)] = []
-        numbered.append((1, Data("<< /Type /Catalog /Pages 2 0 R >>".utf8)))
-        numbered.append((2, Data(pagesDict.utf8)))
-
-        for item in contentObjects {
-            let pageDict =
-                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 \(pageWidth) \(pageHeight)] /Contents \(item.contentObj) 0 R /Resources << /Font << /F1 \(nextObj) 0 R >> >> >>"
-            numbered.append((item.pageObj, Data(pageDict.utf8)))
-            var streamObj = Data()
-            streamObj.append(Data("<< /Length \(item.stream.count) >>\nstream\n".utf8))
-            streamObj.append(item.stream)
-            streamObj.append(Data("\nendstream".utf8))
-            numbered.append((item.contentObj, streamObj))
+        var mediaBox = CGRect(origin: .zero, size: pageSize)
+        let metadata = [kCGPDFContextTitle as String: "SaneBooks Proof Pack Summary"] as CFDictionary
+        guard let context = CGContext(
+            consumer: consumer,
+            mediaBox: &mediaBox,
+            metadata
+        ) else {
+            throw SaneBooksError.pack("Could not create the PDF rendering context.")
         }
 
-        // Font object
-        let fontObj = nextObj
-        numbered.append((fontObj, Data("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>".utf8)))
+        let framesetter = CTFramesetterCreateWithAttributedString(document)
+        let bodyRect = CGRect(
+            x: horizontalMargin,
+            y: bodyBottom,
+            width: pageSize.width - horizontalMargin * 2,
+            height: bodyTop - bodyBottom
+        )
+        let bodyPath = CGPath(rect: bodyRect, transform: nil)
+        let pageRanges = try pageRanges(
+            for: document,
+            framesetter: framesetter,
+            bodyPath: bodyPath
+        )
 
-        // Fix font refs in page dicts — rebuild pages with correct font obj
-        numbered = [(1, Data("<< /Type /Catalog /Pages 2 0 R >>".utf8))]
-        numbered.append((2, Data(pagesDict.utf8)))
-        for item in contentObjects {
-            let pageDict =
-                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 \(pageWidth) \(pageHeight)] /Contents \(item.contentObj) 0 R /Resources << /Font << /F1 \(fontObj) 0 R >> >> >>"
-            numbered.append((item.pageObj, Data(pageDict.utf8)))
-            var streamObj = Data()
-            streamObj.append(Data("<< /Length \(item.stream.count) >>\nstream\n".utf8))
-            streamObj.append(item.stream)
-            streamObj.append(Data("\nendstream".utf8))
-            numbered.append((item.contentObj, streamObj))
-        }
-        numbered.append((fontObj, Data("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>".utf8)))
+        for (index, range) in pageRanges.enumerated() {
+            context.beginPDFPage(nil)
+            context.textMatrix = .identity
 
-        numbered.sort { $0.0 < $1.0 }
+            drawPageHeader(pageIndex: index, in: context)
+            let frame = CTFramesetterCreateFrame(framesetter, range, bodyPath, nil)
+            CTFrameDraw(frame, context)
+            drawPageFooter(
+                currentPage: index + 1,
+                pageCount: pageRanges.count,
+                in: context
+            )
 
-        var pdf = Data("%PDF-1.4\n".utf8)
-        var offsets = [0]
-        for (num, body) in numbered {
-            offsets.append(pdf.count)
-            pdf.append(Data("\(num) 0 obj\n".utf8))
-            pdf.append(body)
-            pdf.append(Data("\nendobj\n".utf8))
+            context.endPDFPage()
         }
-        let xrefStart = pdf.count
-        pdf.append(Data("xref\n0 \(numbered.count + 1)\n".utf8))
-        pdf.append(Data("0000000000 65535 f \n".utf8))
-        for i in 1 ... numbered.count {
-            let off = offsets[i]
-            pdf.append(Data(String(format: "%010d 00000 n \n", off).utf8))
-        }
-        pdf.append(Data("trailer\n<< /Size \(numbered.count + 1) /Root 1 0 R >>\nstartxref\n\(xrefStart)\n%%EOF\n".utf8))
-        return pdf
+
+        context.closePDF()
+        return output as Data
     }
 
-    private static func contentStream(for lines: [String]) -> Data {
-        var s = "BT\n/F1 11 Tf\n"
-        var y = pageHeight - margin
-        for (idx, line) in lines.enumerated() {
-            let fontSize = idx == 0 && line.hasPrefix("SaneBooks") ? 16 : (line.hasPrefix("CANNOT SPEND") ? 11 : 10)
-            let escaped = escapePDF(line)
-            if idx == 0 {
-                s += "/F1 \(fontSize) Tf\n1 0 0 1 \(margin) \(y) Tm\n(\(escaped)) Tj\n"
-            } else {
-                y -= lineHeight
-                s += "/F1 \(fontSize) Tf\n1 0 0 1 \(margin) \(y) Tm\n(\(escaped)) Tj\n"
-            }
+    private static func pageRanges(
+        for document: NSAttributedString,
+        framesetter: CTFramesetter,
+        bodyPath: CGPath
+    ) throws -> [CFRange] {
+        var ranges: [CFRange] = []
+        var location = 0
+
+        repeat {
+            let requested = CFRange(location: location, length: 0)
+            let frame = CTFramesetterCreateFrame(framesetter, requested, bodyPath, nil)
+            let visible = CTFrameGetVisibleStringRange(frame)
+            guard visible.length > 0 else { break }
+            ranges.append(visible)
+            location += visible.length
+        } while location < document.length
+
+        guard !ranges.isEmpty else {
+            throw SaneBooksError.pack("Could not lay out the PDF summary.")
         }
-        s += "ET\n"
-        return Data(s.utf8)
+        return ranges
     }
 
-    private static func escapePDF(_ string: String) -> String {
-        string
-            .replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: "(", with: "\\(")
-            .replacingOccurrences(of: ")", with: "\\)")
+    private static func drawPageHeader(pageIndex: Int, in context: CGContext) {
+        let text = pageIndex == 0
+            ? "SaneBooks — Proof Pack Summary"
+            : "SaneBooks — Proof Pack Summary (cont.)"
+        let style: PDFTextStyle = pageIndex == 0 ? .title : .continuationTitle
+        drawLine(text, style: style, at: CGPoint(x: horizontalMargin, y: headerBaseline), in: context)
+    }
+
+    private static func drawPageFooter(
+        currentPage: Int,
+        pageCount: Int,
+        in context: CGContext
+    ) {
+        let text = "Page \(currentPage) of \(pageCount) · View-only proof summary"
+        drawLine(text, style: .footer, at: CGPoint(x: horizontalMargin, y: footerBaseline), in: context)
+    }
+
+    private static func drawLine(
+        _ text: String,
+        style: PDFTextStyle,
+        at point: CGPoint,
+        in context: CGContext
+    ) {
+        let attributed = NSAttributedString(string: text, attributes: style.attributes)
+        let line = CTLineCreateWithAttributedString(attributed)
+        context.textPosition = point
+        CTLineDraw(line, context)
     }
 
     private static func isoDate(_ date: Date) -> String {
-        let f = ISO8601DateFormatter()
-        f.formatOptions = [.withFullDate]
-        return f.string(from: date)
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate]
+        return formatter.string(from: date)
     }
 
     private static func formatDecimal(_ value: Decimal) -> String {
-        let n = NSDecimalNumber(decimal: value)
-        return String(format: "%.8f", n.doubleValue)
+        let number = NSDecimalNumber(decimal: value)
+        return String(format: "%.8f", number.doubleValue)
+    }
+
+    private static func isSHA256HexDigest(_ value: String) -> Bool {
+        value.utf8.count == 64 && value.utf8.allSatisfy { byte in
+            (48 ... 57).contains(byte) || (97 ... 102).contains(byte)
+        }
+    }
+}
+
+private enum PDFTextStyle {
+    case body
+    case continuationTitle
+    case footer
+    case identifier
+    case lineItem
+    case section
+    case title
+    case warning
+
+    var attributes: [NSAttributedString.Key: Any] {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.lineBreakMode = .byWordWrapping
+        paragraph.lineSpacing = 2
+        paragraph.paragraphSpacing = paragraphSpacing
+
+        if self == .lineItem || self == .identifier {
+            // Character wrapping guarantees that a long identifier or a party
+            // name without spaces cannot cross the printable boundary.
+            paragraph.lineBreakMode = .byCharWrapping
+        }
+
+        return [
+            .font: font,
+            .foregroundColor: NSColor.black,
+            .paragraphStyle: paragraph,
+        ]
+    }
+
+    private var font: NSFont {
+        switch self {
+        case .title:
+            NSFont.systemFont(ofSize: 16, weight: .bold)
+        case .continuationTitle, .section:
+            NSFont.systemFont(ofSize: 12, weight: .semibold)
+        case .warning:
+            NSFont.systemFont(ofSize: 10, weight: .bold)
+        case .footer:
+            NSFont.systemFont(ofSize: 9, weight: .regular)
+        case .identifier:
+            NSFont.monospacedSystemFont(ofSize: 9, weight: .regular)
+        case .body, .lineItem:
+            NSFont.systemFont(ofSize: 10, weight: .regular)
+        }
+    }
+
+    private var paragraphSpacing: CGFloat {
+        switch self {
+        case .section:
+            6
+        case .warning:
+            8
+        case .lineItem:
+            3
+        case .body, .identifier:
+            5
+        case .continuationTitle, .footer, .title:
+            0
+        }
+    }
+}
+
+private extension NSMutableAttributedString {
+    func appendParagraph(
+        _ text: String,
+        style: PDFTextStyle = .body
+    ) {
+        append(NSAttributedString(string: text + "\n", attributes: style.attributes))
     }
 }

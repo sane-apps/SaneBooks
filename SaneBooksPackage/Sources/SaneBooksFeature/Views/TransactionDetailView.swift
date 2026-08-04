@@ -2,6 +2,8 @@ import SaneBooksCore
 import SwiftUI
 
 public struct TransactionDetailView: View {
+    static let editableKinds = ClassificationKind.allCases
+
     @Bindable var model: AppModel
     let noteID: NoteRowID
 
@@ -34,7 +36,7 @@ public struct TransactionDetailView: View {
     }
 
     private func detailContent(_ note: NoteRow) -> some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 0) {
             SaneBooksTopNav(
                 mode: .nested(title: "Transaction"),
                 onVault: { model.route = .ledger },
@@ -45,79 +47,89 @@ public struct TransactionDetailView: View {
                     save(note)
                 }
             }
+            .padding(.bottom, 16)
 
-            HStack(alignment: .firstTextBaseline) {
-                if model.discreetMode {
-                    Text("•••• ZEC")
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundStyle(.white)
-                } else {
-                    Text("\(note.direction == .outbound ? "-" : "+")\(formatZEC(abs(note.amountZEC))) ZEC")
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-                Spacer()
-                if let date = note.blockTime {
-                    Text(date.formatted(date: .abbreviated, time: .shortened))
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(.white)
-                }
-            }
+            ScrollView(.vertical) {
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack(alignment: .firstTextBaseline) {
+                        if model.discreetMode {
+                            Text("•••• ZEC")
+                                .saneBooksFont(size: 28, weight: .bold)
+                                .foregroundStyle(.white)
+                        } else {
+                            Text("\(note.direction == .outbound ? "-" : "+")\(formatZEC(abs(note.amountZEC))) ZEC")
+                                .saneBooksFont(size: 28, weight: .bold)
+                                .foregroundStyle(.white)
+                        }
+                        Spacer()
+                        if let date = note.blockTime {
+                            Text(date.formatted(date: .abbreviated, time: .shortened))
+                                .saneBooksFont(size: 14, weight: .medium)
+                                .foregroundStyle(.white)
+                        }
+                    }
 
-            if !model.discreetMode, let fiat = note.fiatMark?.amount(forZEC: abs(note.amountZEC)) {
-                Text("≈ $\(formatFiat(fiat)) at confirmation")
-                    .font(.system(size: 14, weight: .medium))
+                    if !model.discreetMode, let fiat = note.fiatMark?.amount(forZEC: abs(note.amountZEC)) {
+                        Text("≈ $\(formatFiat(fiat)) at confirmation")
+                            .saneBooksFont(size: 14, weight: .medium)
+                            .foregroundStyle(.white)
+                    }
+
+                    detailRow("Direction", note.direction.displayName)
+                    detailRow("Pool", note.pool.displayName)
+
+                    Picker("Category", selection: $kind) {
+                        ForEach(Self.editableKinds, id: \.self) { k in
+                            Text(k.displayName).tag(k)
+                        }
+                    }
                     .foregroundStyle(.white)
-            }
+                    .saneBooksFont(size: 14, weight: .medium)
 
-            detailRow("Direction", note.direction.displayName)
-            detailRow("Pool", note.pool.displayName)
+                    labeledField("Party", text: $party)
+                    labeledField("Subtag", text: $subtag)
 
-            Picker("Category", selection: $kind) {
-                ForEach([ClassificationKind.income, .expense, .change, .fee], id: \.self) { k in
-                    Text(k.displayName).tag(k)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Memo")
+                            .saneBooksFont(size: 14, weight: .semibold)
+                            .foregroundStyle(.white)
+                        TextEditor(text: $memo)
+                            .saneBooksFont(size: 14)
+                            .scrollContentBackground(.hidden)
+                            .padding(10)
+                            .frame(height: 80)
+                            .background(Color.white.opacity(0.06))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .foregroundStyle(.white)
+                            .accessibilityLabel("Memo")
+                    }
+
+                    Toggle("Include in proof packs by default", isOn: $includeInPacks)
+                        .saneBooksFont(size: 14, weight: .medium)
+                        .foregroundStyle(.white)
+
+                    Text("Txid: \(model.truncateTxidsInUI ? note.txidTruncated : note.txidHex)")
+                        .saneBooksFont(size: 14, design: .monospaced)
+                        .foregroundStyle(.white)
+                        .textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Spacer(minLength: 0)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 8)
             }
-            .foregroundStyle(.white)
-            .font(.system(size: 14, weight: .medium))
-
-            labeledField("Party", text: $party)
-            labeledField("Subtag", text: $subtag)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Memo")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white)
-                TextEditor(text: $memo)
-                    .font(.system(size: 14))
-                    .scrollContentBackground(.hidden)
-                    .padding(10)
-                    .frame(height: 80)
-                    .background(Color.white.opacity(0.06))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .foregroundStyle(.white)
-            }
-
-            Toggle("Include in proof packs by default", isOn: $includeInPacks)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-
-            Text("Txid: \(model.truncateTxidsInUI ? note.txidTruncated : note.txidHex)")
-                .font(.system(size: 14, design: .monospaced))
-                .foregroundStyle(.white)
-
-            Spacer(minLength: 0)
         }
     }
 
     private func detailRow(_ label: String, _ value: String) -> some View {
         HStack {
             Text(label)
-                .font(.system(size: 14, weight: .semibold))
+                .saneBooksFont(size: 14, weight: .semibold)
                 .foregroundStyle(.white)
             Spacer()
             Text(value)
-                .font(.system(size: 14, weight: .medium))
+                .saneBooksFont(size: 14, weight: .medium)
                 .foregroundStyle(.white)
         }
     }
@@ -125,7 +137,7 @@ public struct TransactionDetailView: View {
     private func labeledField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label)
-                .font(.system(size: 14, weight: .semibold))
+                .saneBooksFont(size: 14, weight: .semibold)
                 .foregroundStyle(.white)
             TextField(label, text: text)
                 .textFieldStyle(.plain)

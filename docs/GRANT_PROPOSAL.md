@@ -1,7 +1,7 @@
 # Draft: Retroactive Grant Application — SaneBooks
 
 **Status:** Draft packaging for Coinholder-Directed Retroactive Grants (FPF template fields).  
-**Not submitted.** Do not paste to GitHub/forum until owner sets **Requested Grant Amount** and confirms a **funded live receive** receipt exists (or explicitly scopes the attestation to catch-up-only).
+**Not submitted.** Do not paste to GitHub/forum until the program confirms PolyForm Shield/source-available eligibility in writing, the owner sets **Requested Grant Amount**, and a notarized public artifact exists.
 
 Program: [Financial Privacy Foundation — Zcash Coinholder Grants Program](https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram)  
 Forum gap cited: [Is anyone actually using viewing keys for business accounting?](https://forum.zcashcommunity.com/t/is-anyone-actually-using-viewing-keys-for-business-accounting/56300)
@@ -58,9 +58,9 @@ https://forum.zcashcommunity.com/t/is-anyone-actually-using-viewing-keys-for-bus
 
 Adjacent lanes stay adjacent (Zodl/YWallet = spend; Koinly = multi-chain tax SaaS). Full matrix: `docs/COMPETITIVE_POSITIONING.md`.
 
-### What shipped (verifiable artifacts)
+### What is implemented (verifiable source; not yet a public release)
 
-Honest inventory as of **2026-08-03**.
+Honest inventory as of **2026-08-04**.
 
 | Artifact | Path / evidence |
 |----------|-----------------|
@@ -71,7 +71,7 @@ Honest inventory as of **2026-08-03**.
 | ZIP 302 memo decode | unit tests |
 | Live `ZcashLightClientKit` **2.7.0-rc.4** view-only sync (`zec.rocks`) | `SaneBooksSync` + Mini catch-up receipt (tip **3435350**) |
 | Offline `MockSyncFacade` demo path | `SANEBOOKS_FORCE_MOCK=1` / Offline demo ledger |
-| Encrypted `.sanebooks` packs (AEAD) + CSV + **PDF summary**; no UVK in pack bytes | `SaneBooksExport` + unit tests |
+| Encrypted `.sanebooks` v2 packs (PBKDF2-HMAC-SHA256 600k + ChaCha20-Poly1305 with authenticated headers) + CSV + **PDF summary**; no UVK in pack bytes | `SaneBooksExport` + unit tests |
 | Partial-history export gate (ack required) | PackWriter + Proof Pack / Share UI |
 | Share history log (local) | Settings → Proof Packs |
 | Multi-vault + Keychain + file ledger persistence | `AppModel.makeProduction()` |
@@ -79,15 +79,16 @@ Honest inventory as of **2026-08-03**.
 | Birthday / viewing-key help (Zodl + YWallet) | Import + `docs/WALLET_VIEWING_KEY_GUIDE.md` |
 | Live probe funding guide | `docs/LIVE_PROBE_FUNDING.md` |
 | Reader mode (pack without vault key) | `SaneBooksFeature` |
-| Unit tests | `SANEBOOKS_USE_LOCAL_SANEUI=1 swift test` — **38/38 green** |
-| Visual audit screenshots (mock E2E) | `outputs/visual-audit-sanebooks/` (`e2e-*`, `v11-*`, `VERDICT.md`) |
+| Canonical tests | Current Mini: **112 Swift Testing tests in 14 suites + 10 macOS UI journeys green**; combined receipt `c1db7bd167a12f2426de7c1fe9479f23` |
+| Current minimum-size UX evidence | `outputs/e2e/2026-08-04/` — real 820×632 ledger/detail/builder/share journeys; Reader/import journeys also retained from the immediately preceding 820×600 pass |
 | License / privacy / security docs | `LICENSE` (PolyForm Shield), `PRIVACY.md`, `SECURITY.md` |
 | Competition packaging | `docs/GRANT_PROPOSAL.md`, `COMPETITIVE_POSITIONING.md`, `WALLET_VIEWING_KEY_GUIDE.md` |
 
-**Still open before a full “live books” attestation:**
+**Still open before a completed-work application:**
 
-- Non-empty live ledger (probe UFVK has **0** historical receives — needs a dust send to the probe UA, or import of an owner UFVK with history). See `docs/LIVE_PROBE_FUNDING.md`.
-- Notarized public release / Sparkle updates
+- Non-empty live-sync receipt. The existing Zashi database receipt proves local import, not a live Ironwood receive or independently verified chain tip. See `docs/LIVE_PROBE_FUNDING.md`.
+- Signed, notarized public release tied to source/dependency/binary hashes
+- Published accounting export field dictionary and deterministic fixture
 - Hosted share links / QuickBooks OAuth
 - ZIP 311 payment-disclosure-only proofs as the sole export path
 
@@ -98,7 +99,7 @@ Honest inventory as of **2026-08-03**.
 - Live path: `ZcashLightClientKit` 2.7.0-rc.4 behind Sync only (`importAccount(purpose: .viewOnly)`)
 - Demo path: `MockSyncFacade` when `SANEBOOKS_FORCE_MOCK=1` or offline demo fixture
 - Ledger classification: Income / Expense / Change / Fee; UFVK same-tx inbound+outbound → change candidate
-- Export: versioned AEAD `.sanebooks` (HKDF-SHA256 + ChaCha20-Poly1305) + CSV; packs never embed UVKs
+- Export: versioned `.sanebooks` v2 (PBKDF2-HMAC-SHA256 600,000 iterations + ChaCha20-Poly1305 + authenticated canonical headers) + CSV/PDF; packs never embed UVKs
 - Trust: local-first; Keychain ThisDeviceOnly for key material; no iCloud vault sync; LWD trust named in pack attestation metadata
 
 ### Time Period of Work Completion
@@ -138,16 +139,15 @@ _N/A_
 
 Use only measurable, non-fake metrics. **Do not invent download counts or testimonials.**
 
-| Metric | How verified | Current (2026-08-03) |
+| Metric | How verified | Current (2026-08-04) |
 |--------|--------------|----------------------|
-| Unit tests green | `swift test` | **38/38** |
-| Mock E2E visual audit | `outputs/visual-audit-sanebooks/VERDICT.md` | 7 scenes pass |
+| Canonical tests green | `./scripts/SaneMaster.rb verify --ui --timeout 1800` | **112 unit + 10 UI journeys passed**; receipt `c1db7bd167a12f2426de7c1fe9479f23` |
+| Minimum-size user journeys | `outputs/e2e/2026-08-04/` | 820×632 ledger/detail/builder/share; prior 820×600 Reader/import proof retained |
 | Seed/spend rejection | unit tests | covered |
 | Pack contains no UVK | unit tests (byte scan) | covered |
 | Change excluded from income | unit tests + ledger YTD | covered |
 | Live LWD catch-up | Mini run: tip **3435350**, status caughtUp, LWD `zec.rocks` | **proven** |
-| Live Ironwood **receive** visible | screenshot of ≥1 inbound note after fund/sync **or** Zashi `data.db` import | **proven** — Mini `gold-zashi-e2e/zashi-ledger.png` (10 notes, Zashi imported) |
-| External CPA pilot | written feedback (if any) | **none claimed** |
+| Live Ironwood **receive** visible | funded key + live-sync screenshot/log of ≥1 inbound Ironwood note | **not proven** — private Zashi import evidence is import proof only |
 
 ### Proof of completion checklist
 
@@ -155,11 +155,12 @@ Use only measurable, non-fake metrics. **Do not invent download counts or testim
 - [x] `LICENSE` — PolyForm Shield
 - [x] `README.md` — coinholder-facing problem/solution/non-goals
 - [x] Core/Sync/Export/Feature sources under `SaneBooksPackage/`
-- [x] Test command:  
-  `cd SaneBooksPackage && SANEBOOKS_USE_LOCAL_SANEUI=1 swift test`
-- [x] Visual audit: `outputs/visual-audit-sanebooks/` (`e2e-welcome.png` … `e2e-reader.png`, `VERDICT.md`)
+- [x] Canonical test command: `./scripts/SaneMaster.rb verify --timeout 1800`
+- [x] Current minimum-size UX evidence: `outputs/e2e/2026-08-04/`
 - [x] Live sync catch-up: LWD `zec.rocks`, tip **3435350**, `SESSION_HANDOFF.md`
-- [x] Live receive / history screenshot + log — `outputs/visual-audit-sanebooks/gold-zashi-e2e/` + `LOG_RECEIPT.txt`
+- [x] Zashi database import receipt — `outputs/visual-audit-sanebooks/gold-zashi-e2e/` + `LOG_RECEIPT.txt` (not live-receive proof)
+- [ ] Funded live Ironwood receive and current live-sync receipt
+- [ ] Signed/notarized public artifact with source/dependency/binary provenance
 - [ ] Forum application thread + FPF GitHub issue (at submission)
 - [x] Conflict disclosure confirmed: none
 
@@ -173,7 +174,7 @@ None. Applicant builds SaneApps consumer Mac utilities; no conflict with ZCG com
 
 ### Terms checklist (complete at submission)
 
-Copy from the current FPF issue template and check only what is true — especially the attestation that work is **fully completed and verifiable**. Do **not** claim a live Ironwood **receive** until the pending funded-note receipt exists.
+Copy from the current FPF issue template and check only what is true — especially the attestation that work is **fully completed and verifiable**. Under PolyForm Shield, describe SaneBooks as **source-available/Transparent Code**, not OSI open source. Obtain written program eligibility guidance before adding a contribution-policy claim or submitting.
 
 ---
 

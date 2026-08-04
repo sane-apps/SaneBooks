@@ -21,6 +21,20 @@
                ReferencedContainer = "container:SaneBooks.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FB7190E9CD6FD81CAB053B43"
+               BuildableName = "SaneBooksTests.xctest"
+               BlueprintName = "SaneBooksTests"
+               ReferencedContainer = "container:SaneBooks.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -39,7 +53,31 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FB7190E9CD6FD81CAB053B43"
+               BuildableName = "SaneBooksTests.xctest"
+               BlueprintName = "SaneBooksTests"
+               ReferencedContainer = "container:SaneBooks.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C9EE9354730F7084D1AFADBB"
+               BuildableName = "SaneBooksUITests.xctest"
+               BlueprintName = "SaneBooksUITests"
+               ReferencedContainer = "container:SaneBooks.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <CommandLineArguments>
+      </CommandLineArguments>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

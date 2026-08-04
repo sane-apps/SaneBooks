@@ -1,6 +1,20 @@
 import Foundation
 import Security
 
+struct KeychainOperations: @unchecked Sendable {
+    var update: (CFDictionary, CFDictionary) -> OSStatus
+    var add: (CFDictionary, UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus
+    var copyMatching: (CFDictionary, UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus
+    var delete: (CFDictionary) -> OSStatus
+
+    static let system = KeychainOperations(
+        update: { SecItemUpdate($0, $1) },
+        add: { SecItemAdd($0, $1) },
+        copyMatching: { SecItemCopyMatching($0, $1) },
+        delete: { SecItemDelete($0) }
+    )
+}
+
 public protocol KeychainVaultStore: Sendable {
     func saveViewingKey(_ key: String, vaultID: VaultID) throws
     func loadViewingKey(vaultID: VaultID) throws -> String?
@@ -54,8 +68,15 @@ public final class InMemoryViewingKeyStore: ViewingKeyStore, KeychainVaultStore,
 /// Keychain-backed viewing key store (`WhenUnlockedThisDeviceOnly`, no iCloud).
 public final class KeychainViewingKeyStore: ViewingKeyStore, KeychainVaultStore, @unchecked Sendable {
     public static let servicePrefix = "com.saneapps.SaneBooks.vault"
+    private let operations: KeychainOperations
 
-    public init() {}
+    public init() {
+        operations = .system
+    }
+
+    init(operations: KeychainOperations) {
+        self.operations = operations
+    }
 
     public func save(_ key: String, for vaultID: VaultID) throws {
         let account = vaultID.uuid.uuidString
@@ -65,18 +86,38 @@ public final class KeychainViewingKeyStore: ViewingKeyStore, KeychainVaultStore,
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: account
+            kSecAttrAccount as String: account,
         ]
-        SecItemDelete(query as CFDictionary)
+
+        let update: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+        ]
+        let updateStatus = operations.update(query as CFDictionary, update as CFDictionary)
+        if updateStatus == errSecSuccess {
+            return
+        }
+        guard updateStatus == errSecItemNotFound else {
+            throw SaneBooksError.keychain("SecItemUpdate \(updateStatus)")
+        }
 
         var add = query
         add[kSecValueData as String] = data
         add[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
 
-        let status = SecItemAdd(add as CFDictionary, nil)
-        guard status == errSecSuccess else {
-            throw SaneBooksError.keychain("SecItemAdd \(status)")
+        let addStatus = operations.add(add as CFDictionary, nil)
+        if addStatus == errSecSuccess {
+            return
         }
+        if addStatus == errSecDuplicateItem {
+            // Another writer may have inserted the item after the first update.
+            let retryStatus = operations.update(query as CFDictionary, update as CFDictionary)
+            guard retryStatus == errSecSuccess else {
+                throw SaneBooksError.keychain("SecItemUpdate retry \(retryStatus)")
+            }
+            return
+        }
+        throw SaneBooksError.keychain("SecItemAdd \(addStatus)")
     }
 
     public func load(for vaultID: VaultID) throws -> String? {
@@ -87,10 +128,10 @@ public final class KeychainViewingKeyStore: ViewingKeyStore, KeychainVaultStore,
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
             kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne
+            kSecMatchLimit as String: kSecMatchLimitOne,
         ]
         var item: CFTypeRef?
-        let status = SecItemCopyMatching(query as CFDictionary, &item)
+        let status = operations.copyMatching(query as CFDictionary, &item)
         if status == errSecItemNotFound {
             return nil
         }
@@ -106,9 +147,9 @@ public final class KeychainViewingKeyStore: ViewingKeyStore, KeychainVaultStore,
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: account
+            kSecAttrAccount as String: account,
         ]
-        let status = SecItemDelete(query as CFDictionary)
+        let status = operations.delete(query as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else {
             throw SaneBooksError.keychain("SecItemDelete \(status)")
         }

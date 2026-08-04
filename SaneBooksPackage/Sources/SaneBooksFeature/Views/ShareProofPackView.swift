@@ -9,6 +9,7 @@ public struct ShareProofPackView: View {
     @Bindable var model: AppModel
     @State private var format: ShareFormat = .sanebooks
     @State private var passphrase = ""
+    @State private var passphraseConfirmation = ""
     @State private var recipient = ""
     @State private var expiryDays = 90
     @State private var statusMessage: String?
@@ -30,76 +31,47 @@ public struct ShareProofPackView: View {
             )
             .padding(.bottom, 16)
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(alignment: .leading, spacing: 16) {
                     if let draft = model.packDraft {
-                        Text("Pack: \(draft.vaultDisplayName) · \(draft.rangeStart.formatted(date: .abbreviated, time: .omitted)) → \(draft.rangeEnd.formatted(date: .abbreviated, time: .omitted))")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(.white)
-                        if let hash = model.lastIntegrityHash {
-                            Text("File check: \(String(hash.prefix(8)))…\(String(hash.suffix(4)))")
-                                .font(.system(size: 14, weight: .medium))
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Pack: \(draft.vaultDisplayName) · \(draft.rangeStart.formatted(date: .abbreviated, time: .omitted)) → \(draft.rangeEnd.formatted(date: .abbreviated, time: .omitted))")
+                                .saneBooksFont(size: 14, weight: .semibold)
                                 .foregroundStyle(.white)
-                        }
-                        disclosureAudit(for: draft)
-                        if draft.partialHistory {
-                            SaneBooksStatusBanner(
-                                kind: .error,
-                                message: "History may be incomplete (sync still catching up, or a sample ledger). Income totals could under-report. Acknowledge before you export."
-                            )
-                            Toggle("I understand history may be incomplete", isOn: $model.acknowledgePartialHistory)
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .toggleStyle(.checkbox)
-                        }
-                    }
-
-                    Picker("Format", selection: $format) {
-                        ForEach(ShareFormat.allCases, id: \.self) { Text($0.rawValue).tag($0) }
-                    }
-                    .pickerStyle(.radioGroup)
-                    .foregroundStyle(.white)
-                    .font(.system(size: 14, weight: .medium))
-
-                    if format == .sanebooks {
-                        VStack(alignment: .leading, spacing: 12) {
-                            SecureField("Passphrase", text: $passphrase)
-                                .textFieldStyle(.plain)
-                                .padding(12)
-                                .background(Color.white.opacity(0.06))
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                .foregroundStyle(.white)
-                            Picker("Expires", selection: $expiryDays) {
-                                Text("30 days").tag(30)
-                                Text("90 days").tag(90)
-                                Text("180 days").tag(180)
+                            if let hash = model.lastIntegrityHash {
+                                Text("File check: \(String(hash.prefix(8)))…\(String(hash.suffix(4)))")
+                                    .saneBooksFont(size: 14, weight: .medium)
+                                    .foregroundStyle(.white)
                             }
-                            .foregroundStyle(.white)
-                            TextField("Recipient label", text: $recipient)
-                                .textFieldStyle(.plain)
-                                .padding(12)
-                                .background(Color.white.opacity(0.06))
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                .foregroundStyle(.white)
                         }
-                    }
 
-                    Text("This pack reveals the selected history to anyone with the passphrase until it expires. It cannot spend funds.")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(.white)
-                        .fixedSize(horizontal: false, vertical: true)
+                        ViewThatFits(in: .horizontal) {
+                            HStack(alignment: .top, spacing: 18) {
+                                disclosureColumn(for: draft)
+                                    .frame(width: 350, alignment: .topLeading)
+                                exportColumn
+                                    .frame(width: 350, alignment: .topLeading)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .top)
 
-                    if let statusMessage {
-                        SaneBooksStatusBanner(kind: .success, message: statusMessage)
-                    }
-                    if let errorMessage {
-                        SaneBooksStatusBanner(kind: .error, message: errorMessage)
+                            VStack(alignment: .leading, spacing: 18) {
+                                disclosureColumn(for: draft)
+                                exportColumn
+                            }
+                        }
+                    } else {
+                        SaneBooksStatusBanner(
+                            kind: .error,
+                            message: "This proof-pack draft is no longer available. Return to the ledger and build a new pack."
+                        )
                     }
                 }
+                .padding(.bottom, 8)
             }
 
             HStack(spacing: 16) {
                 ActionButton("Save File…") { save() }
+                    .disabled(model.packDraft == nil)
                 if let url = model.lastSavedPackURL {
                     ActionButton("Copy path", style: .secondary) {
                         NSPasteboard.general.clearContents()
@@ -111,10 +83,15 @@ public struct ShareProofPackView: View {
                 Spacer()
                 Button("Done") { model.route = .ledger }
                     .buttonStyle(.plain)
-                    .font(.system(size: 14, weight: .semibold))
+                    .saneBooksFont(size: 14, weight: .semibold)
                     .foregroundStyle(.white)
             }
             .padding(.top, 16)
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(Color.white.opacity(0.18))
+                    .frame(height: 1)
+            }
         }
         .padding(28)
         .onAppear {
@@ -124,18 +101,87 @@ public struct ShareProofPackView: View {
                     ?? model.defaultRecipientLabel
             }
         }
+        .onChange(of: format) { _, _ in
+            model.clearLastExportReceipt()
+            statusMessage = nil
+            errorMessage = nil
+        }
+    }
+
+    private func disclosureColumn(for draft: ProofPackDraft) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            disclosureAudit(for: draft)
+            if draft.partialHistory {
+                Toggle("I understand these totals may be incomplete", isOn: $model.acknowledgePartialHistory)
+                    .saneBooksFont(size: 14, weight: .semibold)
+                    .foregroundStyle(.white)
+                    .toggleStyle(.checkbox)
+            }
+        }
+    }
+
+    private var exportColumn: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Picker("Format", selection: $format) {
+                ForEach(ShareFormat.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+            }
+            .pickerStyle(.radioGroup)
+            .foregroundStyle(.white)
+            .saneBooksFont(size: 14, weight: .medium)
+
+            if format == .sanebooks {
+                VStack(alignment: .leading, spacing: 12) {
+                    SecureField("Passphrase", text: $passphrase)
+                        .textFieldStyle(.plain)
+                        .padding(12)
+                        .background(Color.white.opacity(0.06))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .foregroundStyle(.white)
+                    SecureField("Confirm passphrase", text: $passphraseConfirmation)
+                        .textFieldStyle(.plain)
+                        .padding(12)
+                        .background(Color.white.opacity(0.06))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .foregroundStyle(.white)
+                    Picker("Expires", selection: $expiryDays) {
+                        Text("30 days").tag(30)
+                        Text("90 days").tag(90)
+                        Text("180 days").tag(180)
+                    }
+                    .foregroundStyle(.white)
+                    TextField("Recipient label", text: $recipient)
+                        .textFieldStyle(.plain)
+                        .padding(12)
+                        .background(Color.white.opacity(0.06))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .foregroundStyle(.white)
+                }
+            }
+
+            Text(formatWarning)
+                .saneBooksFont(size: 14, weight: .medium)
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let statusMessage {
+                SaneBooksStatusBanner(kind: .success, message: statusMessage)
+            }
+            if let errorMessage {
+                SaneBooksStatusBanner(kind: .error, message: errorMessage)
+            }
+        }
     }
 
     @ViewBuilder
     private func disclosureAudit(for draft: ProofPackDraft) -> some View {
-        let summary = PackDisclosureSummary.from(draft: draft, allNotes: model.notes)
+        let summary = disclosureSummary(for: draft)
         VStack(alignment: .leading, spacing: 8) {
             Text("Disclosure audit")
-                .font(.system(size: 14, weight: .bold))
+                .saneBooksFont(size: 14, weight: .bold)
                 .foregroundStyle(.white)
             ForEach(summary.auditLines, id: \.self) { line in
                 Text("• \(line)")
-                    .font(.system(size: 13, weight: .medium))
+                    .saneBooksFont(size: 13, weight: .medium)
                     .foregroundStyle(.white)
             }
         }
@@ -149,12 +195,36 @@ public struct ShareProofPackView: View {
         )
     }
 
+    private func disclosureSummary(for draft: ProofPackDraft) -> PackDisclosureSummary {
+        var summary = PackDisclosureSummary.from(draft: draft, allNotes: model.notes)
+        let trimmedRecipient = recipient.trimmingCharacters(in: .whitespacesAndNewlines)
+        summary.recipientLabel = trimmedRecipient.isEmpty ? nil : trimmedRecipient
+        summary.expiresAt = format == .sanebooks
+            ? Calendar.current.date(byAdding: .day, value: expiryDays, to: Date()) ?? draft.expiresAt
+            : nil
+        return summary
+    }
+
+    private var formatWarning: String {
+        switch format {
+        case .sanebooks:
+            "Password-protected SaneBooks file. It leaves out your viewing key, can expire, and warns if the file changes. Anyone with the file and password can read it until then."
+        case .csv:
+            "Spreadsheet with no password or expiration. Anyone with the file can read, copy, edit, or resend every included row."
+        case .pdf:
+            "PDF with no password or expiration. Anyone with the file can read, copy, print, or resend the summary."
+        }
+    }
+
     private func save() {
         errorMessage = nil
         statusMessage = nil
-        guard var draft = model.packDraft else { return }
+        guard var draft = model.packDraft else {
+            errorMessage = "This proof-pack draft is no longer available. Build a new pack and try again."
+            return
+        }
         draft.recipientLabel = recipient.isEmpty ? nil : recipient
-        draft.expiresAt = Calendar.current.date(byAdding: .day, value: expiryDays, to: Date())!
+        draft.expiresAt = Calendar.current.date(byAdding: .day, value: expiryDays, to: Date()) ?? draft.expiresAt
         draft.acknowledgePartialHistory = model.acknowledgePartialHistory
         model.packDraft = draft
         if !recipient.isEmpty {
@@ -172,8 +242,12 @@ public struct ShareProofPackView: View {
         case .sanebooks:
             panel.nameFieldStringValue = "TaxYear.sanebooks"
             panel.allowedContentTypes = [UTType(filenameExtension: "sanebooks") ?? .data]
-            guard passphrase.count >= 8 else {
-                errorMessage = "Use a passphrase of at least 8 characters."
+            guard passphrase.count >= PackCrypto.Limits.minimumPassphraseCharacters else {
+                errorMessage = "Use a passphrase of at least \(PackCrypto.Limits.minimumPassphraseCharacters) characters. A few unrelated words are easier to remember and harder to guess."
+                return
+            }
+            guard passphrase == passphraseConfirmation else {
+                errorMessage = "The passphrases do not match."
                 return
             }
         case .csv:

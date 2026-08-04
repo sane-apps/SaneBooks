@@ -7,10 +7,13 @@ import Testing
 /// `SANEBOOKS_LIVE_LWD=1 SANEBOOKS_USE_LOCAL_SANEUI=1 swift test --filter LiveLWD`
 @Suite("Live LWD", .disabled(if: ProcessInfo.processInfo.environment["SANEBOOKS_LIVE_LWD"] != "1"))
 struct LiveLWDTests {
-    @Test func liveProbeKeyImportsAndSyncs() async throws {
+    @Test
+    func liveProbeKeyImportsAndSyncs() async throws {
         let sync = LightClientSyncFacade(forceMock: false)
         let vaultID = VaultID()
         let birthday = LiveProbeKey.defaultBirthday
+        let requiresFundedReceipt =
+            ProcessInfo.processInfo.environment["SANEBOOKS_FUNDED_LIVE_RECEIPT"] == "1"
 
         let validated = ViewingKeyValidator().validate(
             LiveProbeKey.mainnetUFVK,
@@ -36,19 +39,24 @@ struct LiveLWDTests {
 
         var last: SyncCursor?
         var reachedWorking = false
-        // Prove tip + meaningful scan progress (full catch-up can take many minutes).
-        for _ in 0 ..< 120 {
+        let attempts = requiresFundedReceipt ? 600 : 120
+        for _ in 0 ..< attempts {
             let cursor = await sync.currentCursor(vaultID: vaultID)
             last = cursor
-            if let tip = cursor?.chainTipHeight, tip >= 3_428_143,
-               (cursor?.progressFraction ?? 0) >= 0.05 || cursor?.status == .caughtUp {
+
+            if requiresFundedReceipt {
+                let currentNotes = await sync.latestNotes(vaultID: vaultID)
+                if currentNotes.contains(where: { $0.pool == .ironwood }) {
+                    reachedWorking = true
+                    break
+                }
+            } else if let tip = cursor?.chainTipHeight, tip >= 3_428_143,
+                      (cursor?.progressFraction ?? 0) >= 0.05 || cursor?.status == .caughtUp
+            {
                 reachedWorking = true
                 break
             }
-            if cursor?.status == .caughtUp {
-                reachedWorking = true
-                break
-            }
+
             if cursor?.status == .stalled || cursor?.status == .capabilityBlocked {
                 Issue.record("Sync failed: \(String(describing: cursor))")
                 break
@@ -61,10 +69,19 @@ struct LiveLWDTests {
 
         #expect(reachedWorking, "cursor=\(String(describing: last))")
         #expect((last?.chainTipHeight ?? 0) >= 3_428_143)
-        // Derivation-test UFVK may have zero receives in this window.
-        _ = notes
         let report = await sync.capabilityReport()
         #expect(report.supportsIronwood == true)
         #expect(report.mainnetSafe == true)
+
+        if requiresFundedReceipt {
+            #expect(!notes.isEmpty, "Funded receipt mode requires at least one live note.")
+            #expect(
+                notes.contains(where: { $0.pool == .ironwood }),
+                "Funded receipt mode requires a live Ironwood receive."
+            )
+            if let highestNote = notes.map(\.blockHeight).max() {
+                #expect((last?.chainTipHeight ?? 0) >= highestNote)
+            }
+        }
     }
 }

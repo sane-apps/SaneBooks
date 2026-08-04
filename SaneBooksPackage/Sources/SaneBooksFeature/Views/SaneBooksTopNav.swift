@@ -37,41 +37,81 @@ public struct SaneBooksTopNav<Trailing: View>: View {
     }
 
     public var body: some View {
-        HStack(spacing: 20) {
+        Group {
             switch mode {
             case let .main(selected):
-                HStack(spacing: 10) {
-                    SaneBooksBrandMark(size: 28)
-                    Text("SaneBooks")
-                        .font(.system(size: SaneBooksType.title, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-                tabLink("Vault", selected: selected == .vault, action: onVault)
-                tabLink("Proof Packs", selected: selected == .proofPacks, action: onProofPacks)
+                mainNavigation(selected: selected)
             case let .nested(title):
-                Button {
-                    onBackToLedger?()
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "chevron.left")
-                        Text("Ledger")
-                    }
-                    .font(.system(size: SaneBooksType.body, weight: .semibold))
-                    .foregroundStyle(Color.saneBooksAccent)
-                }
-                .buttonStyle(.plain)
-                Spacer(minLength: 8)
-                Text(title)
-                    .font(.system(size: SaneBooksType.title, weight: .bold))
-                    .foregroundStyle(.white)
+                nestedNavigation(title: title)
             }
-
-            Spacer(minLength: 12)
-            trailing
-            settingsControl
         }
         .padding(.horizontal, 4)
         .padding(.vertical, 4)
+        // The ledger table is intentionally flexible. Keep primary navigation from
+        // being compressed out of sight when a short window needs that space.
+        .fixedSize(horizontal: false, vertical: true)
+        .layoutPriority(10)
+    }
+
+    private func mainNavigation(selected: MainTab) -> some View {
+        HStack(spacing: 20) {
+            HStack(spacing: 10) {
+                SaneBooksBrandMark(size: 28)
+                Text("SaneBooks")
+                    .saneBooksFont(size: SaneBooksType.title, weight: .bold)
+                    .foregroundStyle(.white)
+            }
+            tabLink("Vault", selected: selected == .vault, action: onVault)
+                .accessibilityIdentifier("sanebooks.nav.vault")
+            tabLink("Proof Packs", selected: selected == .proofPacks, action: onProofPacks)
+                .accessibilityIdentifier("sanebooks.nav.proof-packs")
+            Spacer(minLength: 12)
+            trailing
+            settingsControl
+                .accessibilityLabel("Open settings")
+                .accessibilityHint("Opens SaneBooks settings")
+                .accessibilityIdentifier("sanebooks.nav.settings")
+        }
+    }
+
+    private func nestedNavigation(title: String) -> some View {
+        HStack(spacing: 12) {
+            backToLedgerButton
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Text(title)
+                .saneBooksFont(size: SaneBooksType.title, weight: .bold)
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.78)
+                .multilineTextAlignment(.center)
+
+            HStack(spacing: 12) {
+                trailing
+                settingsControl
+                    .accessibilityLabel("Open settings")
+                    .accessibilityHint("Opens SaneBooks settings")
+                    .accessibilityIdentifier("sanebooks.nav.settings")
+            }
+            .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+    }
+
+    private var backToLedgerButton: some View {
+        Button {
+            onBackToLedger?()
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "chevron.backward")
+                Text("Ledger")
+            }
+            .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
+            .foregroundStyle(Color.saneBooksAccent)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Back to ledger")
+        .accessibilityHint("Returns to the vault ledger")
+        .accessibilityIdentifier("sanebooks.nav.back-to-ledger")
     }
 
     @ViewBuilder
@@ -94,7 +134,7 @@ public struct SaneBooksTopNav<Trailing: View>: View {
             Image(systemName: "gearshape.fill")
             Text("Settings")
         }
-        .font(.system(size: SaneBooksType.body, weight: .semibold))
+        .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
         .foregroundStyle(Color.saneBooksAccentSoft)
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
@@ -110,7 +150,7 @@ public struct SaneBooksTopNav<Trailing: View>: View {
     private func tabLink(_ title: String, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: SaneBooksType.body, weight: selected ? .bold : .semibold))
+                .saneBooksFont(size: SaneBooksType.body, weight: selected ? .bold : .semibold)
                 .foregroundStyle(selected ? Color.saneBooksAccent : .white)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
@@ -120,6 +160,10 @@ public struct SaneBooksTopNav<Trailing: View>: View {
                 )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityValue(selected ? "Selected" : "Not selected")
+        .accessibilityHint(selected ? "Current section" : "Open \(title)")
+        .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
     private func openSettingsWindow() {
@@ -158,10 +202,10 @@ struct SaneBooksStatusBanner: View {
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: iconName)
-                .font(.system(size: 14, weight: .semibold))
+                .saneBooksFont(size: 14, weight: .semibold)
                 .foregroundStyle(iconColor)
             Text(message)
-                .font(.system(size: 14, weight: .medium))
+                .saneBooksFont(size: 14, weight: .medium)
                 .foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
@@ -174,6 +218,16 @@ struct SaneBooksStatusBanner: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(borderColor, lineWidth: 1)
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityMessage)
+    }
+
+    private var accessibilityMessage: String {
+        switch kind {
+        case .success: "Success: \(message)"
+        case .error: "Warning: \(message)"
+        case .info: "Information: \(message)"
+        }
     }
 
     private var iconName: String {
