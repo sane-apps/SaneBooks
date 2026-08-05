@@ -28,5 +28,6 @@ build_log*.txt
 test_output*.txt
 
 # Release artifacts (local Mini pipeline output)
+build/
 releases/
 website/outputs/
