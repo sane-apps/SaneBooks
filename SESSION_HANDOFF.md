@@ -1,24 +1,18 @@
 # SESSION_HANDOFF
 
-## Current (2026-08-05) — clearing grant blockers
-Owner approved **MIT relicense** for CDRGP eligibility.
+## Current (2026-08-05) — release-ready for grant submit (pending owner post)
+- **MIT** on `main` (`d600725`); GitHub release [v0.1.1](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.1)
+- Provenance: `docs/ZecBooks-0.1.1-PROVENANCE.md` (SHA-256 + notarization verified)
+- Bug template + CONTRIBUTING + diagnostics (LWD credentials stripped) public
+- Mini verify `--ui` green: **123 tests**
+- Ask still **$32,000**
+- **Next:** owner approval → FPF GitHub issue + forum thread (`docs/SUBMIT_PACKET.md`)
 
-### Done this pass
-- `LICENSE` → MIT
-- Diagnostics LWD endpoint sanitizer (strips userinfo)
-- README / site / About / CONTRIBUTING / grant packet → MIT + ZecBooks
-- Provenance: `docs/ZecBooks-0.1.1-PROVENANCE.md` (SHA-256 + notarization verified on Mini)
-
-### Still before FPF/forum submit
-1. Commit + push `main` (public parity)
-2. Confirm website Pages redeploy (MIT footer)
-3. Optional GitHub release `v0.1.1` with provenance link
-4. Explicit approval to create FPF issue + forum thread
-
-### Ask
-Still **$32,000** (owner-set). Peer review suggested ~$20k if evidence stays thin; provenance + MIT strengthen the case.
-
-## Prior
-- Multi-agent review: NOT READY (public lag, PolyForm, README drift, 0.1.1 provenance)
-- Bug reporting wired locally
-- Ironwood: owner assumes linked SDK sufficient (no funded-receive gate)
+## Cleared blockers
+1. Public repo lag — pushed
+2. 0.1.1 provenance — published + release notes
+3. README Sparkle/0.1.0 contradiction — fixed
+4. Bug report 404 — fixed
+5. PolyForm eligibility — relicensed **MIT** (owner approved)
+6. Diagnostics LWD credential leak — sanitized
+7. ZecBooks naming in grant packet — fixed

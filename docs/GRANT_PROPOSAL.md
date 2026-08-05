@@ -1,6 +1,6 @@
 # Retroactive Grant Application — ZecBooks
 
-**Status:** Public-evidence gates in progress; **do not submit** until `main` on GitHub matches this packet and provenance links resolve.  
+**Status:** Public evidence live on `main` (`d600725`) + [v0.1.1 release](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.1). **Ready for FPF/forum submit after owner approval.** Do not post without explicit go-ahead.  
 **Ask:** **$32,000** (owner-set).  
 **Public product:** [zecbooks.app](https://zecbooks.app) · [ZecBooks-0.1.1.zip](https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip)  
 **Provenance:** [docs/ZecBooks-0.1.1-PROVENANCE.md](ZecBooks-0.1.1-PROVENANCE.md) (SHA-256 + Notarized Developer ID)
