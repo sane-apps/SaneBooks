@@ -8,7 +8,7 @@ Repo path / GitHub: `sane-apps/SaneBooks`. Customer product name: **ZecBooks** �
 
 **Private books for shielded Zcash** — Mac-native, local-first. Import a viewing key, classify income / change / expense, and share a scoped proof pack with your accountant. **Cannot spend ZEC.**
 
-**[Download notarized v0.1.0](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0)** · **100% Transparent Code** under [PolyForm Shield](LICENSE) (not casual “open source”)
+**[Download for Mac](https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip)** · **100% Transparent Code** under [PolyForm Shield](LICENSE) (not casual “open source”)
 
 ### Welcome
 <img src="docs/marketing/v0.1.0/01-welcome.png" alt="ZecBooks welcome — import a viewing key" width="1092" />
@@ -97,7 +97,7 @@ xcodegen generate
 
 Direct SwiftPM commands are focused diagnostics only, not release or E2E proof. Debug runs without the sandbox; the Release configuration enables App Sandbox, outbound networking, and user-selected files.
 
-Public distribution is the notarized [GitHub Release v0.1.0](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0). Mini `verify --ui` was green before that ship (122 tests including UI journeys). Site live at https://zecbooks.app. Sparkle feed wired; first Sparkle binary ship still pending (`dist.zecbooks.app` attach + `release.sh`).
+Public distribution is the notarized [GitHub Release v0.1.0](https://zecbooks.app/download). Mini `verify --ui` was green before that ship (122 tests including UI journeys). Site live at https://zecbooks.app. Sparkle feed wired; first Sparkle binary ship still pending (`dist.zecbooks.app` attach + `release.sh`).
 
 ## Screenshots / visual audit
 

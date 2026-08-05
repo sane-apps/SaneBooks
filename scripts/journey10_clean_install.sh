@@ -5,7 +5,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ZIP="${SANEBOOKS_RELEASE_ZIP:-$ROOT/releases/SaneBooks-0.1.0.zip}"
+ZIP="${SANEBOOKS_RELEASE_ZIP:-$ROOT/releases/ZecBooks-0.1.1.zip}"
 OUT="$ROOT/outputs/journey10"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 INSTALL_DIR="/tmp/sb-journey10-install"
