@@ -1,7 +1,7 @@
 # Retroactive Grant Application — ZecBooks
 
-**Status:** Public evidence live on `main` (`d600725`) + [v0.1.1 release](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.1). **Ready for FPF/forum submit after owner approval.** Do not post without explicit go-ahead.  
-**Ask:** **$32,000** (owner-set).  
+**Status:** **CLEAR TO SHIP** for FPF GitHub issue + forum thread (owner must still approve the public posts). Public evidence matrix green 2026-08-05.  
+**Ask:** **$32,000** (owner-set). Soft risk: short completion window vs CipherPay-scale asks — defend with MIT + notarized provenance, not usage claims.  
 **Public product:** [zecbooks.app](https://zecbooks.app) · [ZecBooks-0.1.1.zip](https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip)  
 **Provenance:** [docs/ZecBooks-0.1.1-PROVENANCE.md](ZecBooks-0.1.1-PROVENANCE.md) (SHA-256 + Notarized Developer ID)
 
@@ -157,7 +157,11 @@ None. Applicant builds SaneApps consumer Mac utilities; no conflict with ZCG com
 
 ### Terms checklist (at submission)
 
-Check the live FPF template boxes that are true, including completed-work attestation once public `main` matches this packet. MIT + `CONTRIBUTING.md` satisfy the new open-source software contribution expectation.
+Check the live FPF template boxes that are true, including:
+
+- Completed-work attestation: **ZecBooks 0.1.1 is a public, notarized, MIT-licensed Mac app** intended for ZEC-receiving business owners and their accountants. Coinholders and community reviewers can verify it during the mandatory review period. **No paid CPA endorsement letter is claimed.**
+- MIT + `CONTRIBUTING.md` for new open-source software.
+- Forum post responsibility after the GitHub issue exists.
 
 ---
 

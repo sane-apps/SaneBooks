@@ -1,18 +1,19 @@
 # SESSION_HANDOFF
 
-## Current (2026-08-05) — release-ready for grant submit (pending owner post)
-- **MIT** on `main` (`d600725`); GitHub release [v0.1.1](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.1)
-- Provenance: `docs/ZecBooks-0.1.1-PROVENANCE.md` (SHA-256 + notarization verified)
-- Bug template + CONTRIBUTING + diagnostics (LWD credentials stripped) public
-- Mini verify `--ui` green: **123 tests**
-- Ask still **$32,000**
-- **Next:** owner approval → FPF GitHub issue + forum thread (`docs/SUBMIT_PACKET.md`)
+## Current (2026-08-05) — CLEAR TO SHIP (grant submit)
+Final audit fixed `/privacy` 308 loop (now `website/privacy/index.html`). Public matrix all PASS.
 
-## Cleared blockers
-1. Public repo lag — pushed
-2. 0.1.1 provenance — published + release notes
-3. README Sparkle/0.1.0 contradiction — fixed
-4. Bug report 404 — fixed
-5. PolyForm eligibility — relicensed **MIT** (owner approved)
-6. Diagnostics LWD credential leak — sanitized
-7. ZecBooks naming in grant packet — fixed
+### Ship gate
+- **CLEAR** to create FPF issue + forum thread when owner says go
+- Paste from `docs/SUBMIT_PACKET.md`
+- Ask **$32,000** · MIT · provenance SHA-256 `25578ef6…243308`
+
+### Soft risks (disclose, do not invent)
+- Short Aug completion window vs CipherPay evidence density
+- No CPA endorsement letter (explicitly not claimed)
+- Ironwood = SDK capability + catch-up, not funded-receive demo
+
+### Evidence
+- Mini notarization recheck: accepted / staple OK / version 0.1.1
+- Public: LICENSE MIT, CONTRIBUTING, bug template, grant, README, site MIT, privacy MIT, download, appcast, release v0.1.1
+- Verify receipt earlier: 123 tests green
