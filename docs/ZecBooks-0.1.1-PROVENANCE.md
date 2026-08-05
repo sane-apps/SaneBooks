@@ -32,4 +32,5 @@ xcrun stapler validate ZecBooks.app
 ## Source
 
 Public source: https://github.com/sane-apps/SaneBooks  
-Tag/release for this binary will match the commit published with this provenance file on `main`.
+Commit that published this provenance + MIT relicense: `d600725`  
+GitHub release: https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.1
