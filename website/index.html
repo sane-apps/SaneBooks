@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZecBooks — Private books for shielded Zcash</title>
-  <meta name="description" content="Mac app for shielded Zcash books. Import a viewing key, build a private ledger, and share a scoped proof pack — without spend keys.">
+  <title>ZecBooks — Bookkeeping for shielded Zcash</title>
+  <meta name="description" content="Mac bookkeeping for shielded Zcash. Build a private ledger from a viewing key, then share an expiring proof pack with your accountant — without spend keys.">
   <link rel="canonical" href="https://zecbooks.app">
   <meta name="author" content="Mr. Sane">
   <meta name="robots" content="index, follow">
@@ -16,11 +16,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/site.css?v=20260804f">
+  <link rel="stylesheet" href="/site.css?v=20260805a">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ZecBooks — Private books for shielded Zcash">
-  <meta property="og:description" content="Mac app for shielded Zcash books. Import a viewing key, build a private ledger, and share a scoped proof pack — without spend keys.">
+  <meta property="og:title" content="ZecBooks — Bookkeeping for shielded Zcash">
+  <meta property="og:description" content="Mac bookkeeping for shielded Zcash. Build a private ledger from a viewing key, then share an expiring proof pack with your accountant — without spend keys.">
   <meta property="og:url" content="https://zecbooks.app">
   <meta property="og:site_name" content="ZecBooks">
   <meta property="og:locale" content="en_US">
@@ -34,8 +34,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@saneapps">
   <meta name="twitter:url" content="https://zecbooks.app">
-  <meta name="twitter:title" content="ZecBooks — Private books for shielded Zcash">
-  <meta name="twitter:description" content="Mac app for shielded Zcash books. Import a viewing key, build a private ledger, and share a scoped proof pack — without spend keys.">
+  <meta name="twitter:title" content="ZecBooks — Bookkeeping for shielded Zcash">
+  <meta name="twitter:description" content="Mac bookkeeping for shielded Zcash. Build a private ledger from a viewing key, then share an expiring proof pack with your accountant — without spend keys.">
   <meta name="twitter:image" content="https://zecbooks.app/images/og-image.png?v=20260804f">
   <meta name="twitter:image:alt" content="ZecBooks welcome screen for private Zcash books on Mac">
 
@@ -47,7 +47,7 @@
     "name": "ZecBooks",
     "operatingSystem": "macOS 14 Sonoma or later",
     "applicationCategory": "FinanceApplication",
-    "description": "Mac app for shielded Zcash books. Import a viewing key, build a private ledger, and share a scoped proof pack without spend keys.",
+    "description": "Mac bookkeeping for shielded Zcash. Build a private ledger from a viewing key, then share an expiring proof pack with your accountant without spend keys.",
     "url": "https://zecbooks.app",
     "downloadUrl": "https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip",
     "softwareVersion": "0.1.1",
@@ -55,14 +55,13 @@
     "author": { "@type": "Person", "name": "Mr. Sane", "url": "https://github.com/sane-apps" },
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "featureList": [
-      "View-only UFVK import",
-      "Private shielded ledger",
-      "Scoped expiring proof packs",
-      "Proof pack reader",
+      "View-only bookkeeping from a viewing key",
+      "Classify income, change, expense, and fees",
+      "Share an expiring proof pack with your accountant",
+      "Accountant opens the pack without your vault or keys",
       "Cannot spend ZEC"
     ]
   }
-  </script>
   </script>
 </head>
 <body>
@@ -98,19 +97,19 @@
   <main id="main">
     <section class="hero" aria-label="Hero">
       <div class="hero-copy">
-        <p class="eyebrow">Mac · view-only · local-first</p>
+        <p class="eyebrow">Mac bookkeeping · view-only · free</p>
         <h1>ZecBooks</h1>
-        <p class="hero-tag">Private books for shielded Zcash</p>
-        <p class="hero-badges" aria-label="Product promises">No spying · No subscription · Actively maintained</p>
-        <p class="hero-lede">Import a viewing key. Build a ledger. Share a proof pack with your accountant — without ever touching a spend key.</p>
+        <p class="hero-tag">Bookkeeping for shielded Zcash</p>
+        <p class="hero-badges" aria-label="Product promises">Cannot spend · Books stay on your Mac · Free download</p>
+        <p class="hero-lede">Shielded Zcash keeps your transactions private — and that makes tax season hard. ZecBooks turns a view-only key into a private ledger you can classify, then share only what your accountant needs.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip">Download for Mac</a>
-          <a class="button button-ghost" href="#watch">Watch the flow</a>
+          <a class="button button-ghost" href="#watch">See how it works</a>
         </div>
-        <p class="hero-note">This app cannot spend ZEC. Never paste a seed phrase.</p>
+        <p class="hero-note">Not a wallet. This app cannot spend ZEC. Never paste a seed phrase.</p>
       </div>
       <div class="hero-stage">
-        <img class="hero-shot" src="/images/shot-ledger.png?v=20260804f" width="1040" height="720" alt="ZecBooks ledger showing classified shielded notes in ZEC gold on a dark Mac window">
+        <img class="hero-shot" src="/images/shot-ledger.png?v=20260804f" width="1040" height="720" alt="ZecBooks ledger with classified shielded notes for bookkeeping">
       </div>
     </section>
 
@@ -118,16 +117,16 @@
       <div class="wrap">
         <div class="trust-rail reveal">
           <div class="trust-item">
-            <h3>Cannot spend</h3>
-            <p><strong>Viewing keys only.</strong> No seed. No spend key. No signing path. Books stay read-only by design.</p>
+            <h3>The problem</h3>
+            <p><strong>Private coins still need books.</strong> A CPA cannot audit what they cannot see — and you should not hand them a seed or a live wallet.</p>
           </div>
           <div class="trust-item">
-            <h3>Stays on your Mac</h3>
-            <p>Vault, tags, and packs live locally. Sync talks to lightwalletd for notes your key can see — nothing else.</p>
+            <h3>The solution</h3>
+            <p><strong>View-only bookkeeping on your Mac.</strong> Import a viewing key, classify income and expenses, then export a scoped proof pack.</p>
           </div>
           <div class="trust-item">
-            <h3>Scoped sharing</h3>
-            <p>Export an expiring proof pack with the rows you choose. Your accountant never needs the vault.</p>
+            <h3>What your accountant gets</h3>
+            <p><strong>Only the rows you choose.</strong> They open an expiring pack in Reader — no vault, no viewing key, no way to spend.</p>
           </div>
         </div>
       </div>
@@ -136,37 +135,37 @@
     <section id="watch">
       <div class="wrap">
         <p class="section-kicker reveal">Watch</p>
-        <h2 class="section-title reveal">See the private books flow</h2>
-        <p class="section-lede reveal">From viewing key to ledger to proof pack — the same warm gold interface you get on Mac.</p>
+        <h2 class="section-title reveal">Problem to proof pack</h2>
+        <p class="section-lede reveal">From “I need books for my accountant” to a classified ledger and a shareable pack — without giving up spend control.</p>
         <div class="watch-frame reveal">
           <video id="overview-video" controls preload="metadata" playsinline width="1920" height="1080" poster="/demo/overview-poster.jpg" hidden>
             <source src="/demo/overview.mp4" type="video/mp4">
           </video>
-          <a id="overview-placeholder" class="watch-placeholder" href="#how" aria-label="Overview video coming soon — jump to how it works">
+          <a id="overview-placeholder" class="watch-placeholder" href="#how" aria-label="See the three steps below">
             <span class="play" aria-hidden="true">▶</span>
           </a>
         </div>
-        <p class="watch-caption">Native 16:9 overview coming soon (same format as SaneCite / SaneClip). Poster shows the live Mac ledger until the cut ships.</p>
+        <p class="watch-caption">Overview video coming soon. Until then, the three steps below walk the same path.</p>
       </div>
     </section>
 
     <section id="how">
       <div class="wrap">
         <p class="section-kicker">How it works</p>
-        <h2 class="section-title">Three moves. Zero spend risk.</h2>
-        <p class="section-lede">ZecBooks is the accountant layer for shielded Zcash — not a wallet, not CipherPay.</p>
+        <h2 class="section-title">Three steps to hand over the books</h2>
+        <p class="section-lede">ZecBooks is bookkeeping for shielded Zcash — not a wallet. It never holds a spend key.</p>
         <div class="flow">
           <div class="flow-step" data-step="1">
             <h3>Import a viewing key</h3>
-            <p>Paste a UFVK from Zashi or Zodl, or import from a supported wallet export. UIVK works in degraded receivables mode with a permanent banner.</p>
+            <p>Export a view-only key from Zashi or Zodl (or paste one). That key can see your shielded notes. It cannot spend them.</p>
           </div>
           <div class="flow-step" data-step="2">
-            <h3>Build the private ledger</h3>
-            <p>Classify income, change, expense, and fees. Tag memos. Keep amounts discreet when you need the screen friendly for shared desks.</p>
+            <h3>Keep the books</h3>
+            <p>Sync into a private ledger. Mark income, change, expense, and fees. Add tags and memos the way you would in any books workflow.</p>
           </div>
           <div class="flow-step" data-step="3">
             <h3>Share a proof pack</h3>
-            <p>Pick the rows, set an expiry, export an encrypted pack. Your reviewer opens it in Reader — no vault, no viewing key, no spend path.</p>
+            <p>Pick the rows for the tax year or engagement, set an expiry, and export an encrypted pack. Your accountant opens it in Reader — nothing else leaves your Mac.</p>
           </div>
         </div>
       </div>
@@ -175,21 +174,21 @@
     <section id="product">
       <div class="wrap">
         <p class="section-kicker reveal">Product</p>
-        <h2 class="section-title reveal">Built like books, lit like ZEC</h2>
-        <p class="section-lede reveal">Warm ink. Liquid gold. Real Mac screens — not mock chrome.</p>
+        <h2 class="section-title reveal">What you keep vs what you send</h2>
+        <p class="section-lede reveal">You keep the vault and viewing key. Your accountant gets a scoped, expiring pack — enough to review the books, not enough to move funds.</p>
         <div class="gallery reveal">
           <figure class="gallery-main">
             <img src="/images/shot-welcome.png?v=20260804f" width="1040" height="720" alt="ZecBooks welcome screen with Import Viewing Key">
-            <figcaption><strong>Welcome</strong> Fastest path: import from Zashi or Zodl — or paste a viewing key.</figcaption>
+            <figcaption><strong>Start</strong> Import a view-only key from Zashi or Zodl. Seeds are refused.</figcaption>
           </figure>
           <div class="gallery-side">
             <figure>
               <img src="/images/shot-pack.png?v=20260804f" width="1040" height="720" alt="Proof pack builder with selected notes">
-              <figcaption><strong>Proof pack</strong> Scope the rows before anything leaves your Mac.</figcaption>
+              <figcaption><strong>Proof pack</strong> Choose which ledger rows leave your Mac before you export.</figcaption>
             </figure>
             <figure>
               <img src="/images/shot-reader.png?v=20260804f" width="1040" height="720" alt="Proof pack reader unlocked view">
-              <figcaption><strong>Reader</strong> Open a pack without importing the vault.</figcaption>
+              <figcaption><strong>Reader</strong> Your accountant opens the pack without your vault or keys.</figcaption>
             </figure>
           </div>
         </div>
@@ -198,7 +197,7 @@
             <img src="/images/shot-share.png?v=20260804f" width="1040" height="720" alt="Share disclosure before exporting a proof pack">
           </figure>
           <figure>
-            <img src="/images/shot-ledger.png?v=20260804f" width="1040" height="720" alt="Full ledger with six classified demo rows">
+            <img src="/images/shot-ledger.png?v=20260804f" width="1040" height="720" alt="Full ledger with classified bookkeeping rows">
           </figure>
         </div>
       </div>
@@ -207,21 +206,21 @@
     <section id="guides">
       <div class="wrap">
         <p class="section-kicker reveal">Guides</p>
-        <h2 class="section-title reveal">Learn the safe path</h2>
-        <p class="section-lede reveal">Practical write-ups in the same guide format as our other products — viewing keys, packs, and what never to share.</p>
+        <h2 class="section-title reveal">Safe setup for tax season</h2>
+        <p class="section-lede reveal">Short walkthroughs: what a viewing key is, how to export one, and how to build a pack your accountant can open.</p>
         <div class="guide-preview reveal">
           <a class="guide-teaser" href="/guides/what-is-a-viewing-key">
             <div>
               <p class="label">Basics</p>
               <h3>What is a viewing key?</h3>
-              <p>Why UFVK is the right import, and why a seed phrase is never welcome.</p>
+              <p>Why a view-only key is what ZecBooks imports — and why a seed phrase is never welcome.</p>
             </div>
             <span class="more">Read guide →</span>
           </a>
           <a class="guide-teaser" href="/guides/export-ufvk-from-zashi">
             <div>
               <p class="label">Setup</p>
-              <h3>Export a UFVK from Zashi</h3>
+              <h3>Export a viewing key from Zashi</h3>
               <p>Get a view-only key out of Zashi without exposing spend authority.</p>
             </div>
             <span class="more">Read guide →</span>
@@ -245,8 +244,8 @@
       <div class="wrap">
         <div class="cta-band reveal">
           <div>
-            <h2>Start the books. Keep the keys.</h2>
-            <p>Download ZecBooks for Mac. Import a viewing key. Build a ledger you can actually hand to someone — without handing them power to spend.</p>
+            <h2>Keep the books. Keep the keys.</h2>
+            <p>Download ZecBooks for Mac. Import a viewing key. Classify the ledger. Send your accountant a proof pack — not your wallet.</p>
           </div>
           <div class="cta-actions">
             <a class="button button-primary" href="https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip">Download for Mac</a>
@@ -259,17 +258,16 @@
 
   <footer class="site-footer">
     <div class="wrap footer-grid">
-      <div>ZecBooks by <a href="https://saneapps.com">SaneApps</a> · part of the <a href="https://saneapps.com">Sane Apps</a> family · PolyForm Shield source-available · free download</div>
+      <div>ZecBooks by <a href="https://saneapps.com">SaneApps</a> · PolyForm Shield source-available · free Mac download</div>
       <div class="footer-links">
         <a href="/guides">Guides</a>
         <a href="/privacy">Privacy</a>
         <a href="https://saneapps.com">Sane Apps</a>
         <a href="https://github.com/sane-apps/SaneBooks">Source</a>
-        <a href="https://github.com/sane-apps/SaneBooks/releases">Releases</a>
         <a href="mailto:hi@saneapps.com">hi@saneapps.com</a>
       </div>
     </div>
   </footer>
-  <script src="/site.js?v=20260804f" defer></script>
+  <script src="/site.js?v=20260805a" defer></script>
 </body>
 </html>
