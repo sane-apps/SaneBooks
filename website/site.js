@@ -20,25 +20,30 @@
   );
   document.querySelectorAll(".reveal, .flow-step").forEach((el) => io.observe(el));
 
-  // Prefer native video when a real MP4 exists; otherwise keep poster CTA.
-  // Pages may soft-200 HTML for missing paths — require video content-type.
+  // Big play overlay → native video. Never use a hash link here (that jumped to #how).
   const video = document.querySelector("#overview-video");
-  const placeholder = document.querySelector("#overview-placeholder");
-  if (video && placeholder) {
-    const source = video.querySelector("source");
-    const url = source ? source.getAttribute("src") : "";
-    if (url) {
-      fetch(url, { method: "HEAD" })
-        .then((res) => {
-          const type = (res.headers.get("content-type") || "").toLowerCase();
-          if (!res.ok || !type.includes("video")) throw new Error("missing");
-          placeholder.hidden = true;
-          video.hidden = false;
-        })
-        .catch(() => {
-          video.hidden = true;
-          placeholder.hidden = false;
+  const playBtn = document.querySelector("#overview-play");
+  if (video && playBtn) {
+    const hideOverlay = () => {
+      playBtn.hidden = true;
+    };
+    const showOverlay = () => {
+      if (video.paused) playBtn.hidden = false;
+    };
+    const start = () => {
+      hideOverlay();
+      const play = video.play();
+      if (play && typeof play.catch === "function") {
+        play.catch(() => {
+          showOverlay();
         });
-    }
+      }
+    };
+    playBtn.addEventListener("click", start);
+    video.addEventListener("play", hideOverlay);
+    video.addEventListener("pause", showOverlay);
+    video.addEventListener("ended", () => {
+      playBtn.hidden = false;
+    });
   }
 })();
