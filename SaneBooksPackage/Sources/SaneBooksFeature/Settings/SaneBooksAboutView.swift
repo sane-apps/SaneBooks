@@ -13,10 +13,14 @@ struct SaneBooksAboutView: View {
         SaneAboutView(
             appName: "ZecBooks",
             githubRepo: "SaneBooks",
+            diagnosticsService: .shared,
             licenses: [
                 SaneAboutLicenseCatalog.saneUI,
                 SaneAboutLicenseCatalog.sparkle,
                 zcashSDKLicense
+            ],
+            feedbackExtraAttachments: [
+                ("hand.raised.fill", "Reminder: never attach viewing keys, seeds, memos, or .sanebooks packs")
             ],
             supportAction: .init(title: "Donate on GitHub", url: Self.donationURL),
             labels: .init(
@@ -32,10 +36,15 @@ struct SaneBooksAboutView: View {
                 licensesSheetTitle: "Third-Party Licenses",
                 doneButtonTitle: "Done"
             ),
-            versionLineText: "Version 0.1.0 · PolyForm Shield source-available",
+            versionLineText: versionLine,
             identitySymbolName: "books.vertical.fill",
             identitySymbolColor: .saneBooksAccent
         )
+    }
+
+    private var versionLine: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "…"
+        return "Version \(version) · MIT"
     }
 
     private var zcashSDKLicense: SaneAboutView.LicenseEntry {

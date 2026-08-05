@@ -1,6 +1,6 @@
 # ZecBooks
 
-Repo path / GitHub: `sane-apps/SaneBooks`. Customer product name: **ZecBooks** · site: [zecbooks.app](https://zecbooks.app).
+**ZecBooks** · site: [zecbooks.app](https://zecbooks.app) · source: [`sane-apps/SaneBooks`](https://github.com/sane-apps/SaneBooks) (historical repo path).
 
 <p align="center">
   <img src="docs/marketing/v0.1.0/app-icon.png" width="96" alt="ZecBooks" />
@@ -8,7 +8,7 @@ Repo path / GitHub: `sane-apps/SaneBooks`. Customer product name: **ZecBooks** �
 
 **Private books for shielded Zcash** — Mac-native, local-first. Import a viewing key, classify income / change / expense, and share a scoped proof pack with your accountant. **Cannot spend ZEC.**
 
-**[Download for Mac](https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip)** · **100% Transparent Code** under [PolyForm Shield](LICENSE) (not casual “open source”)
+**[Download for Mac](https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip)** · **MIT** open source ([LICENSE](LICENSE))
 
 ### Welcome
 <img src="docs/marketing/v0.1.0/01-welcome.png" alt="ZecBooks welcome — import a viewing key" width="1092" />
@@ -97,7 +97,13 @@ xcodegen generate
 
 Direct SwiftPM commands are focused diagnostics only, not release or E2E proof. Debug runs without the sandbox; the Release configuration enables App Sandbox, outbound networking, and user-selected files.
 
-Public distribution is the notarized [GitHub Release v0.1.0](https://zecbooks.app/download). Mini `verify --ui` was green before that ship (122 tests including UI journeys). Site live at https://zecbooks.app. Sparkle feed wired; first Sparkle binary ship still pending (`dist.zecbooks.app` attach + `release.sh`).
+Public distribution is the notarized **ZecBooks 0.1.1** Sparkle/direct zip:
+
+- Download: https://zecbooks.app/download → https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip
+- Provenance (SHA-256 + Gatekeeper/stapler): [`docs/ZecBooks-0.1.1-PROVENANCE.md`](docs/ZecBooks-0.1.1-PROVENANCE.md)
+- Appcast: https://zecbooks.app/appcast.xml
+
+Mini `verify --ui` was green on the current tree (122 tests including UI journeys).
 
 ## Screenshots / visual audit
 
@@ -111,7 +117,9 @@ They are useful references, not proof of the current source. Current clean app-o
 
 | Doc | Purpose |
 |-----|---------|
-| [docs/GRANT_PROPOSAL.md](docs/GRANT_PROPOSAL.md) | Draft Coinholder-Directed Retroactive Grant application |
+| [docs/GRANT_PROPOSAL.md](docs/GRANT_PROPOSAL.md) | Coinholder-Directed Retroactive Grant application |
+| [docs/ZecBooks-0.1.1-PROVENANCE.md](docs/ZecBooks-0.1.1-PROVENANCE.md) | SHA-256 + notarization check for 0.1.1 |
+| [docs/SUBMIT_PACKET.md](docs/SUBMIT_PACKET.md) | FPF + forum paste packet |
 | [docs/COMPETITIVE_POSITIONING.md](docs/COMPETITIVE_POSITIONING.md) | vs CipherPay, Zodl, ZGo, Koinly, ZBooks |
 | [docs/WALLET_VIEWING_KEY_GUIDE.md](docs/WALLET_VIEWING_KEY_GUIDE.md) | How to export a UFVK from common wallets |
 | [docs/LIVE_PROBE_FUNDING.md](docs/LIVE_PROBE_FUNDING.md) | How to fund the live probe UA for a real ledger row |
@@ -120,4 +128,4 @@ They are useful references, not proof of the current source. Current clean app-o
 
 ## License
 
-[PolyForm Shield 1.0.0](LICENSE) — source-available “Transparent Code,” not OSI open source. Contact: hi@saneapps.com
+[MIT](LICENSE). Contact: hi@saneapps.com

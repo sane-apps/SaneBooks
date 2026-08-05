@@ -1,32 +1,24 @@
 # SESSION_HANDOFF
 
-## Current (2026-08-04)
-- Customer product name **ZecBooks** everywhere public: site, Sparkle appcast, dist zip `ZecBooks-0.1.1.zip` at https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip
-- Repo/module/bundle id remain `SaneBooks` / `com.saneapps.SaneBooks`
-- GitHub Release v0.1.0 removed; direct channel is Sparkle + dist.zecbooks.app
-- `release.product_name: ZecBooks` drives both `.app` and public zip basename via `DIST_ARTIFACT_NAME`
-- Still deferred: `website/demo/overview.mp4` real cut (poster only)
+## Current (2026-08-05) — clearing grant blockers
+Owner approved **MIT relicense** for CDRGP eligibility.
 
+### Done this pass
+- `LICENSE` → MIT
+- Diagnostics LWD endpoint sanitizer (strips userinfo)
+- README / site / About / CONTRIBUTING / grant packet → MIT + ZecBooks
+- Provenance: `docs/ZecBooks-0.1.1-PROVENANCE.md` (SHA-256 + notarization verified on Mini)
 
-## Prior notes
+### Still before FPF/forum submit
+1. Commit + push `main` (public parity)
+2. Confirm website Pages redeploy (MIT footer)
+3. Optional GitHub release `v0.1.1` with provenance link
+4. Explicit approval to create FPF issue + forum thread
 
-**Updated:** 2026-08-04 ET (ZecBooks ship prep — dist attached, 0.1.1)
-**Branch:** `main` · remote `sane-apps/SaneBooks`
+### Ask
+Still **$32,000** (owner-set). Peer review suggested ~$20k if evidence stays thin; provenance + MIT strengthen the case.
 
-## Current outcome
-
-- Customer product name **ZecBooks**. Repo/modules/bundle id `com.saneapps.SaneBooks` and `.sanebooks` stay.
-- Site https://zecbooks.app live. Appcast empty until 0.1.1 Sparkle ship.
-- **dist.zecbooks.app** attached: DNS AAAA `100::` proxied + `sane-dist` Worker route deployed (Mini `/health` → 200).
-- Version bumped to **0.1.1 (build 2)** for first Sparkle / ZecBooks-named binary ship.
-
-## Still open
-
-- Finish `release.sh` for 0.1.1 (notarize + R2 + appcast) if not completed this session
-- Drop `website/demo/overview.mp4` when the overview cut is ready (poster only for now)
-
-## Verification
-
-- Mini unit verify 113 tests green; Package.resolved includes Sparkle
-- Visual: five marketing PNGs with ZecBooks chrome + ledger TopNav/Discreet
-- Dist worker route listed in wrangler deploy output for `dist.zecbooks.app/*`
+## Prior
+- Multi-agent review: NOT READY (public lag, PolyForm, README drift, 0.1.1 provenance)
+- Bug reporting wired locally
+- Ironwood: owner assumes linked SDK sufficient (no funded-receive gate)
