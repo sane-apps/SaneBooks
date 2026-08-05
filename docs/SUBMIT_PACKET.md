@@ -1,6 +1,8 @@
 # Q3 submit packet — ZecBooks
 
-**Do not post** until owner explicitly approves public FPF + forum posts.
+**FPF issue created:** https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/38
+
+Forum thread still required (Retroactive Grants category).
 
 ## 1) FPF GitHub issue
 
@@ -19,7 +21,7 @@ Title: `Retroactive Grant Application: ZecBooks`
 ## ZecBooks — Retroactive Grant Application (Q3 2026)
 
 **Ask:** $32,000 USD  
-**FPF issue:** <paste GitHub issue URL>  
+**FPF issue:** https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/38  
 **Product:** https://zecbooks.app  
 **Download:** https://zecbooks.app/download  
 **Provenance (SHA-256 + notarization):** https://github.com/sane-apps/SaneBooks/blob/main/docs/ZecBooks-0.1.1-PROVENANCE.md  
@@ -27,7 +29,7 @@ Title: `Retroactive Grant Application: ZecBooks`
 **License:** MIT
 
 ### Why this exists
-A lot of people assume privacy coins are about hiding from taxes. That is not why we built this, and it is not why most Zcash users care about shielded money. We believe people have a right to financial privacy and still want to keep clean books. ZecBooks is the Mac layer for that: import a view-only key, classify income and change honestly, then send your accountant a locked package of the rows they need — without giving them lasting access to your wallet.
+A lot of people assume privacy coins are about hiding from taxes. That is not why I built this, and it is not why most Zcash users care about shielded money. I believe people have a right to financial privacy and still want to keep clean books. ZecBooks is the Mac layer for that: import a view-only key, classify income and change honestly, then send your accountant a locked package of the rows they need — without giving them lasting access to your wallet.
 
 **Private money, kept with honest books.**
 
