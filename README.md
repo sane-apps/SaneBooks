@@ -25,7 +25,7 @@
 ### Accountant Reader
 <img src="docs/marketing/v0.1.0/05-reader.png" alt="ZecBooks Reader unlock" width="1092" />
 
-CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs team treasury. **ZecBooks** is the Mac CPA layer: change ≠ income, and an expiring `.sanebooks` pack — not a permanent UFVK.
+CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs team treasury. **ZecBooks** is the Mac bookkeeping layer: private money, kept with honest books — change ≠ income, and an expiring `.sanebooks` pack — not a permanent UFVK.
 
 ## The problem
 

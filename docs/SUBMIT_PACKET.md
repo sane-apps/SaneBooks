@@ -1,6 +1,6 @@
 # Q3 submit packet — ZecBooks
 
-**Do not post** until GitHub `main` shows MIT, CONTRIBUTING, bug template, provenance, and this grant draft.
+**Do not post** until owner explicitly approves public FPF + forum posts.
 
 ## 1) FPF GitHub issue
 
@@ -26,8 +26,12 @@ Title: `Retroactive Grant Application: ZecBooks`
 **Source:** https://github.com/sane-apps/SaneBooks  
 **License:** MIT
 
-### One line
-CipherPay gets you paid privately. ZBooks runs team treasury. **ZecBooks** is the Mac bookkeeping layer: classify change so it is not income, then hand your accountant an expiring `.sanebooks` pack — not a permanent viewing key.
+### Why this exists
+A lot of people assume privacy coins are about hiding from taxes. That is not why we built this, and it is not why most Zcash users care about shielded money. We believe people have a right to financial privacy and still want to keep clean books. ZecBooks is the Mac layer for that: import a view-only key, classify income and change honestly, then send your accountant a locked package of the rows they need — without giving them lasting access to your wallet.
+
+**Private money, kept with honest books.**
+
+CipherPay gets you paid privately. ZBooks runs team treasury. ZecBooks is the Mac bookkeeping layer after money arrives.
 
 ### What shipped
 - Notarized **ZecBooks 0.1.1** (Developer ID) via https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip
@@ -47,7 +51,5 @@ Happy to answer questions in this thread during the review period.
 
 ## 3) Owner-gated next steps
 
-1. Commit + push this tree to `sane-apps/SaneBooks` `main`
-2. Deploy website Pages (MIT footer) if not auto-deployed
-3. Optional: `gh release create v0.1.1` pointing at dist zip + provenance
-4. Create FPF issue + forum thread (needs explicit public-post approval)
+1. Create FPF issue + forum thread (needs explicit public-post approval)
+2. Website Pages deploy if hero copy is not live yet

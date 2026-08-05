@@ -9,7 +9,7 @@ Community gap: [forum Jun 2026](https://forum.zcashcommunity.com/t/is-anyone-act
 
 ## One-line wedge (use in grant / forum)
 
-> CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs **team treasury + approved payouts**. **ZecBooks** is the Mac CPA layer: local books, change≠income, and an expiring `.sanebooks` pack your accountant opens in Reader — without a permanent raw UFVK.
+> Private money, kept with honest books. CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs **team treasury + approved payouts**. **ZecBooks** is the Mac bookkeeping layer: local books, change≠income, and an expiring `.sanebooks` pack your accountant opens in Reader — without a permanent raw UFVK.
 
 ## Adjacent products
 
