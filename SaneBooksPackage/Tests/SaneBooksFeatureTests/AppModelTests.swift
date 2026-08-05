@@ -4,6 +4,7 @@ import PDFKit
 @testable import SaneBooksExport
 @testable import SaneBooksFeature
 @testable import SaneBooksSync
+import SaneUI
 import Testing
 
 @MainActor
@@ -85,6 +86,44 @@ struct AppModelTests {
             encoding: .utf8
         )
         #expect(manifest.contains("appstore:\n  enabled: false"))
+    }
+
+    @Test
+    func aboutWiresSharedDiagnosticsForPublicBugReports() throws {
+        let aboutSource = try String(
+            contentsOf: projectRootURL.appendingPathComponent(
+                "SaneBooksPackage/Sources/SaneBooksFeature/Settings/SaneBooksAboutView.swift"
+            ),
+            encoding: .utf8
+        )
+        #expect(aboutSource.contains("diagnosticsService: .shared"))
+        #expect(aboutSource.contains("reportBugButtonTitle: \"Report Public Issue\""))
+
+        let diagnosticsSource = try String(
+            contentsOf: projectRootURL.appendingPathComponent(
+                "SaneBooksPackage/Sources/SaneBooksFeature/Settings/DiagnosticsService.swift"
+            ),
+            encoding: .utf8
+        )
+        #expect(diagnosticsSource.contains("githubRepo: \"SaneBooks\""))
+        #expect(diagnosticsSource.contains("appName: \"ZecBooks\""))
+        #expect(diagnosticsSource.contains("subsystem: \"com.saneapps.SaneBooks\""))
+        #expect(diagnosticsSource.contains("never includes viewing keys"))
+
+        let template = try String(
+            contentsOf: projectRootURL.appendingPathComponent(
+                ".github/ISSUE_TEMPLATE/bug_report.md"
+            ),
+            encoding: .utf8
+        )
+        #expect(template.contains("Report Public Issue"))
+        #expect(template.contains("Never post viewing keys"))
+
+        #expect(SaneDiagnosticsService.shared.githubRepo == "SaneBooks")
+
+        #expect(sanitizedPublicLWDEndpoint("https://zec.rocks:443") == "https://zec.rocks:443")
+        #expect(sanitizedPublicLWDEndpoint("https://user:secret@zec.rocks:443/path?x=1") == "https://zec.rocks:443")
+        #expect(sanitizedPublicLWDEndpoint("not a url") == "[unparseable-endpoint]")
     }
 
     @Test

@@ -1,11 +1,11 @@
 # Wallet viewing-key export guide (UFVK)
 
-**Purpose:** Help a business owner export a **Unified Full Viewing Key (UFVK)** for SaneBooks bookkeeper mode — or a **UIVK** for receivables-only (degraded) mode.
+**Purpose:** Help a business owner export a **Unified Full Viewing Key (UFVK)** for ZecBooks bookkeeper mode — or a **UIVK** for receivables-only (degraded) mode.
 
 **Hard rules**
 
-- Export a **viewing** key only. Never paste a seed phrase or spending key into SaneBooks.
-- Viewing keys are **irrevocable**. Anyone who keeps a copy can keep reading that account’s history forever. Prefer sharing a SaneBooks **proof pack** with your accountant, not the raw UFVK.
+- Export a **viewing** key only. Never paste a seed phrase or spending key into ZecBooks.
+- Viewing keys are **irrevocable**. Anyone who keeps a copy can keep reading that account’s history forever. Prefer sharing a ZecBooks **proof pack** with your accountant, not the raw UFVK.
 - Prefer **UFVK** (`uview1…` / Rev2 `uvf…`) for real books. **UIVK** cannot correctly classify change as non-income.
 - Confirm **mainnet vs testnet** before import.
 - Never paste a viewing key into a public block explorer or random website.
@@ -16,7 +16,7 @@ Accuracy: **best-effort**. Wallet UIs change. Steps marked **[uncertain]** were 
 
 ## What string to look for
 
-| Kind | Typical HRP (mainnet) | SaneBooks mode |
+| Kind | Typical HRP (mainnet) | ZecBooks mode |
 |------|------------------------|----------------|
 | UFVK | `uview1…` (also Rev2 `uvf…`) | Bookkeeper (preferred) |
 | UIVK | `uivk…` / `uvi…` | Receivables only + permanent banner |
@@ -35,13 +35,13 @@ Zodl is a modern Zcash wallet with viewing-key export for view-only / portfolio 
 3. Open **Export Private Data** — or **Seed & Keys → Show Sub Keys**  
    **[uncertain which submenu is current in your build; both appear in public write-ups.]**
 4. Locate the **Unified Full Viewing Key** / UFVK (string beginning `uview…`).
-5. Copy only the viewing key. Do **not** copy the seed into SaneBooks.
-6. Paste into SaneBooks → Import.
+5. Copy only the viewing key. Do **not** copy the seed into ZecBooks.
+6. Paste into ZecBooks → Import.
 
 **Notes**
 
 - Zodl UFVK export UI was called out as completed in ZODL ecosystem updates (2026) for view-only setups.
-- If you only see an incoming viewing key, SaneBooks will run receivables mode — fine for AR clerks, not complete P&L.
+- If you only see an incoming viewing key, ZecBooks will run receivables mode — fine for AR clerks, not complete P&L.
 
 ---
 
@@ -55,13 +55,13 @@ YWallet supports viewing-key features and UFVK display via backup.
 2. Use the **Backup** command / backup screen for that account.  
    Community reports: Backup displays the viewing key even when the account still has a spending key ([forum discussion](https://forum.zcashcommunity.com/t/export-and-import-of-incoming-viewing-keys-ivk-into-a-litewallet-mobile-app/45186)).
 3. Copy the **unified viewing key** (`uview…`), not the seed.
-4. Paste into SaneBooks.
+4. Paste into ZecBooks.
 
 **[uncertain]** Exact menu labels differ by YWallet version (desktop vs mobile). If Backup is not obvious, check YWallet’s current help for “viewing key” / “UFVK”.
 
 **Notes**
 
-- YWallet can also **import** a viewing-only account from a key — useful to test that your exported string is valid before trusting SaneBooks import.
+- YWallet can also **import** a viewing-only account from a key — useful to test that your exported string is valid before trusting ZecBooks import.
 - Prefer UFVK over Sapling-only `zxviews…` when your wallet offers unified export.
 
 ---
@@ -100,7 +100,7 @@ exportufvk
 
 ---
 
-## After export — SaneBooks import checklist
+## After export — ZecBooks import checklist
 
 1. Confirm the string is a viewing key (HRP above), not 12/24 words and not `secret-extended-key`.
 2. Prefer UFVK for bookkeeper mode.
@@ -112,7 +112,7 @@ exportufvk
 
 ## Faster path: Zashi / Zodl `data.db`
 
-If the wallet already synced your history, export/copy the SDK **`data.db`** (Zashi private-data export often includes it) and use **Import → Import Zashi / Zodl database…** in SaneBooks.
+If the wallet already synced your history, export/copy the SDK **`data.db`** (Zashi private-data export often includes it) and use **Import → Import Zashi / Zodl database…** in ZecBooks.
 
 That path:
 

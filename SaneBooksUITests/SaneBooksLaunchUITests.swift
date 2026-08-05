@@ -186,7 +186,7 @@ final class SaneBooksLaunchUITests: XCTestCase {
 
         let configurations: [(name: String, arguments: [String])] = [
             ("rtl", ["--e2e-layout-rtl"]),
-            ("accessibility-text", ["--e2e-accessibility-text"]),
+            ("accessibility-text", ["--e2e-accessibility-text"])
         ]
 
         for configuration in configurations {
@@ -261,6 +261,21 @@ final class SaneBooksLaunchUITests: XCTestCase {
         let donate = app.buttons["Donate on GitHub"]
         XCTAssertTrue(donate.waitForExistence(timeout: 5))
         XCTAssertTrue(donate.isHittable)
+
+        let report = app.buttons["Report Public Issue"]
+        XCTAssertTrue(report.waitForExistence(timeout: 5))
+        XCTAssertTrue(report.isHittable)
+        report.click()
+
+        let feedbackTitle = app.staticTexts["Report an Issue"]
+        XCTAssertTrue(feedbackTitle.waitForExistence(timeout: 5))
+        keepScreenshot(app, name: "about-bug-report")
+
+        let cancel = app.buttons["Cancel"]
+        XCTAssertTrue(cancel.waitForExistence(timeout: 3))
+        cancel.click()
+
+        XCTAssertTrue(donate.waitForExistence(timeout: 5))
         keepScreenshot(app, name: "about-donation")
         app.typeKey("w", modifierFlags: .command)
     }
@@ -311,7 +326,7 @@ final class SaneBooksLaunchUITests: XCTestCase {
             "-ApplePersistenceIgnoreState",
             "YES",
             "--e2e-scene=\(scene)",
-            "--sane-no-keychain",
+            "--sane-no-keychain"
         ] + extraArguments
         addTeardownBlock {
             app.terminate()
