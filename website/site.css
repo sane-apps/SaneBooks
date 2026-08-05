@@ -291,11 +291,15 @@ section { position: relative; z-index: 1; padding: clamp(64px, 9vw, 120px) 0; }
 .watch-placeholder {
   position: absolute; inset: 0;
   display: grid; place-items: center;
+  width: 100%; height: 100%;
+  margin: 0; padding: 0; border: 0;
+  cursor: pointer; font: inherit;
   background:
     linear-gradient(180deg, rgba(12,11,9,.15), rgba(12,11,9,.55)),
     center / cover no-repeat url("/demo/overview-poster.jpg");
-  text-decoration: none; color: var(--paper);
+  color: var(--paper);
 }
+.watch-placeholder[hidden] { display: none; }
 .watch-placeholder .play {
   width: 84px; height: 84px; border-radius: 50%;
   display: grid; place-items: center;
