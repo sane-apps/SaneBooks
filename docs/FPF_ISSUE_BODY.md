@@ -145,8 +145,12 @@ No invented download counts or testimonials.
 
 ### Conflict of Interest Disclosure
 
-None. Applicant builds SaneApps consumer Mac utilities; no conflict with ZCG committee roles, competing funded checkout processors, or wallet vendors disclosed. ZecBooks is adjacent to (not competing as) CipherPay checkout and Zodl spend UX.
+None. I build SaneApps consumer Mac utilities. No conflict with ZCG committee roles, competing funded checkout processors, or wallet vendors. ZecBooks sits beside CipherPay checkout and Zodl spend UX — it is not a checkout processor or spending wallet.
 
 ### Community Forum Posting
+
+Forum notice for reviewers: https://forum.zcashcommunity.com/t/call-for-proposals-coinholder-directed-retroactive-grants-program-q3/56885/8
+
+(Posted as a CFP reply because trust level 0 blocked a standalone Retroactive Grants topic and raw URLs.)
 
 - [x] I understand it is my responsibility to post a link to this issue on the [Zcash Community Forums](https://forum.zcashcommunity.com/t/about-the-retroactive-grants-category/52106) after this application has been submitted so the community can give input. I understand this is required in order for the community to discuss and vote on this grant application. Note: If you are unable to post on the forum (for example, due to new user restrictions), please leave a comment below, and we will adjust your posting permissions.

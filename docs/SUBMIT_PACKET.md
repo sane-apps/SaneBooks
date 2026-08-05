@@ -2,7 +2,7 @@
 
 **FPF issue created:** https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/38
 
-Forum thread still required (Retroactive Grants category).
+Forum notice posted: https://forum.zcashcommunity.com/t/call-for-proposals-coinholder-directed-retroactive-grants-program-q3/56885/8
 
 ## 1) FPF GitHub issue
 

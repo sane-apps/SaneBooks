@@ -1,6 +1,6 @@
 # Retroactive Grant Application — ZecBooks
 
-**Status:** **FPF issue submitted** — https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/38 (2026-08-05). Forum thread still required in Retroactive Grants.  
+**Status:** **SUBMITTED** — FPF https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/38 · Forum https://forum.zcashcommunity.com/t/call-for-proposals-coinholder-directed-retroactive-grants-program-q3/56885/8  
 **Ask:** **$32,000** (owner-set). Soft risk: short completion window vs CipherPay-scale asks — defend with MIT + notarized provenance, not usage claims.  
 **Public product:** [zecbooks.app](https://zecbooks.app) · [ZecBooks-0.1.1.zip](https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip)  
 **Provenance:** [docs/ZecBooks-0.1.1-PROVENANCE.md](ZecBooks-0.1.1-PROVENANCE.md) (SHA-256 + Notarized Developer ID)
@@ -147,7 +147,7 @@ No invented download counts or testimonials.
 - [x] Notarized artifact + SHA-256 provenance
 - [x] In-app bug reporting + GitHub issue template
 - [x] FPF GitHub issue: https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/38
-- [ ] Forum thread (Retroactive Grants)
+- [x] Forum notice: https://forum.zcashcommunity.com/t/call-for-proposals-coinholder-directed-retroactive-grants-program-q3/56885/8
 - [x] Conflict disclosure: none
 
 ### Conflict of Interest Disclosure
@@ -156,7 +156,7 @@ None. Applicant builds SaneApps consumer Mac utilities; no conflict with ZCG com
 
 ### Community Forum Posting
 
-- [ ] Post FPF issue link to Retroactive Grants forum (pending login).
+- [x] Forum notice posted (CFP reply under TL0 constraints).
 
 ### Terms checklist (at submission)
 
