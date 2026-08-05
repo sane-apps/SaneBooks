@@ -1,0 +1,10 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>ZecBooks Updates</title>
+        <link>https://zecbooks.app/appcast.xml</link>
+        <description>Most recent changes with links to updates.</description>
+        <language>en</language>
+        <!-- Items will be added by release.sh when first Sparkle version ships -->
+    </channel>
+</rss>
