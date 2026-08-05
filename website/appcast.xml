@@ -6,10 +6,11 @@
         <description>Most recent changes with links to updates.</description>
         <language>en</language>
         <!-- Items will be added by release.sh when first Sparkle version ships -->
-            <item>
+            
+        <item>
             <title>0.1.1</title>
             <link>https://zecbooks.app/download</link>
-            <pubDate>Tue, 04 Aug 2026 22:04:12 -0400</pubDate>
+            <pubDate>Tue, 04 Aug 2026 22:07:38 -0400</pubDate>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <description>
                 <![CDATA[
@@ -22,9 +23,9 @@
             <enclosure url="https://dist.zecbooks.app/updates/SaneBooks-0.1.1.zip"
                        sparkle:version="2"
                        sparkle:shortVersionString="0.1.1"
-                       length="22150087"
+                       length="22150057"
                        type="application/octet-stream"
-                       sparkle:edSignature="823fQJqG8cUg8aDnkAS0/E+zqIuOaBFeeDsgA8+zcQF1gxIlFTqOIzB5UDqm48Lp/3xczo4IoanEqCECEUafDQ=="/>
+                       sparkle:edSignature="RCIwtU8aYq4pSEA6qC7/JBGZsDub2S0QRYWo2VNwEI7BkdCk92OJtnhyU5YZ7TVBCUtYD6gV/YShK5kQX7keAw=="/>
         </item>
 </channel>
 </rss>
