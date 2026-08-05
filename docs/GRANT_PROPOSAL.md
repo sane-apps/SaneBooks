@@ -50,6 +50,8 @@ Non-Wallet Applications
 
 ### Project Description / Problem / Motivation
 
+A lot of people assume privacy coins are about hiding from taxes. That is not why we built this, and it is not why most Zcash users care about shielded money. We believe people have a right to financial privacy and still want to keep clean books.
+
 Shielded ZEC already supports ZIP 316 viewing keys. Merchant checkout and wallets exist. The missing product is **accounting semantics**:
 
 - UFVK-class history so change notes are not booked as income
@@ -60,7 +62,7 @@ Shielded ZEC already supports ZIP 316 viewing keys. Merchant checkout and wallet
 Community demand thread:  
 https://forum.zcashcommunity.com/t/is-anyone-actually-using-viewing-keys-for-business-accounting/56300
 
-**Wedge:** CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs team treasury + approved payouts. **ZecBooks** is the Mac bookkeeping layer — local books, change≠income, expiring `.sanebooks` packs (Reader), not a permanent raw UFVK.
+**Wedge:** Private money, kept with honest books. CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs team treasury + approved payouts. **ZecBooks** is the Mac bookkeeping layer — local books, change≠income, expiring `.sanebooks` packs (Reader), not a permanent raw UFVK.
 
 ### What is implemented (publicly verifiable)
 
