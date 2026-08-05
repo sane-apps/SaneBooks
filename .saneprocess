@@ -15,16 +15,16 @@ tests:
   unit_destination: "platform=macOS"
   verify_timeout_seconds: 1800
 
-# GitHub Releases lane (Sparkle/site reserved; not used this pass).
+# Direct download + Sparkle on zecbooks.app (customer product name: ZecBooks).
 release:
   enabled: true
   team_id: M78L6FXD48
   signing_identity: "Developer ID Application"
   github_repo: sane-apps/SaneBooks
-  dist_host: dist.sanebooks.invalid
-  site_host: sanebooks.invalid
+  dist_host: dist.zecbooks.app
+  site_host: zecbooks.app
   r2_bucket: sanebar-downloads
-  use_sparkle: false
+  use_sparkle: true
   min_system_version: "14.0"
   upgrade_path_test:
     scheme: SaneBooks
@@ -56,4 +56,5 @@ mcps:
   - github
   - xcode
 
-website: false
+website: true
+website_domain: zecbooks.app

@@ -11,11 +11,12 @@ struct SaneBooksAboutView: View {
 
     var body: some View {
         SaneAboutView(
-            appName: "SaneBooks",
+            appName: "ZecBooks",
             githubRepo: "SaneBooks",
             licenses: [
                 SaneAboutLicenseCatalog.saneUI,
-                zcashSDKLicense,
+                SaneAboutLicenseCatalog.sparkle,
+                zcashSDKLicense
             ],
             supportAction: .init(title: "Donate on GitHub", url: Self.donationURL),
             labels: .init(

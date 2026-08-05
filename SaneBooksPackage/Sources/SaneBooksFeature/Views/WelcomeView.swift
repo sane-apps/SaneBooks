@@ -13,23 +13,23 @@ struct SaneBooksOnboardingView: View {
         Page(
             eyebrow: "SAFE, READ-ONLY ACCESS",
             title: "View activity without moving money",
-            summary: "SaneBooks uses a viewing key to build your records. It cannot send or spend your ZEC.",
+            summary: "ZecBooks uses a viewing key to build your records. It cannot send or spend your ZEC.",
             icon: "key.horizontal.fill",
             bullets: [
                 ("checkmark.shield.fill", "For complete records, use the full viewing key from your wallet. A receive-only key may miss spending and change."),
-                ("exclamationmark.triangle.fill", "Never enter recovery words or a spending key. SaneBooks will refuse them."),
-                ("person.2.slash.fill", "Give your accountant an export, not your viewing key. A viewing key can reveal past and future activity."),
+                ("exclamationmark.triangle.fill", "Never enter recovery words or a spending key. ZecBooks will refuse them."),
+                ("person.2.slash.fill", "Give your accountant an export, not your viewing key. A viewing key can reveal past and future activity.")
             ]
         ),
         Page(
             eyebrow: "STORED ON THIS MAC",
             title: "Keep your books on your Mac",
-            summary: "Your wallet access and accounting data stay local. SaneBooks does not upload your ledger or track how you use the app.",
+            summary: "Your wallet access and accounting data stay local. ZecBooks does not upload your ledger or track how you use the app.",
             icon: "lock.laptopcomputer",
             bullets: [
                 ("internaldrive.fill", "Your viewing key and books are stored only on this Mac and are not included in backups."),
-                ("network", "SaneBooks asks a Zcash server for transaction data. That server can see your internet address and may return incomplete data. You can choose your own server in Settings."),
-                ("dollarsign.circle.fill", "Enter the dollar value you want recorded. SaneBooks never guesses a past exchange rate."),
+                ("network", "ZecBooks asks a Zcash server for transaction data. That server can see your internet address and may return incomplete data. You can choose your own server in Settings."),
+                ("dollarsign.circle.fill", "Enter the dollar value you want recorded. ZecBooks never guesses a past exchange rate.")
             ]
         ),
         Page(
@@ -38,11 +38,11 @@ struct SaneBooksOnboardingView: View {
             summary: "Review and label transactions, then create a clear file for the period you choose.",
             icon: "doc.text.magnifyingglass",
             bullets: [
-                ("tag.fill", "Mark each item as income, expense, change, or fee. SaneBooks shows that a payment happened, but only you can confirm who it came from."),
-                ("lock.doc.fill", "The private SaneBooks file does not include your viewing key. Add a password and expiration date, and the app warns if the file was changed."),
-                ("doc.plaintext.fill", "PDF and CSV files are easy to open, but SaneBooks cannot protect them after you save or send them."),
+                ("tag.fill", "Mark each item as income, expense, change, or fee. ZecBooks shows that a payment happened, but only you can confirm who it came from."),
+                ("lock.doc.fill", "The private ZecBooks file does not include your viewing key. Add a password and expiration date, and the app warns if the file was changed."),
+                ("doc.plaintext.fill", "PDF and CSV files are easy to open, but ZecBooks cannot protect them after you save or send them.")
             ]
-        ),
+        )
     ]
 
     @Bindable var model: AppModel
@@ -62,14 +62,15 @@ struct SaneBooksOnboardingView: View {
                         pageCard
                         onboardingFooter
                     }
-                    .frame(maxWidth: 700)
+                    .saneBooksReadableColumn(containerWidth: geometry.size.width, max: 920)
                     .frame(
                         maxWidth: .infinity,
                         minHeight: geometry.size.height,
-                        alignment: .center
+                        alignment: .top
                     )
-                    .padding(.horizontal, 28)
-                    .padding(.vertical, 16)
+                    .padding(.horizontal, SaneBooksLayout.horizontalPadding)
+                    .padding(.top, 8)
+                    .padding(.bottom, 20)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -81,7 +82,7 @@ struct SaneBooksOnboardingView: View {
         HStack(spacing: 14) {
             SaneBooksBrandMark(size: 48)
             VStack(alignment: .leading, spacing: 2) {
-                Text("SaneBooks")
+                Text("ZecBooks")
                     .saneBooksFont(size: SaneBooksType.display, weight: .bold)
                     .foregroundStyle(.white)
                 Text("Private books for shielded Zcash")
@@ -112,7 +113,7 @@ struct SaneBooksOnboardingView: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text(page.eyebrow)
-                        .saneBooksFont(size: 12, weight: .bold)
+                        .saneBooksFont(size: 13, weight: .bold)
                         .foregroundStyle(Color.saneBooksAccentSoft)
                     Text(page.title)
                         .saneBooksFont(size: SaneBooksType.display, weight: .bold)
@@ -195,7 +196,7 @@ struct SaneBooksOnboardingView: View {
                     finalActions
                 }
             }
-            .frame(maxWidth: 700)
+            .frame(maxWidth: .infinity)
         }
         .padding(.horizontal, 4)
         .padding(.bottom, 4)
@@ -249,63 +250,72 @@ public struct WelcomeView: View {
     @Bindable var model: AppModel
 
     public var body: some View {
-        VStack(spacing: 22) {
-            Spacer(minLength: 24)
-            SaneBooksBrandMark(size: 96)
-                .padding(.bottom, 4)
-            VStack(spacing: 8) {
-                Text("SaneBooks")
-                    .saneBooksFont(size: SaneBooksType.hero, weight: .bold)
-                    .foregroundStyle(.white)
-                Text("Private books for shielded Zcash")
-                    .saneBooksFont(size: SaneBooksType.title, weight: .semibold)
-                    .foregroundStyle(Color.saneBooksAccentSoft)
-            }
+        GeometryReader { geometry in
+            let column = SaneBooksLayout.contentWidth(
+                for: geometry.size.width,
+                min: 520,
+                max: 720,
+                fillFraction: 0.72
+            )
+            VStack(spacing: 0) {
+                Spacer(minLength: max(20, geometry.size.height * 0.06))
 
-            VStack(spacing: 6) {
-                Text("Import a viewing key. Build a ledger. Share a proof")
-                    .saneBooksFont(size: SaneBooksType.body, weight: .medium)
-                    .foregroundStyle(SaneBooksTheme.pageIvory)
-                Text("pack with your accountant — without spend keys.")
-                    .saneBooksFont(size: SaneBooksType.body, weight: .medium)
-                    .foregroundStyle(SaneBooksTheme.pageIvory)
-                Text("Fastest: import from Zashi or Zodl — or paste a viewing key.")
+                VStack(spacing: 16) {
+                    SaneBooksBrandMark(size: 88)
+                        .padding(.bottom, 2)
+                    VStack(spacing: 8) {
+                        Text("ZecBooks")
+                            .saneBooksFont(size: SaneBooksType.hero, weight: .bold)
+                            .foregroundStyle(.white)
+                        Text("Private books for shielded Zcash")
+                            .saneBooksFont(size: SaneBooksType.title, weight: .semibold)
+                            .foregroundStyle(Color.saneBooksAccentSoft)
+                    }
+
+                    VStack(spacing: 8) {
+                        Text("Import a viewing key. Build a ledger. Share a proof pack with your accountant — without spend keys.")
+                            .saneBooksFont(size: SaneBooksType.body, weight: .medium)
+                            .foregroundStyle(SaneBooksTheme.pageIvory)
+                        Text("Fastest: import from Zashi or Zodl — or paste a viewing key.")
+                            .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
+                            .foregroundStyle(Color.saneBooksAccentSoft)
+                    }
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: column - 40)
+
+                    ActionButton("Import Viewing Key", icon: "key.fill") {
+                        model.goImport()
+                    }
+                    .frame(maxWidth: 340)
+
+                    Text("This app cannot spend ZEC. Never paste a seed phrase.")
+                        .saneBooksFont(size: SaneBooksType.body, weight: .medium)
+                        .foregroundStyle(SaneBooksTheme.pageIvory.opacity(0.92))
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 4)
+
+                    Button("What is a viewing key?") {
+                        model.showWhatIsViewingKey = true
+                    }
+                    .buttonStyle(.plain)
                     .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
-                    .foregroundStyle(Color.saneBooksAccentSoft)
-                    .padding(.top, 4)
+                    .foregroundStyle(Color.saneBooksAccent)
+
+                    Button("Open Proof Pack Reader") {
+                        model.goReader()
+                    }
+                    .buttonStyle(.plain)
+                    .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
+                    .foregroundStyle(Color.saneBooksAccent)
+                }
+                .frame(maxWidth: column)
+                .frame(maxWidth: .infinity)
+
+                Spacer(minLength: 20)
             }
-            .multilineTextAlignment(.center)
-
-            ActionButton("Import Viewing Key", icon: "key.fill") {
-                model.goImport()
-            }
-            .frame(width: 280)
-
-            Button("What is a viewing key?") {
-                model.showWhatIsViewingKey = true
-            }
-            .buttonStyle(.plain)
-            .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
-            .foregroundStyle(Color.saneBooksAccent)
-
-            Divider()
-                .overlay(Color.saneBooksAccent.opacity(0.35))
-                .padding(.horizontal, 80)
-
-            Text("This app cannot spend ZEC. Never paste a seed phrase.")
-                .saneBooksFont(size: SaneBooksType.body, weight: .medium)
-                .foregroundStyle(SaneBooksTheme.pageIvory)
-
-            Button("Open Proof Pack Reader") {
-                model.goReader()
-            }
-            .buttonStyle(.plain)
-            .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
-            .foregroundStyle(Color.saneBooksAccent)
-
-            Spacer(minLength: 24)
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .padding(.horizontal, 40)
         }
-        .padding(40)
         .sheet(isPresented: $model.showWhatIsViewingKey) {
             whatIsViewingKeySheet
         }
@@ -316,7 +326,7 @@ public struct WelcomeView: View {
             Text("What is a viewing key?")
                 .saneBooksFont(size: SaneBooksType.display, weight: .bold)
                 .foregroundStyle(.white)
-            Text("A viewing key lets SaneBooks read your private payment history and build books. It cannot move funds.")
+            Text("A viewing key lets ZecBooks read your private payment history and build books. It cannot move funds.")
                 .saneBooksFont(size: SaneBooksType.body, weight: .medium)
                 .foregroundStyle(SaneBooksTheme.pageIvory)
             Text("Use a full viewing key for complete books (income, change, and expenses). An incoming-only key can see payments received, but may mis-count change as income.")

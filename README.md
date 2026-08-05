@@ -1,7 +1,9 @@
-# SaneBooks
+# ZecBooks
+
+Repo path / GitHub: `sane-apps/SaneBooks`. Customer product name: **ZecBooks** · site: [zecbooks.app](https://zecbooks.app).
 
 <p align="center">
-  <img src="docs/marketing/v0.1.0/app-icon.png" width="96" alt="SaneBooks" />
+  <img src="docs/marketing/v0.1.0/app-icon.png" width="96" alt="ZecBooks" />
 </p>
 
 **Private books for shielded Zcash** — Mac-native, local-first. Import a viewing key, classify income / change / expense, and share a scoped proof pack with your accountant. **Cannot spend ZEC.**
@@ -9,7 +11,7 @@
 **[Download notarized v0.1.0](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0)** · **100% Transparent Code** under [PolyForm Shield](LICENSE) (not casual “open source”)
 
 ### Welcome
-<img src="docs/marketing/v0.1.0/01-welcome.png" alt="SaneBooks welcome — import a viewing key" width="1092" />
+<img src="docs/marketing/v0.1.0/01-welcome.png" alt="ZecBooks welcome — import a viewing key" width="1092" />
 
 ### Ledger
 <img src="docs/marketing/v0.1.0/02-ledger.png" alt="Classified ZEC ledger" width="1092" />
@@ -21,13 +23,13 @@
 <img src="docs/marketing/v0.1.0/04-share-disclosure.png" alt="Share proof pack disclosure audit" width="1092" />
 
 ### Accountant Reader
-<img src="docs/marketing/v0.1.0/05-reader.png" alt="SaneBooks Reader unlock" width="1092" />
+<img src="docs/marketing/v0.1.0/05-reader.png" alt="ZecBooks Reader unlock" width="1092" />
 
-CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs team treasury. **SaneBooks** is the Mac CPA layer: change ≠ income, and an expiring `.sanebooks` pack — not a permanent UFVK.
+CipherPay gets you paid privately. [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) runs team treasury. **ZecBooks** is the Mac CPA layer: change ≠ income, and an expiring `.sanebooks` pack — not a permanent UFVK.
 
 ## The problem
 
-Shielded Zcash already has viewing keys (ZIP 316). Merchants can take ZEC privately. What is missing is an **accountant layer**: classify change so it is not counted as income and hand a CPA a scoped artifact — not a permanent UFVK and not an unreviewed wallet dump. Fiat marks remain user/import supplied; SaneBooks does not currently claim a live price-source integration.
+Shielded Zcash already has viewing keys (ZIP 316). Merchants can take ZEC privately. What is missing is an **accountant layer**: classify change so it is not counted as income and hand a CPA a scoped artifact — not a permanent UFVK and not an unreviewed wallet dump. Fiat marks remain user/import supplied; ZecBooks does not currently claim a live price-source integration.
 
 Community signal: [Is anyone actually using viewing keys for business accounting?](https://forum.zcashcommunity.com/t/is-anyone-actually-using-viewing-keys-for-business-accounting/56300) (Jun 2026).
 
@@ -46,8 +48,8 @@ The Appearance settings include persisted **Standard**, **Large**, and **Extra L
 ## Non-goals
 
 - **Not a wallet** — no seeds, no spending keys, no send UI
-- **Not CipherPay** — CipherPay is merchant checkout / IVK payment detect; SaneBooks starts after money arrives
-- **Not ZBooks** — [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) is team/DAO treasury + SIWZ + approved ZIP 321 payouts (web). SaneBooks is solo owner → CPA on a local Mac with expiring proof packs
+- **Not CipherPay** — CipherPay is merchant checkout / IVK payment detect; ZecBooks starts after money arrives
+- **Not ZBooks** — [ZBooks](https://github.com/AustinChris1/ZBooks-SIWZ) is team/DAO treasury + SIWZ + approved ZIP 321 payouts (web). ZecBooks is solo owner → CPA on a local Mac with expiring proof packs
 - **Not tax software** — we export accountant-ready rows; the CPA owns filing
 - **Not “temporary UFVK access”** — viewing keys are irrevocable; share **packs**, not raw keys
 
@@ -65,7 +67,7 @@ The Appearance settings include persisted **Standard**, **Large**, and **Extra L
 
 NU6.3 / Ironwood activated on mainnet at height **3,428,143** ([ZIP 258](https://zips.z.cash/zip-0258)). New shielded receives land in Ironwood, not Orchard.
 
-SaneBooks links **ZcashLightClientKit 2.7.0-rc.4** (Ironwood receive/sync; tracking issue [#1806](https://github.com/zcash/zcash-swift-wallet-sdk/issues/1806) closed). Live path imports a **UFVK** as view-only and syncs against a configurable lightwalletd (default `zec.rocks:443`). Demo/offline still uses `MockSyncFacade` when `SANEBOOKS_FORCE_MOCK=1` or the fixture demo key is used.
+ZecBooks links **ZcashLightClientKit 2.7.0-rc.4** (Ironwood receive/sync; tracking issue [#1806](https://github.com/zcash/zcash-swift-wallet-sdk/issues/1806) closed). Live path imports a **UFVK** as view-only and syncs against a configurable lightwalletd (default `zec.rocks:443`). Demo/offline still uses `MockSyncFacade` when `SANEBOOKS_FORCE_MOCK=1` or the fixture demo key is used.
 
 UIVK/receivables mode cannot import via the public SDK yet — that path stays degraded/honest.
 
@@ -95,7 +97,7 @@ xcodegen generate
 
 Direct SwiftPM commands are focused diagnostics only, not release or E2E proof. Debug runs without the sandbox; the Release configuration enables App Sandbox, outbound networking, and user-selected files.
 
-Public distribution is the notarized [GitHub Release v0.1.0](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0). Mini `verify --ui` was green before that ship (122 tests including UI journeys). Sparkle auto-update and a marketing site remain off in this lane.
+Public distribution is the notarized [GitHub Release v0.1.0](https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0). Mini `verify --ui` was green before that ship (122 tests including UI journeys). Site live at https://zecbooks.app. Sparkle feed wired; first Sparkle binary ship still pending (`dist.zecbooks.app` attach + `release.sh`).
 
 ## Screenshots / visual audit
 

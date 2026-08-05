@@ -29,3 +29,4 @@ test_output*.txt
 
 # Release artifacts (local Mini pipeline output)
 releases/
+website/outputs/

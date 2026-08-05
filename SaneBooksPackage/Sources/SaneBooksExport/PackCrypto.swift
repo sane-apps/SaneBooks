@@ -74,7 +74,7 @@ public enum PackCrypto {
 
         public init(
             schemaVersion: Int = Int(PackCrypto.schemaVersion),
-            app: String = "SaneBooks",
+            app: String = "ZecBooks",
             network: ZcashNetwork,
             vaultFingerprint: String,
             vaultDisplayName: String,
@@ -329,7 +329,7 @@ public enum PackCrypto {
         let version = readUInt16(data, at: 8)
         if version == 1 {
             throw SaneBooksError.pack(
-                "This proof pack uses retired format 1. Ask the sender to re-export it with the current SaneBooks."
+                "This proof pack uses retired format 1. Ask the sender to re-export it with the current ZecBooks."
             )
         }
         guard version == schemaVersion else {

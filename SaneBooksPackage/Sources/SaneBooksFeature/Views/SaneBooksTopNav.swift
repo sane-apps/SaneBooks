@@ -57,7 +57,7 @@ public struct SaneBooksTopNav<Trailing: View>: View {
         HStack(spacing: 20) {
             HStack(spacing: 10) {
                 SaneBooksBrandMark(size: 28)
-                Text("SaneBooks")
+                Text("ZecBooks")
                     .saneBooksFont(size: SaneBooksType.title, weight: .bold)
                     .foregroundStyle(.white)
             }
@@ -69,7 +69,7 @@ public struct SaneBooksTopNav<Trailing: View>: View {
             trailing
             settingsControl
                 .accessibilityLabel("Open settings")
-                .accessibilityHint("Opens SaneBooks settings")
+                .accessibilityHint("Opens ZecBooks settings")
                 .accessibilityIdentifier("sanebooks.nav.settings")
         }
     }
@@ -90,7 +90,7 @@ public struct SaneBooksTopNav<Trailing: View>: View {
                 trailing
                 settingsControl
                     .accessibilityLabel("Open settings")
-                    .accessibilityHint("Opens SaneBooks settings")
+                    .accessibilityHint("Opens ZecBooks settings")
                     .accessibilityIdentifier("sanebooks.nav.settings")
             }
             .frame(maxWidth: .infinity, alignment: .trailing)

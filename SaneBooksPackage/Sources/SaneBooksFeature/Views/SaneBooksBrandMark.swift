@@ -67,6 +67,6 @@ public struct SaneBooksBrandMark: View {
             }
             .frame(width: size * 0.94, height: size * 0.94)
         }
-        .accessibilityLabel("SaneBooks")
+        .accessibilityLabel("ZecBooks")
     }
 }

@@ -20,25 +20,48 @@ public struct LedgerView: View {
     public var body: some View {
         if textScale > SaneBooksTextSize.standard.scale {
             VStack(spacing: 0) {
+                topNavChrome
                 ScrollView(.vertical, showsIndicators: true) {
                     ledgerContent
                 }
                 .accessibilityIdentifier("sanebooks.ledger.large-text-scroll")
                 footerChrome
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
-            ledgerContent
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    footerChrome
-                }
+            VStack(spacing: 0) {
+                topNavChrome
+                ledgerContent
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                footerChrome
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+    }
+
+    /// Keep primary nav outside the flexible ledger stack so the table floor
+    /// cannot compress brand / Vault / Proof Packs / Discreet / Settings away.
+    private var topNavChrome: some View {
+        SaneBooksTopNav(
+            mode: .main(selected: .vault),
+            onVault: { model.route = .ledger },
+            onProofPacks: { model.beginProofPack() }
+        ) {
+            discreetControl
+        }
+        .padding(.horizontal, 28)
+        .padding(.top, 20)
+        .padding(.bottom, 12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .fixedSize(horizontal: false, vertical: true)
+        .layoutPriority(100)
     }
 
     private var footerChrome: some View {
         footerBar
             .padding(.horizontal, 28)
-            .padding(.top, 10)
-            .padding(.bottom, 22)
+            .padding(.top, 8)
+            .padding(.bottom, 14)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(SaneBooksTheme.ink.opacity(0.96))
             .overlay(alignment: .top) {
@@ -47,46 +70,33 @@ public struct LedgerView: View {
                     .frame(height: 1)
             }
             .fixedSize(horizontal: false, vertical: true)
+            .layoutPriority(50)
     }
 
     private var ledgerContent: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            SaneBooksTopNav(
-                mode: .main(selected: .vault),
-                onVault: { model.route = .ledger },
-                onProofPacks: { model.beginProofPack() }
-            )
-            .padding(.bottom, 16)
+        VStack(alignment: .leading, spacing: 10) {
+            vaultIdentityRow
+                .fixedSize(horizontal: false, vertical: true)
 
-            VStack(alignment: .leading, spacing: 20) {
-                vaultIdentityRow
+            if model.showsIVKUpgradeBanner {
+                upgradeBanner
                     .fixedSize(horizontal: false, vertical: true)
-                    .layoutPriority(9)
-
-                if model.showsIVKUpgradeBanner {
-                    upgradeBanner
-                        .fixedSize(horizontal: false, vertical: true)
-                        .layoutPriority(8)
-                } else if let vault = model.vault, let banner = vault.capabilitiesBanner {
-                    degradedBanner(banner)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .layoutPriority(8)
-                }
-
-                SyncBanner(cursor: model.cursor)
+            } else if let vault = model.vault, let banner = vault.capabilitiesBanner {
+                degradedBanner(banner)
                     .fixedSize(horizontal: false, vertical: true)
-                    .layoutPriority(8)
-
-                summaryPanel
-                    .fixedSize(horizontal: false, vertical: true)
-                    .layoutPriority(7)
-
-                ledgerPanel
             }
+
+            SyncBanner(cursor: model.cursor)
+                .fixedSize(horizontal: false, vertical: true)
+
+            summaryPanel
+                .fixedSize(horizontal: false, vertical: true)
+
+            ledgerPanel
         }
         .padding(.horizontal, 28)
-        .padding(.top, 20)
         .padding(.bottom, 8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     // MARK: - Identity
@@ -123,23 +133,26 @@ public struct LedgerView: View {
                 }
             }
             Spacer(minLength: 0)
-            Button {
-                model.discreetMode.toggle()
-            } label: {
-                Label(
-                    model.discreetMode ? "Discreet on" : "Discreet",
-                    systemImage: model.discreetMode ? "eye.slash.fill" : "eye.slash"
-                )
-                .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
-                .foregroundStyle(model.discreetMode ? Color.saneBooksAccentSoft : .white)
-            }
-            .buttonStyle(.plain)
-            .help("Hide amounts for screen sharing")
-            .accessibilityLabel("Discreet mode")
-            .accessibilityValue(model.discreetMode ? "On; amounts are masked" : "Off; amounts are visible")
-            .accessibilityHint("Masks financial amounts for screen sharing")
-            .accessibilityIdentifier("sanebooks.privacy.discreet-mode")
         }
+    }
+
+    private var discreetControl: some View {
+        Button {
+            model.discreetMode.toggle()
+        } label: {
+            Label(
+                model.discreetMode ? "Discreet on" : "Discreet",
+                systemImage: model.discreetMode ? "eye.slash.fill" : "eye.slash"
+            )
+            .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
+            .foregroundStyle(model.discreetMode ? Color.saneBooksAccentSoft : .white)
+        }
+        .buttonStyle(.plain)
+        .help("Hide amounts for screen sharing")
+        .accessibilityLabel("Discreet mode")
+        .accessibilityValue(model.discreetMode ? "On; amounts are masked" : "Off; amounts are visible")
+        .accessibilityHint("Masks financial amounts for screen sharing")
+        .accessibilityIdentifier("sanebooks.privacy.discreet-mode")
     }
 
     private var vaultPickerBinding: Binding<VaultID?> {
@@ -216,7 +229,7 @@ public struct LedgerView: View {
             untaggedStat
         }
         .padding(.horizontal, 4)
-        .padding(.vertical, 16)
+        .padding(.vertical, 10)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             SaneGlassRoundedBackground(
@@ -235,8 +248,8 @@ public struct LedgerView: View {
     private var summaryDivider: some View {
         Rectangle()
             .fill(Color.saneBooksAccent.opacity(0.28))
-            .frame(width: 1, height: 52)
-            .padding(.horizontal, 22)
+            .frame(width: 1, height: 44)
+            .padding(.horizontal, 16)
     }
 
     private func summaryStat(title: String, zec: Decimal, usd: Decimal?, accent: Color) -> some View {
@@ -311,59 +324,57 @@ public struct LedgerView: View {
 
     private var ledgerPanel: some View {
         let filtered = model.filteredNotes
-        return VStack(alignment: .leading, spacing: 16) {
+        return VStack(alignment: .leading, spacing: 12) {
             filterBar
-            if filtered.isEmpty {
-                SaneEmptyState(
-                    icon: "tray",
-                    title: "No notes yet",
-                    description: "When shielded payments arrive, rows appear here automatically."
+                .padding(.horizontal, 2)
+
+            ZStack(alignment: .topLeading) {
+                SaneGlassRoundedBackground(
+                    cornerRadius: 14,
+                    tint: SaneBooksTheme.panelTint,
+                    tintStrength: 0.18,
+                    glowOpacity: 0.08
                 )
-                .frame(maxWidth: .infinity, minHeight: 80)
-            } else {
-                ScrollView(tableScrollAxes) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        ledgerHeaderRow
-                        LazyVStack(spacing: 0) {
-                            ForEach(filtered) { note in
-                                NoteRowView(
-                                    note: note,
-                                    truncateTxid: model.truncateTxidsInUI,
-                                    discreetMode: model.discreetMode
-                                ) {
-                                    model.openNote(note.id)
-                                }
-                                .padding(.horizontal, LedgerColumns.rowInset)
-                                .padding(.vertical, 4)
-                                .background(Color.white.opacity(0.035))
-                            }
-                        }
-                    }
-                    .frame(
-                        minWidth: 760 * textScale,
-                        maxWidth: .infinity,
-                        maxHeight: .infinity,
-                        alignment: .topLeading
+
+                if filtered.isEmpty {
+                    SaneEmptyState(
+                        icon: "tray",
+                        title: "No notes yet",
+                        description: "When shielded payments arrive, rows appear here automatically."
                     )
+                    .padding(18)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                } else {
+                    GeometryReader { geometry in
+                        ScrollView(.vertical, showsIndicators: true) {
+                            VStack(alignment: .leading, spacing: 0) {
+                                ledgerHeaderRow
+                                ForEach(filtered) { note in
+                                    NoteRowView(
+                                        note: note,
+                                        truncateTxid: model.truncateTxidsInUI,
+                                        discreetMode: model.discreetMode
+                                    ) {
+                                        model.openNote(note.id)
+                                    }
+                                    .padding(.horizontal, LedgerColumns.rowInset)
+                                    .padding(.vertical, 4)
+                                    .background(Color.white.opacity(0.035))
+                                }
+                            }
+                            .frame(minWidth: max(geometry.size.width - 28, 760 * textScale), alignment: .topLeading)
+                            .padding(14)
+                        }
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .accessibilityIdentifier("sanebooks.ledger.rows-scroll")
+                    }
+                    // Prefer giving the ledger the remaining window; never outrank top nav.
+                    .frame(minHeight: 280, maxHeight: .infinity)
                 }
-                .accessibilityIdentifier("sanebooks.ledger.rows-scroll")
-                .frame(minHeight: 80, maxHeight: .infinity)
-                .fixedSize(
-                    horizontal: false,
-                    vertical: textScale > SaneBooksTextSize.standard.scale
-                )
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .padding(18)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(
-            SaneGlassRoundedBackground(
-                cornerRadius: 14,
-                tint: SaneBooksTheme.panelTint,
-                tintStrength: 0.18,
-                glowOpacity: 0.08
-            )
-        )
     }
 
     private var tableScrollAxes: Axis.Set {
@@ -371,61 +382,59 @@ public struct LedgerView: View {
     }
 
     private var filterBar: some View {
-        ScrollView(.horizontal, showsIndicators: true) {
-            HStack(spacing: 18) {
-                labeledControl("Kind") {
-                    Picker("Kind filter", selection: kindBinding) {
-                        Text("All").tag(ClassificationKind?.none)
-                        ForEach([ClassificationKind.income, .expense, .change, .fee, .untagged], id: \.self) { k in
-                            Text(k.displayName).tag(Optional(k))
-                        }
+        HStack(alignment: .center, spacing: 16) {
+            labeledControl("Kind") {
+                Picker("Kind filter", selection: kindBinding) {
+                    Text("All").tag(ClassificationKind?.none)
+                    ForEach([ClassificationKind.income, .expense, .change, .fee, .untagged], id: \.self) { k in
+                        Text(k.displayName).tag(Optional(k))
                     }
-                    .labelsHidden()
-                    .frame(width: 128)
-                    .accessibilityIdentifier("sanebooks.filter.kind")
                 }
-
-                labeledControl("Year") {
-                    Picker("Year filter", selection: yearBinding) {
-                        Text("All years").tag(Int?.none)
-                        ForEach(availableYears, id: \.self) { y in
-                            Text(String(y)).tag(Optional(y))
-                        }
-                    }
-                    .labelsHidden()
-                    .frame(width: 110)
-                    .accessibilityIdentifier("sanebooks.filter.year")
-                }
-
-                Toggle("Untagged only", isOn: $model.filters.untaggedOnly)
-                    .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
-                    .foregroundStyle(.white)
-                    .toggleStyle(.checkbox)
-                    .padding(.top, 16)
-                    .accessibilityIdentifier("sanebooks.filter.untagged-only")
-
-                Color.clear.frame(width: 12)
-
-                TextField("Search memo or tag", text: $model.filters.searchText)
-                    .textFieldStyle(.plain)
-                    .saneBooksFont(size: SaneBooksType.body, weight: .medium)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .frame(minWidth: 200, maxWidth: 280)
-                    .background(Color.white.opacity(0.10))
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(Color.saneBooksAccent.opacity(0.35), lineWidth: 1)
-                    )
-                    .foregroundStyle(.white)
-                    .padding(.top, 16)
-                    .accessibilityLabel("Search notes by memo or tag")
-                    .accessibilityHint("Filters the ledger as you type")
-                    .accessibilityIdentifier("sanebooks.filter.search")
+                .labelsHidden()
+                .controlSize(.regular)
+                .frame(minWidth: 120, minHeight: 28)
+                .accessibilityIdentifier("sanebooks.filter.kind")
             }
-            .padding(.bottom, 4)
+
+            labeledControl("Year") {
+                Picker("Year filter", selection: yearBinding) {
+                    Text("All years").tag(Int?.none)
+                    ForEach(availableYears, id: \.self) { y in
+                        Text(String(y)).tag(Optional(y))
+                    }
+                }
+                .labelsHidden()
+                .controlSize(.regular)
+                .frame(minWidth: 120, minHeight: 28)
+                .accessibilityIdentifier("sanebooks.filter.year")
+            }
+
+            Toggle("Untagged only", isOn: $model.filters.untaggedOnly)
+                .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
+                .foregroundStyle(.white)
+                .toggleStyle(.checkbox)
+                .padding(.top, 18)
+                .accessibilityIdentifier("sanebooks.filter.untagged-only")
+
+            TextField("Search memo or tag", text: $model.filters.searchText)
+                .textFieldStyle(.plain)
+                .saneBooksFont(size: SaneBooksType.body, weight: .medium)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .frame(maxWidth: .infinity, minHeight: 32, alignment: .leading)
+                .background(Color.white.opacity(0.10))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .stroke(Color.saneBooksAccent.opacity(0.35), lineWidth: 1)
+                )
+                .foregroundStyle(.white)
+                .padding(.top, 18)
+                .accessibilityLabel("Search notes by memo or tag")
+                .accessibilityHint("Filters the ledger as you type")
+                .accessibilityIdentifier("sanebooks.filter.search")
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func labeledControl(_ title: String, @ViewBuilder content: () -> some View) -> some View {

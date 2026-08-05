@@ -7,6 +7,7 @@ public enum SaneBooksSettingsTab: String, SaneSettingsTab {
     case proofPacks = "Proof Packs"
     case appearance = "Appearance"
     case privacy = "Privacy"
+    case updates = "Updates"
     case advanced = "Advanced"
     case about = "About"
 
@@ -17,6 +18,7 @@ public enum SaneBooksSettingsTab: String, SaneSettingsTab {
         case .proofPacks: "doc.badge.plus"
         case .appearance: "paintbrush.fill"
         case .privacy: "hand.raised.fill"
+        case .updates: "arrow.down.app.fill"
         case .advanced: "gearshape.2.fill"
         case .about: "info.circle.fill"
         }
@@ -29,6 +31,7 @@ public enum SaneBooksSettingsTab: String, SaneSettingsTab {
         case .proofPacks: SaneSettingsIconSemantic.content.color
         case .appearance: SaneSettingsIconSemantic.appearance.color
         case .privacy: SaneSettingsIconSemantic.rules.color
+        case .updates: SaneSettingsIconSemantic.sync.color
         case .advanced: SaneSettingsIconSemantic.storage.color
         case .about: SaneSettingsIconSemantic.about.color
         }
@@ -55,6 +58,7 @@ public struct SettingsView: View {
             case .proofPacks: proofPacksTab
             case .appearance: appearanceTab
             case .privacy: privacyTab
+            case .updates: updatesTab
             case .advanced: advancedTab
             case .about: aboutTab
             }
@@ -448,6 +452,15 @@ public struct SettingsView: View {
                         isOn: $model.discreetMode
                     )
                 }
+            }
+            .padding(16)
+        }
+    }
+
+    private var updatesTab: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                SaneBooksSparkleSettingsSection()
             }
             .padding(16)
         }

@@ -1,0 +1,5 @@
+/download https://github.com/sane-apps/SaneBooks/releases/latest 302
+/privacy /privacy.html 200
+/privacy/ /privacy.html 200
+/guides /guides/index.html 200
+/guides/ /guides/index.html 200

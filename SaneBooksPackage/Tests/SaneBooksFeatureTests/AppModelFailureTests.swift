@@ -168,7 +168,7 @@ struct OnboardingDisclosureTests {
             "does not upload your ledger or track how you use the app",
             "never guesses a past exchange rate",
             "only you can confirm who it came from",
-            "SaneBooks cannot protect them after you save or send them",
+            "ZecBooks cannot protect them after you save or send them"
         ] {
             #expect(source.contains(disclosure))
         }
@@ -265,7 +265,7 @@ struct AppearanceAccessibilityTests {
             ("soft gold on elevated ink", NSColor(SaneBooksTheme.goldSoft), NSColor(SaneBooksTheme.inkElevated)),
             ("ivory on mid ink", NSColor(SaneBooksTheme.pageIvory.opacity(0.9)), NSColor(SaneBooksTheme.inkMid)),
             ("orange on ink", .systemOrange, NSColor(SaneBooksTheme.ink)),
-            ("red on ink", .systemRed, NSColor(SaneBooksTheme.ink)),
+            ("red on ink", .systemRed, NSColor(SaneBooksTheme.ink))
         ]
 
         for pair in pairs {
@@ -281,12 +281,12 @@ struct AppearanceAccessibilityTests {
         let channels = [
             foreground.redComponent * alpha + background.redComponent * (1 - alpha),
             foreground.greenComponent * alpha + background.greenComponent * (1 - alpha),
-            foreground.blueComponent * alpha + background.blueComponent * (1 - alpha),
+            foreground.blueComponent * alpha + background.blueComponent * (1 - alpha)
         ]
         let backgroundChannels = [
             background.redComponent,
             background.greenComponent,
-            background.blueComponent,
+            background.blueComponent
         ]
         let light = relativeLuminance(channels)
         let dark = relativeLuminance(backgroundChannels)

@@ -34,55 +34,56 @@ public struct ProofPackBuilderView: View {
             .padding(.bottom, 20)
 
             stepIndicator
-                .frame(maxWidth: 640)
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 12)
 
             GeometryReader { geometry in
                 ScrollView(.vertical, showsIndicators: true) {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Group {
-                            switch step {
-                            case 0: rangeStep
-                            case 1: includeStep
-                            default: reviewStep
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                        HStack(spacing: 12) {
-                            if step > 0 {
-                                ActionButton("Back", style: .secondary) { step -= 1 }
-                            }
-                            Spacer(minLength: 0)
-                            if step < 2 {
-                                ActionButton("Continue →") { continueToNextStep() }
-                                    .disabled(!canContinue)
-                            } else {
-                                ActionButton("Build pack") { buildAndShare() }
-                                    .disabled(!canBuild)
-                            }
-                        }
-                        if let visibleValidationMessage {
-                            Text(visibleValidationMessage)
-                                .saneBooksFont(size: 14, weight: .semibold)
-                                .foregroundStyle(.white)
-                                .accessibilityLabel("Cannot continue: \(visibleValidationMessage)")
+                    Group {
+                        switch step {
+                        case 0: rangeStep
+                        case 1: includeStep
+                        default: reviewStep
                         }
                     }
-                    .frame(maxWidth: 640)
-                    .frame(
-                        maxWidth: .infinity,
-                        minHeight: geometry.size.height,
-                        alignment: .center
-                    )
-                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .saneBooksReadableColumn(containerWidth: geometry.size.width, max: 980)
+                    .frame(maxWidth: .infinity, alignment: .top)
+                    .padding(.vertical, 4)
                 }
+            }
+
+            VStack(alignment: .leading, spacing: 10) {
+                if let visibleValidationMessage {
+                    Text(visibleValidationMessage)
+                        .saneBooksFont(size: 14, weight: .semibold)
+                        .foregroundStyle(.white)
+                        .accessibilityLabel("Cannot continue: \(visibleValidationMessage)")
+                }
+                HStack(spacing: 12) {
+                    if step > 0 {
+                        ActionButton("Back", style: .secondary) { step -= 1 }
+                    }
+                    Spacer(minLength: 0)
+                    if step < 2 {
+                        ActionButton("Continue →") { continueToNextStep() }
+                            .disabled(!canContinue)
+                    } else {
+                        ActionButton("Build pack") { buildAndShare() }
+                            .disabled(!canBuild)
+                    }
+                }
+            }
+            .padding(.top, 14)
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(Color.white.opacity(0.18))
+                    .frame(height: 1)
             }
         }
         .padding(.horizontal, 32)
         .padding(.top, 24)
-        .padding(.bottom, 28)
+        .padding(.bottom, 24)
         .saneBooksFont(size: 14, weight: .medium)
         .foregroundStyle(.white)
         .onAppear {
@@ -125,7 +126,7 @@ public struct ProofPackBuilderView: View {
                     .frame(width: 22, height: 22)
                 if step > index {
                     Image(systemName: "checkmark")
-                        .saneBooksFont(size: 10, weight: .bold)
+                        .saneBooksFont(size: 13, weight: .bold)
                         .foregroundStyle(.white)
                 } else {
                     Text("\(index + 1)")
@@ -274,8 +275,8 @@ public struct ProofPackBuilderView: View {
 
     private func panel(@ViewBuilder content: () -> some View) -> some View {
         content()
-            .padding(22)
-            .frame(maxWidth: 640, alignment: .leading)
+            .padding(24)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
             .background(Color.white.opacity(0.06))
             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             .overlay(
