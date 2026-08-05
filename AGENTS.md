@@ -4,9 +4,24 @@ Follow `~/AGENTS.md` first (cross-LLM policy source of truth). This file carries
 
 Philosophy: `~/SaneApps/meta/Brand/NORTH_STAR.md`
 
+## Customer Copy Rule (permanent)
+
+Default to words an ordinary person (and a CPA) already knows. Product jargon is allowed only after a plain definition on first use on that page.
+
+| Prefer | Avoid bare use of |
+|--------|-------------------|
+| bookkeeping, books, ledger, tax package, file for your accountant | proof pack (define once: “a locked file of selected rows — we call it a proof pack”) |
+| view-only key (can see transactions, cannot spend) | UFVK / UIVK without expansion |
+| recovery words / seed phrase | unexplained “seed” |
+| your books on this Mac | vault (or define: “local books file”) |
+| open the file in ZecBooks | Reader (or “Reader mode”) |
+
+Never leave design/dev notes on the public site (“warm ink”, “same format as SaneCite”, etc.).
+
 ## What Is This
 
-Mac-native, local-first accountant layer for shielded Zcash: import a viewing key → classify income/change/expense → export a scoped, expiring proof pack. Not a wallet. Not CipherPay.
+Mac bookkeeping for shielded Zcash: import a view-only key → classify income/change/expense → send your accountant a locked tax package of selected rows. Not a wallet.
+
 
 ## Source Of Truth
 
