@@ -6,5 +6,25 @@
         <description>Most recent changes with links to updates.</description>
         <language>en</language>
         <!-- Items will be added by release.sh when first Sparkle version ships -->
-    </channel>
+            <item>
+            <title>0.1.1</title>
+            <link>https://zecbooks.app/download</link>
+            <pubDate>Tue, 04 Aug 2026 22:04:12 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>First public ZecBooks build: branded desktop app, Sparkle updates via dist.zecbooks.app, ledger and proof-pack polish.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.zecbooks.app/updates/SaneBooks-0.1.1.zip"
+                       sparkle:version="2"
+                       sparkle:shortVersionString="0.1.1"
+                       length="22150087"
+                       type="application/octet-stream"
+                       sparkle:edSignature="823fQJqG8cUg8aDnkAS0/E+zqIuOaBFeeDsgA8+zcQF1gxIlFTqOIzB5UDqm48Lp/3xczo4IoanEqCECEUafDQ=="/>
+        </item>
+</channel>
 </rss>
