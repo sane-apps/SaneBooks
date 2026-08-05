@@ -10,6 +10,7 @@
 		1923DA7964C5C49EB1DACBE9 /* SaneBooksSync in Frameworks */ = {isa = PBXBuildFile; productRef = C06369846B734C3A058F04BD /* SaneBooksSync */; };
 		2E406937E8323ACD5B325902 /* SaneBooksSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9E803FCC4D43689A03EAA20 /* SaneBooksSyncTests.swift */; };
 		410FB6425BCF9B64DFE3D521 /* AppModelFailureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CA47EE559B18B9E26F79E4 /* AppModelFailureTests.swift */; };
+		4E6030B974F02307C93FE467 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 3E2E73F1D72ECAAEB20BA302 /* Sparkle */; };
 		651120101B4286F7DA2E8637 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E0BA60431E33232AF90CF2A0 /* PrivacyInfo.xcprivacy */; };
 		6648F4FADF82ACC510F58540 /* SaneBooksFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 6D9177DA89EB6E5A848C7321 /* SaneBooksFeature */; };
 		7C5F81C18B883545264BAFC1 /* ZashiSDKDatabaseImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92171FD3CA3A605F4752C7B /* ZashiSDKDatabaseImporterTests.swift */; };
@@ -78,6 +79,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6648F4FADF82ACC510F58540 /* SaneBooksFeature in Frameworks */,
+				4E6030B974F02307C93FE467 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,6 +207,7 @@
 			name = SaneBooks;
 			packageProductDependencies = (
 				6D9177DA89EB6E5A848C7321 /* SaneBooksFeature */,
+				3E2E73F1D72ECAAEB20BA302 /* Sparkle */,
 			);
 			productName = SaneBooks;
 			productReference = 2B8179267171AE09B8FD09F0 /* SaneBooks.app */;
@@ -280,6 +283,7 @@
 			mainGroup = 20AD28FF83CE0CE588CFADC8;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				B190654FF1E7C20364F02D79 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				8257C18DF1911B47349C4411 /* XCLocalSwiftPackageReference "SaneBooksPackage" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -425,7 +429,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -435,9 +439,9 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.saneapps.SaneBooks;
-				PRODUCT_NAME = SaneBooks;
+				PRODUCT_NAME = ZecBooks;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -456,7 +460,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -466,9 +470,9 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.saneapps.SaneBooks;
-				PRODUCT_NAME = SaneBooks;
+				PRODUCT_NAME = ZecBooks;
 				SDKROOT = macosx;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 6.0;
@@ -706,10 +710,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		B190654FF1E7C20364F02D79 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		204770517193B3335C72367C /* SaneBooksExport */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SaneBooksExport;
+		};
+		3E2E73F1D72ECAAEB20BA302 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B190654FF1E7C20364F02D79 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 		57293C17B58D28DD91DAFD98 /* SaneBooksCore */ = {
 			isa = XCSwiftPackageProductDependency;
