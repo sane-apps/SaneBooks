@@ -1,4 +1,14 @@
-# SESSION_HANDOFF — SaneBooks / ZecBooks
+# SESSION_HANDOFF
+
+## Current (2026-08-04)
+- Customer product name **ZecBooks** everywhere public: site, Sparkle appcast, dist zip `ZecBooks-0.1.1.zip` at https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip
+- Repo/module/bundle id remain `SaneBooks` / `com.saneapps.SaneBooks`
+- GitHub Release v0.1.0 removed; direct channel is Sparkle + dist.zecbooks.app
+- `release.product_name: ZecBooks` drives both `.app` and public zip basename via `DIST_ARTIFACT_NAME`
+- Still deferred: `website/demo/overview.mp4` real cut (poster only)
+
+
+## Prior notes
 
 **Updated:** 2026-08-04 ET (ZecBooks ship prep — dist attached, 0.1.1)
 **Branch:** `main` · remote `sane-apps/SaneBooks`

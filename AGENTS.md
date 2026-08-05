@@ -36,7 +36,7 @@ Mac-native, local-first accountant layer for shielded Zcash: import a viewing ke
 3. **No UVK in packs** — packs carry fingerprint + classified rows only.
 4. **Ironwood** — live sync uses linked ZcashLightClientKit `2.7.0-rc.4` (UFVK view-only). Demo still available via `SANEBOOKS_FORCE_MOCK=1`.
 5. **Visual** — SaneBooks uses **ZEC gold** (`#F4B728`) + warm ink locally via `SaneBooksTheme` / `.saneBooksBrand()`. Global SaneUI teal `#0DA3C7` stays for other apps. Settings text white ≥14pt; no gray `.secondary` in settings. Do **not** put the trademarked Zcash Z in the app icon.
-6. **Site / Sparkle / brand** — Customer name is **ZecBooks** (`PRODUCT_NAME` / display name). Repo/module/bundle id stay `SaneBooks` / `com.saneapps.SaneBooks` for continuity. Site: **https://zecbooks.app** (Pages `sanebooks-site`). Appcast: `https://zecbooks.app/appcast.xml`. Dist: `dist.zecbooks.app` (attach before first Sparkle `release.sh` ship).
+6. **Site / Sparkle / brand** — Customer name is **ZecBooks** (`PRODUCT_NAME` / display name). Repo/module/bundle id stay `SaneBooks` / `com.saneapps.SaneBooks` for continuity; public zip/dist artifact is `ZecBooks-X.Y.Z.zip` via `release.product_name`. Site: **https://zecbooks.app** (Pages `sanebooks-site`). Appcast: `https://zecbooks.app/appcast.xml`. Dist: `dist.zecbooks.app` (attach before first Sparkle `release.sh` ship).
 7. **Mini-first** — builds/tests/runtime on Mac Mini unless owner approves Air fallback.
 
 ## Build, Test, Release (Mini-first)
