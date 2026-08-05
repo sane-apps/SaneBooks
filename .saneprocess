@@ -25,6 +25,7 @@ release:
   site_host: zecbooks.app
   r2_bucket: sanebar-downloads
   use_sparkle: true
+  product_name: ZecBooks
   min_system_version: "14.0"
   upgrade_path_test:
     scheme: SaneBooks
