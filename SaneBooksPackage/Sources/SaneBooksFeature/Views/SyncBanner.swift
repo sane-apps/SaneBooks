@@ -13,25 +13,27 @@ struct SyncBanner: View {
     }
 
     private func banner(icon: String, text: String) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             Image(systemName: icon)
-                .saneBooksFont(size: 14, weight: .semibold)
+                .saneBooksFont(size: 13, weight: .semibold)
                 .foregroundStyle(Color.saneBooksAccentSoft)
             Text(text)
-                .saneBooksFont(size: 14, weight: .semibold)
+                .saneBooksFont(size: 13, weight: .semibold)
                 .foregroundStyle(.white)
-            Spacer(minLength: 0)
+                .lineLimit(1)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
         .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            Capsule(style: .continuous)
                 .fill(Color.white.opacity(0.08))
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            Capsule(style: .continuous)
                 .stroke(Color.saneBooksAccent.opacity(0.35), lineWidth: 1)
         )
+        .fixedSize(horizontal: true, vertical: true)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func bannerText(_ cursor: SyncCursor) -> String {

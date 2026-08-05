@@ -295,7 +295,7 @@ final class ZcashSDKEngine: @unchecked Sendable {
             with: nil,
             walletBirthday: birthday,
             for: .existingWallet,
-            name: "SaneBooks",
+            name: "ZecBooks",
             keySource: "sanebooks"
         )
 
@@ -305,7 +305,7 @@ final class ZcashSDKEngine: @unchecked Sendable {
                 with: nil,
                 walletBirthday: birthday,
                 for: .newWallet,
-                name: "SaneBooks",
+                name: "ZecBooks",
                 keySource: "sanebooks"
             )
             if retry == .seedRequired {

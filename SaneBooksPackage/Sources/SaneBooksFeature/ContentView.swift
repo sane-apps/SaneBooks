@@ -15,15 +15,17 @@ public struct ContentView: View {
                 storageFailure(startupError)
             } else {
                 routeContent
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
         }
         .frame(minWidth: 820, minHeight: 600)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .saneBooksBrand()
         .saneBooksTextScale(effectiveTextScale)
         .safeAreaInset(edge: .top, spacing: 0) {
-            if model.isEphemeralTestSession {
+            if model.isEphemeralTestSession, !launchArguments.contains("--e2e-marketing") {
                 Label("Test data — not saved", systemImage: "testtube.2")
-                    .saneBooksFont(size: 12, weight: .bold)
+                    .saneBooksFont(size: 13, weight: .bold)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
                     .frame(maxWidth: .infinity, minHeight: 24)
@@ -60,7 +62,7 @@ public struct ContentView: View {
                 .saneBooksFont(size: 15, weight: .medium)
                 .foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("SaneBooks will not fall back to temporary or in-memory bookkeeping storage.")
+            Text("ZecBooks will not fall back to temporary or in-memory bookkeeping storage.")
                 .saneBooksFont(size: 14, weight: .semibold)
                 .foregroundStyle(.white)
         }

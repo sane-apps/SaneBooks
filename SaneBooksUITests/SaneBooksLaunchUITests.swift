@@ -71,7 +71,7 @@ final class SaneBooksLaunchUITests: XCTestCase {
         app.launch()
 
         XCTAssertTrue(app.windows.firstMatch.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts["SaneBooks"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["ZecBooks"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Test data — not saved"].exists)
         XCTAssertTrue(app.staticTexts["Private books for shielded Zcash"].exists)
         XCTAssertTrue(app.buttons["Import Viewing Key"].isHittable)
@@ -272,7 +272,7 @@ final class SaneBooksLaunchUITests: XCTestCase {
             throw XCTSkip("Set SANEBOOKS_E2E_ZASHI_DB to run the private wallet-import scene matrix.")
         }
 
-        verifyPrivateZashiScene("zashi-ledger", expectedText: "SaneBooks", fixturePath: fixturePath)
+        verifyPrivateZashiScene("zashi-ledger", expectedText: "ZecBooks", fixturePath: fixturePath)
         verifyPrivateZashiScene("zashi-detail", expectedText: "Transaction", fixturePath: fixturePath)
         verifyPrivateZashiScene("zashi-pack", expectedText: "New Proof Pack", fixturePath: fixturePath)
         verifyPrivateZashiScene("zashi-share", expectedText: "Share Proof Pack", fixturePath: fixturePath)

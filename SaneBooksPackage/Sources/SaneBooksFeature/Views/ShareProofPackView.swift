@@ -31,45 +31,54 @@ public struct ShareProofPackView: View {
             )
             .padding(.bottom, 16)
 
-            ScrollView(.vertical, showsIndicators: true) {
-                VStack(alignment: .leading, spacing: 16) {
-                    if let draft = model.packDraft {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Pack: \(draft.vaultDisplayName) · \(draft.rangeStart.formatted(date: .abbreviated, time: .omitted)) → \(draft.rangeEnd.formatted(date: .abbreviated, time: .omitted))")
-                                .saneBooksFont(size: 14, weight: .semibold)
-                                .foregroundStyle(.white)
-                            if let hash = model.lastIntegrityHash {
-                                Text("File check: \(String(hash.prefix(8)))…\(String(hash.suffix(4)))")
-                                    .saneBooksFont(size: 14, weight: .medium)
+            GeometryReader { geometry in
+                let sideBySide = geometry.size.width >= 700
+                let columnsMinHeight = max(geometry.size.height - 56, 360)
+                ScrollView(.vertical, showsIndicators: true) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        if let draft = model.packDraft {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("Pack: \(draft.vaultDisplayName) · \(draft.rangeStart.formatted(date: .abbreviated, time: .omitted)) → \(draft.rangeEnd.formatted(date: .abbreviated, time: .omitted))")
+                                    .saneBooksFont(size: 14, weight: .semibold)
                                     .foregroundStyle(.white)
+                                if let hash = model.lastIntegrityHash {
+                                    Text("File check: \(String(hash.prefix(8)))…\(String(hash.suffix(4)))")
+                                        .saneBooksFont(size: 14, weight: .medium)
+                                        .foregroundStyle(.white)
+                                }
                             }
-                        }
 
-                        ViewThatFits(in: .horizontal) {
-                            HStack(alignment: .top, spacing: 18) {
-                                disclosureColumn(for: draft)
-                                    .frame(width: 350, alignment: .topLeading)
-                                exportColumn
-                                    .frame(width: 350, alignment: .topLeading)
+                            Group {
+                                if sideBySide {
+                                    HStack(alignment: .top, spacing: 20) {
+                                        disclosureColumn(for: draft)
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                        exportColumn
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                    }
+                                    .frame(maxWidth: .infinity, minHeight: columnsMinHeight, alignment: .top)
+                                } else {
+                                    VStack(alignment: .leading, spacing: 18) {
+                                        disclosureColumn(for: draft)
+                                        exportColumn
+                                    }
+                                    .frame(maxWidth: .infinity, minHeight: columnsMinHeight, alignment: .topLeading)
+                                }
                             }
-                            .frame(maxWidth: .infinity, alignment: .top)
-
-                            VStack(alignment: .leading, spacing: 18) {
-                                disclosureColumn(for: draft)
-                                exportColumn
-                            }
+                        } else {
+                            SaneBooksStatusBanner(
+                                kind: .error,
+                                message: "This proof-pack draft is no longer available. Return to the ledger and build a new pack."
+                            )
                         }
-                    } else {
-                        SaneBooksStatusBanner(
-                            kind: .error,
-                            message: "This proof-pack draft is no longer available. Return to the ledger and build a new pack."
-                        )
                     }
+                    .frame(width: geometry.size.width, alignment: .topLeading)
+                    .frame(minHeight: geometry.size.height, alignment: .topLeading)
+                    .padding(.bottom, 8)
                 }
-                .padding(.bottom, 8)
             }
 
-            HStack(spacing: 16) {
+            HStack(spacing: 12) {
                 ActionButton("Save File…") { save() }
                     .disabled(model.packDraft == nil)
                 if let url = model.lastSavedPackURL {
@@ -80,11 +89,11 @@ public struct ShareProofPackView: View {
                         errorMessage = nil
                     }
                 }
-                Spacer()
                 Button("Done") { model.route = .ledger }
                     .buttonStyle(.plain)
                     .saneBooksFont(size: 14, weight: .semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.white.opacity(0.85))
+                Spacer(minLength: 0)
             }
             .padding(.top, 16)
             .overlay(alignment: .top) {
@@ -208,7 +217,7 @@ public struct ShareProofPackView: View {
     private var formatWarning: String {
         switch format {
         case .sanebooks:
-            "Password-protected SaneBooks file. It leaves out your viewing key, can expire, and warns if the file changes. Anyone with the file and password can read it until then."
+            "Password-protected ZecBooks file. It leaves out your viewing key, can expire, and warns if the file changes. Anyone with the file and password can read it until then."
         case .csv:
             "Spreadsheet with no password or expiration. Anyone with the file can read, copy, edit, or resend every included row."
         case .pdf:

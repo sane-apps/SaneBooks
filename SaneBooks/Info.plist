@@ -12,6 +12,8 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundleDisplayName</key>
+	<string>ZecBooks</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -24,5 +26,17 @@
 	<string>14.0</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © SaneApps. All rights reserved.</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
+	<key>SUEnableSystemProfiling</key>
+	<false/>
+	<key>SUFeedURL</key>
+	<string>https://zecbooks.app/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=</string>
+	<key>SaneDistributionChannel</key>
+	<string>direct</string>
 </dict>
 </plist>

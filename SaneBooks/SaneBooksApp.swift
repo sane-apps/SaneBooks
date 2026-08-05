@@ -18,7 +18,7 @@ struct SaneBooksApp: App {
     }
 
     private var mainWindow: some Scene {
-        WindowGroup("SaneBooks", id: "main") {
+        WindowGroup("ZecBooks", id: "main") {
             ContentView(model: model)
                 .onAppear {
                     appDelegate.model = model
@@ -51,6 +51,12 @@ struct SaneBooksApp: App {
             // System Settings… (⌘,) comes from the Settings scene alone.
             // Do not add a second "SaneBooks Settings…" — it duplicated the menu and the
             // showSettingsWindow: selector was unreliable.
+
+            CommandGroup(after: .appInfo) {
+                Button("Check for Updates…") {
+                    UpdateService.shared.checkForUpdates()
+                }
+            }
 
             #if DEBUG
                 CommandMenu("Debug") {
@@ -89,6 +95,11 @@ private struct SaneBooksOpenSettingsBridge: View {
 final class SaneBooksAppDelegate: NSObject, NSApplicationDelegate {
     var model: AppModel?
 
+    func applicationDidFinishLaunching(_: Notification) {
+        // Start Sparkle on the direct channel (zecbooks.app appcast).
+        _ = UpdateService.shared
+    }
+
     func applicationDockMenu(_: NSApplication) -> NSMenu? {
         let menu = NSMenu()
 
@@ -100,6 +111,14 @@ final class SaneBooksAppDelegate: NSObject, NSApplicationDelegate {
         settings.keyEquivalentModifierMask = [.command]
         settings.target = self
         menu.addItem(settings)
+
+        let updates = NSMenuItem(
+            title: "Check for Updates…",
+            action: #selector(checkForUpdates),
+            keyEquivalent: ""
+        )
+        updates.target = self
+        menu.addItem(updates)
 
         menu.addItem(.separator())
 
@@ -134,6 +153,10 @@ final class SaneBooksAppDelegate: NSObject, NSApplicationDelegate {
     @objc private func openSettings() {
         NSApp.activate(ignoringOtherApps: true)
         NotificationCenter.default.post(name: .saneBooksOpenSettings, object: nil)
+    }
+
+    @objc private func checkForUpdates() {
+        UpdateService.shared.checkForUpdates()
     }
 
     @objc private func importViewingKey() {

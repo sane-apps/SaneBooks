@@ -175,7 +175,7 @@ public struct ImportViewingKeyView: View {
             Text("Recommended — import from your wallet")
                 .saneBooksFont(size: SaneBooksType.body, weight: .semibold)
                 .foregroundStyle(.white)
-            Text("Choose the file you exported from Zashi or Zodl. SaneBooks reads what it needs without changing your wallet.")
+            Text("Choose the file you exported from Zashi or Zodl. ZecBooks reads what it needs without changing your wallet.")
                 .saneBooksFont(size: SaneBooksType.body, weight: .medium)
                 .foregroundStyle(SaneBooksTheme.pageIvory)
                 .fixedSize(horizontal: false, vertical: true)

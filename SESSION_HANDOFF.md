@@ -1,34 +1,22 @@
-# SESSION_HANDOFF — SaneBooks
+# SESSION_HANDOFF — SaneBooks / ZecBooks
 
-**Updated:** 2026-08-04 ET (GitHub DMG lane A shipped)
-**Branch:** `main` · remote `sane-apps/SaneBooks` · HEAD `ee5cc42` · tag `v0.1.0` (binary built from `8583fbd`)
+**Updated:** 2026-08-04 ET (ZecBooks ship prep — dist attached, 0.1.1)
+**Branch:** `main` · remote `sane-apps/SaneBooks`
 
 ## Current outcome
 
-Public notarized GitHub Release **v0.1.0** is live for lane A (Sparkle and Mac App Store still off).
+- Customer product name **ZecBooks**. Repo/modules/bundle id `com.saneapps.SaneBooks` and `.sanebooks` stay.
+- Site https://zecbooks.app live. Appcast empty until 0.1.1 Sparkle ship.
+- **dist.zecbooks.app** attached: DNS AAAA `100::` proxied + `sane-dist` Worker route deployed (Mini `/health` → 200).
+- Version bumped to **0.1.1 (build 2)** for first Sparkle / ZecBooks-named binary ship.
 
-- Release: https://github.com/sane-apps/SaneBooks/releases/tag/v0.1.0
-- Asset: `SaneBooks-0.1.0.zip` (sha256 `54b922814f0269f94609b483d948b7cb2706a6b8cdc3254756a8e1142b964fe8`)
-- Notary Accepted: `fcd6111b-0267-48f2-9797-866fac68ac06`
-- Journey 10 receipt: `outputs/journey10/journey10-receipt-latest.json`
-- SaneProcess supporting fixes: `83820359` (RELEASE_ENABLED), `df890b40` (notary fail-closed), `56aae852`/`3c43626` (GitHub-only asset upload)
+## Still open
+
+- Finish `release.sh` for 0.1.1 (notarize + R2 + appcast) if not completed this session
+- Drop `website/demo/overview.mp4` when the overview cut is ready (poster only for now)
 
 ## Verification
 
-- `release_preflight`: proceed with caution (no blockers; monetization/product_id + untracked noise warnings)
-- Mini `verify --ui`: green before ship (122 tests)
-- Sandboxed Release: archive + codesign + notarize + staple
-- Clean install: quarantine → spctl Notarized Developer ID → offline demo → proof pack Share → Reader
-
-## Still open (not lane-A blockers)
-
-- Sparkle / `sanebooks.com` / Cloudflare Pages
-- Mac App Store
-- Full VoiceOver / Reduce Motion matrix
-- Grant submit: `$X`, FPF PolyForm letter, funded Ironwood receive
-- Encrypted Save File… disk write + Reader unlock of that exact file (Share UI proven; file dialog save not automated this pass)
-
-## Product opportunities, evidence-gated
-
-- **Now:** point customers/grant at the GitHub Release URL; keep Sparkle off until site lane is intentional.
-- **Next:** second notarized build for upgrade-path public proof; website download page; grant `$X` + FPF letter.
+- Mini unit verify 113 tests green; Package.resolved includes Sparkle
+- Visual: five marketing PNGs with ZecBooks chrome + ledger TopNav/Discreet
+- Dist worker route listed in wrangler deploy output for `dist.zecbooks.app/*`

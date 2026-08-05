@@ -15,7 +15,7 @@ public struct ReaderView: View {
         VStack(alignment: .leading, spacing: 20) {
             if model.vault != nil {
                 SaneBooksTopNav(
-                    mode: .nested(title: "SaneBooks Reader"),
+                    mode: .nested(title: "ZecBooks Reader"),
                     onVault: { model.route = .ledger },
                     onProofPacks: { model.beginProofPack() },
                     onBackToLedger: {
@@ -28,7 +28,7 @@ public struct ReaderView: View {
                 )
             } else {
                 HStack {
-                    Text("SaneBooks Reader · Proof Pack")
+                    Text("ZecBooks Reader · Proof Pack")
                         .saneBooksFont(size: SaneBooksType.display, weight: .bold)
                         .foregroundStyle(.white)
                     Spacer()
@@ -40,13 +40,31 @@ public struct ReaderView: View {
             }
 
             if let result = model.readerResult {
-                ScrollView(.vertical) {
-                    packContents(result)
-                        .padding(.bottom, 8)
+                GeometryReader { geometry in
+                    ScrollView(.vertical) {
+                        packContents(result, availableHeight: geometry.size.height)
+                            .padding(.bottom, 8)
+                    }
                 }
             } else {
-                unlockForm
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                GeometryReader { geometry in
+                    ScrollView(.vertical, showsIndicators: false) {
+                        unlockForm
+                            .saneBooksReadableColumn(
+                                containerWidth: geometry.size.width,
+                                min: 560,
+                                max: 880,
+                                alignment: .center
+                            )
+                            .frame(
+                                maxWidth: .infinity,
+                                minHeight: geometry.size.height,
+                                alignment: .top
+                            )
+                            .padding(.top, 12)
+                            .padding(.bottom, 8)
+                    }
+                }
             }
         }
         .padding(28)
@@ -77,7 +95,7 @@ public struct ReaderView: View {
                 .overlay(Color.white.opacity(0.18))
 
             HStack(spacing: 12) {
-                ActionButton("Choose File…", style: .secondary) {
+                ActionButton("Choose File…") {
                     let panel = NSOpenPanel()
                     panel.allowedContentTypes = [UTType(filenameExtension: "sanebooks") ?? .data]
                     panel.allowsMultipleSelection = false
@@ -143,7 +161,7 @@ public struct ReaderView: View {
             }
         }
         .padding(24)
-        .frame(maxWidth: 620, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             SaneGlassRoundedBackground(
                 cornerRadius: 18,
@@ -155,7 +173,7 @@ public struct ReaderView: View {
         )
     }
 
-    private func packContents(_ result: PackOpenResult) -> some View {
+    private func packContents(_ result: PackOpenResult, availableHeight: CGFloat) -> some View {
         let header = result.header
         let rows = result.payload.rows
         let rollups = result.payload.rollups
@@ -242,7 +260,7 @@ public struct ReaderView: View {
                 .saneBooksFont(size: 14, weight: .medium)
                 .foregroundStyle(.white)
             }
-            .frame(minHeight: 180, maxHeight: 360)
+            .frame(minHeight: 180, maxHeight: max(280, availableHeight * 0.55))
 
             HStack(spacing: 16) {
                 ActionButton("Export CSV", style: .secondary) {

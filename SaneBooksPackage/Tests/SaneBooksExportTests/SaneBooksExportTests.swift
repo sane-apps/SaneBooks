@@ -343,7 +343,7 @@ struct PackExportTests {
         legacyBytes[8] = 0
         legacyBytes[9] = 1
         #expect(throws: SaneBooksError.pack(
-            "This proof pack uses retired format 1. Ask the sender to re-export it with the current SaneBooks."
+            "This proof pack uses retired format 1. Ask the sender to re-export it with the current ZecBooks."
         )) {
             _ = try PackReader.open(Data(legacyBytes), passphrase: "correct horse battery")
         }

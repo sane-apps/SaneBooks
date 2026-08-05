@@ -80,7 +80,7 @@ struct NoteRowView: View {
 
     private var kindChip: some View {
         Text(kindLabel)
-            .saneBooksFont(size: 11, weight: .bold)
+            .saneBooksFont(size: 13, weight: .bold)
             .foregroundStyle(kindChipForeground)
             .padding(.horizontal, 7)
             .padding(.vertical, 3)
@@ -129,11 +129,10 @@ struct NoteRowView: View {
         }
 
         let amount = "\(formatZEC(abs(note.amountZEC))) ZEC"
-        let fiat: String
-        if let markedAmount = note.fiatMark?.amount(forZEC: abs(note.amountZEC)) {
-            fiat = "$\(formatFiat(markedAmount))"
+        let fiat = if let markedAmount = note.fiatMark?.amount(forZEC: abs(note.amountZEC)) {
+            "$\(formatFiat(markedAmount))"
         } else {
-            fiat = "no fiat mark"
+            "no fiat mark"
         }
         let memo = note.memo.displayText ?? "no memo"
         return "\(dateLabel), \(note.effectiveKind.displayName), \(amount), \(fiat), tag \(tagLabel), memo \(memo)."

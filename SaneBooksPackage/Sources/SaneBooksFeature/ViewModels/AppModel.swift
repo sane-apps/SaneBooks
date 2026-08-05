@@ -431,8 +431,8 @@ public final class AppModel {
                 }
             } catch let rollbackError {
                 throw SaneBooksError.persistFailed(
-                    "Vault import failed, and SaneBooks could not restore the previous Keychain entry. "
-                        + "A viewing-key entry may remain in this Mac's Keychain. Close SaneBooks and "
+                    "Vault import failed, and ZecBooks could not restore the previous Keychain entry. "
+                        + "A viewing-key entry may remain in this Mac's Keychain. Close ZecBooks and "
                         + "contact private support before retrying. (Cleanup error: "
                         + "\(rollbackError.localizedDescription))"
                 )

@@ -1,5 +1,5 @@
 {
-  "originHash" : "ab74badc1462372b01690885cdb7fcd350d8297ee821b21a3013498bbec7710e",
+  "originHash" : "55010f6ff91ce5fe598cd22ec212f7e9f499ab73e681f5652f7ffe5afd12a0dc",
   "pins" : [
     {
       "identity" : "grpc-swift",
@@ -16,6 +16,15 @@
       "location" : "https://github.com/sane-apps/SaneUI.git",
       "state" : {
         "revision" : "0894c053345a86b549ea1ee329a4ff3b20826061"
+      }
+    },
+    {
+      "identity" : "sparkle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sparkle-project/Sparkle",
+      "state" : {
+        "revision" : "79bc9e872948e47877e76f194cb0c8e0412b0b90",
+        "version" : "2.9.5"
       }
     },
     {

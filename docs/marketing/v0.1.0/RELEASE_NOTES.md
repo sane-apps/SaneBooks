@@ -1,11 +1,11 @@
-# SaneBooks 0.1.0
+# ZecBooks 0.1.0 (repo: SaneBooks)
 
 **Private books for shielded Zcash.** Mac-native. Local-first. Cannot spend.
 
-CipherPay gets you paid privately. ZBooks runs team treasury. **SaneBooks** is the CPA layer: classify change so it is not income, then hand your accountant an expiring `.sanebooks` pack — not a permanent viewing key.
+CipherPay gets you paid privately. ZBooks runs team treasury. **ZecBooks** is the CPA layer: classify change so it is not income, then hand your accountant an expiring `.sanebooks` pack — not a permanent viewing key.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/app-icon.png" width="96" alt="SaneBooks icon" />
+  <img src="https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/app-icon.png" width="96" alt="ZecBooks icon" />
 </p>
 
 ## Download
@@ -16,13 +16,13 @@ CipherPay gets you paid privately. ZBooks runs team treasury. **SaneBooks** is t
 sha256 54b922814f0269f94609b483d948b7cb2706a6b8cdc3254756a8e1142b964fe8
 ```
 
-Unzip → open `SaneBooks.app`. Gatekeeper should accept it (Notarized Developer ID). Prefer the ZIP from this release over unsigned local builds.
+Unzip → open `SaneBooks.app` (display name ZecBooks in later builds). Gatekeeper should accept it (Notarized Developer ID). Prefer the ZIP from this release over unsigned local builds.
 
 ---
 
 ## What you get
 
-| You need | SaneBooks does |
+| You need | ZecBooks does |
 |---|---|
 | Books without a spend wallet | Import a **UFVK** / Zashi-Zodl `data.db` — never a seed |
 | Change ≠ income | Tag Income / Expense / Change / Fee on the ledger |
@@ -63,7 +63,7 @@ Before save: what is included, what is left out, who it is for, and when it expi
 
 No vault key. No chain sync. Unlock the `.sanebooks` file with the passphrase you shared out of band.
 
-<img src="https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/05-reader.png" alt="SaneBooks Reader" width="1092" />
+<img src="https://raw.githubusercontent.com/sane-apps/SaneBooks/main/docs/marketing/v0.1.0/05-reader.png" alt="ZecBooks Reader" width="1092" />
 
 ---
 
@@ -95,10 +95,10 @@ Sparkle auto-update and a marketing site are **off** in this lane. Distribution 
 ## Not this product
 
 - Not a wallet — cannot send ZEC  
-- Not CipherPay — that is checkout; SaneBooks starts after money arrives  
-- Not ZBooks — that is team treasury + payouts; SaneBooks is solo owner → CPA on a local Mac  
+- Not CipherPay — that is checkout; ZecBooks starts after money arrives  
+- Not ZBooks — that is team treasury + payouts; ZecBooks is solo owner → CPA on a local Mac  
 - Not tax-filing software — your CPA owns the return  
 
 Community gap this ships into: [Is anyone actually using viewing keys for business accounting?](https://forum.zcashcommunity.com/t/is-anyone-actually-using-viewing-keys-for-business-accounting/56300)
 
-Built by [SaneApps](https://saneapps.com). I built SaneBooks.
+Built by [SaneApps](https://saneapps.com). I built ZecBooks (repo: SaneBooks).

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What is a viewing key? — ZecBooks</title>
+  <meta name="description" content="Learn how Zcash viewing keys differ from seeds and spend keys, and why ZecBooks only accepts view-only imports.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0c0b09">
+  <link rel="canonical" href="https://zecbooks.app/guides/what-is-a-viewing-key">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/guides/guides.css?v=20260804f">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="What is a viewing key? — ZecBooks">
+  <meta property="og:description" content="Learn how Zcash viewing keys differ from seeds and spend keys, and why ZecBooks only accepts view-only imports.">
+  <meta property="og:url" content="https://zecbooks.app/guides/what-is-a-viewing-key">
+  <meta property="og:site_name" content="ZecBooks">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://zecbooks.app/images/og-image.png?v=20260804f">
+  <meta property="og:image:secure_url" content="https://zecbooks.app/images/og-image.png?v=20260804f">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="ZecBooks welcome screen for private Zcash books on Mac">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@saneapps">
+  <meta name="twitter:url" content="https://zecbooks.app/guides/what-is-a-viewing-key">
+  <meta name="twitter:title" content="What is a viewing key? — ZecBooks">
+  <meta name="twitter:description" content="Learn how Zcash viewing keys differ from seeds and spend keys, and why ZecBooks only accepts view-only imports.">
+  <meta name="twitter:image" content="https://zecbooks.app/images/og-image.png?v=20260804f">
+  <meta name="twitter:image:alt" content="ZecBooks welcome screen for private Zcash books on Mac">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[
+    {"@type":"WebPage","@id":"https://zecbooks.app/guides/what-is-a-viewing-key#webpage","url":"https://zecbooks.app/guides/what-is-a-viewing-key","name":"What is a viewing key?","isPartOf":{"@type":"WebSite","name":"ZecBooks","url":"https://zecbooks.app"}},
+    {"@type":"Article","headline":"What is a viewing key?","description":"Learn how Zcash viewing keys differ from seeds and spend keys, and why ZecBooks only accepts view-only imports.","url":"https://zecbooks.app/guides/what-is-a-viewing-key","mainEntityOfPage":"https://zecbooks.app/guides/what-is-a-viewing-key","datePublished":"2026-08-04","dateModified":"2026-08-04","author":{"@type":"Organization","name":"SaneApps"},"publisher":{"@type":"Organization","name":"SaneApps","url":"https://saneapps.com/"}},
+    {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://zecbooks.app/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://zecbooks.app/guides"},{"@type":"ListItem","position":3,"name":"What is a viewing key","item":"https://zecbooks.app/guides/what-is-a-viewing-key"}]}
+  ]}</script></head>
+<body>
+  <a class="skip-link" href="#article">Skip to guide</a>
+  <header class="site-header"><nav class="site-nav wrap" aria-label="Main navigation">
+    <a class="brand" href="/" aria-label="ZecBooks home"><span class="mark" aria-hidden="true"><img src="/images/app-icon.png" alt="ZecBooks app icon"></span><span>ZecBooks</span></a>
+    <div class="nav-links"><a href="/#watch">Watch</a><a href="/#how">How it works</a><a href="/guides" aria-current="page">Guides</a><a class="button" href="https://github.com/sane-apps/SaneBooks/releases/latest">Download for Mac</a></div>
+    <details class="nav-menu"><summary>Menu</summary><div class="nav-menu-panel"><a href="/">Home</a><a href="/guides">Guides</a><a href="https://github.com/sane-apps/SaneBooks/releases/latest">Download for Mac</a></div></details>
+  </nav></header>  <main>
+    <header class="guide-hero article-hero article">
+      <p class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/guides">Guides</a> &rsaquo; What is a viewing key</p>
+      <p class="eyebrow">Basics</p>
+      <h1>What is a viewing key?</h1>
+      <p class="lede">A viewing key lets software see shielded notes that belong to you. It does not let anyone spend. ZecBooks is built around that line.</p>
+      <p class="byline">By SaneApps · August 4, 2026</p>
+    </header>
+    <article class="article" id="article">
+      <p class="answer-box"><strong>The short answer:</strong> A viewing key is read-only authority for shielded Zcash. Import a UFVK into ZecBooks. Never paste a seed phrase or spend key.</p>
+      
+      <section>
+        <h2>Why this matters</h2>
+        <p>Shielded Zcash separates <strong>seeing</strong> from <strong>spending</strong>. Accountants, auditors, and operators often need the books — not the keys that move funds. ZecBooks only speaks the viewing-key dialect.</p>
+      </section>
+      <section>
+        <h2>UFVK vs UIVK vs seed</h2>
+        <div class="table-wrap"><table><thead><tr><th>Key</th><th>What it can do</th><th>In ZecBooks</th></tr></thead><tbody>
+          <tr><td>UFVK</td><td>View incoming and change notes tied to the full viewing capability</td><td><span class="pill supported">Preferred</span></td></tr>
+          <tr><td>UIVK</td><td>Incoming-view only — incomplete books</td><td><span class="pill review">Degraded mode</span> with a permanent banner</td></tr>
+          <tr><td>Seed / spend key</td><td>Can spend ZEC</td><td><span class="pill unknown">Rejected</span></td></tr>
+        </tbody></table></div>
+      </section>
+      <section>
+        <h2>Safe mental model</h2>
+        <ol class="steps">
+          <li><h3>Treat the viewing key like a read-only ledger login</h3><p>Useful for classification and proof packs. Useless for sending ZEC.</p></li>
+          <li><h3>Keep the seed offline and elsewhere</h3><p>Wallet seed phrases belong in the wallet’s recovery flow — never in ZecBooks, email, chat, or a proof pack.</p></li>
+          <li><h3>Share packs, not keys</h3><p>When someone needs evidence, export a scoped proof pack. Do not forward the UFVK.</p></li>
+        </ol>
+      </section>
+      <section class="mistakes">
+        <h2>Common mistakes</h2>
+        <ul>
+          <li>Pasting a seed because “it is also a key.”</li>
+          <li>Emailing a UFVK “just for the accountant.”</li>
+          <li>Assuming UIVK gives a complete expense picture.</li>
+        </ul>
+      </section>
+    
+      <div class="cta-band">
+        <div>
+          <h2>Ready for Mac?</h2>
+          <p>Download ZecBooks and keep spend keys out of the books workflow.</p>
+        </div>
+        <a class="button" href="https://github.com/sane-apps/SaneBooks/releases/latest">Download for Mac</a>
+      </div>
+      <h2>Related guides</h2>
+      <div class="related">
+      <a href="/guides/export-ufvk-from-zashi">Export a UFVK from Zashi</a>
+      <a href="/guides/build-a-proof-pack">Build a proof pack</a>
+      <a href="/guides/share-proof-pack-safely">Share a proof pack safely</a>
+      </div>
+    </article>
+  </main>
+  <footer class="site-footer"><div class="wrap footer-grid">
+    <div>ZecBooks by SaneApps</div>
+    <div class="footer-links"><a href="/guides">Guides</a><a href="/privacy">Privacy</a><a href="https://github.com/sane-apps/SaneBooks">Source</a><a href="mailto:hi@saneapps.com">hi@saneapps.com</a></div>
+  </div></footer>
+</body>
+</html>

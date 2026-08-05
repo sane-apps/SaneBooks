@@ -30,9 +30,9 @@ public enum SaneBooksError: Error, Sendable, Equatable, LocalizedError {
     public var userFacingMessage: String {
         switch self {
         case .seedRejected:
-            "That looks like a seed phrase. SaneBooks only accepts viewing keys — never paste a seed."
+            "That looks like a seed phrase. ZecBooks only accepts viewing keys — never paste a seed."
         case .spendingKeyRejected:
-            "That looks like a spending key. SaneBooks only accepts viewing keys and cannot move funds."
+            "That looks like a spending key. ZecBooks only accepts viewing keys and cannot move funds."
         case .garbageKey:
             "That does not look like a viewing key. Paste a viewing key from your wallet, not a seed."
         case let .networkMismatch(expected, detected):
@@ -50,9 +50,9 @@ public enum SaneBooksError: Error, Sendable, Equatable, LocalizedError {
         case .tampered, .packTampered:
             "This file looks damaged or altered. Ask for a new pack."
         case let .unsupportedSchema(version), let .packUnsupportedVersion(version):
-            "Update SaneBooks to open this pack (format \(version))."
+            "Update ZecBooks to open this pack (format \(version))."
         case .invalidPack:
-            "That is not a SaneBooks proof pack."
+            "That is not a ZecBooks proof pack."
         case .noVault:
             "No books are open yet."
         case .cancelled:

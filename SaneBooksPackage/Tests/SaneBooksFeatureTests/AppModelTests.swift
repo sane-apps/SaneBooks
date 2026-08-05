@@ -207,7 +207,10 @@ struct AppModelTests {
             encoding: .utf8
         )
         #expect(manifest.contains("github_repo: sane-apps/SaneBooks"))
-        #expect(manifest.contains("use_sparkle: false"))
+        #expect(manifest.contains("use_sparkle: true"))
+        #expect(manifest.contains("site_host: zecbooks.app"))
+        #expect(manifest.contains("dist_host: dist.zecbooks.app"))
+        #expect(manifest.contains("website_domain: zecbooks.app"))
         #expect(
             manifest.range(of: #"release:\s*\n(?:[ \t]+.+\n)*[ \t]+enabled: true"#, options: .regularExpression) != nil
         )

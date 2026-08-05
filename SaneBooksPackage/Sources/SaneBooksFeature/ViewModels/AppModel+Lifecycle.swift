@@ -47,7 +47,7 @@ public extension AppModel {
             return model
         } catch {
             let model = AppModel(sync: sync)
-            model.startupError = "SaneBooks could not open its private ledger storage. No bookkeeping changes are allowed until this is fixed. Close the app, verify disk space and permissions, then reopen. (\(error.localizedDescription))"
+            model.startupError = "ZecBooks could not open its private ledger storage. No bookkeeping changes are allowed until this is fixed. Close the app, verify disk space and permissions, then reopen. (\(error.localizedDescription))"
             return model
         }
     }

@@ -119,7 +119,7 @@ public enum PDFSummaryExporter {
         }
 
         var mediaBox = CGRect(origin: .zero, size: pageSize)
-        let metadata = [kCGPDFContextTitle as String: "SaneBooks Proof Pack Summary"] as CFDictionary
+        let metadata = [kCGPDFContextTitle as String: "ZecBooks Proof Pack Summary"] as CFDictionary
         guard let context = CGContext(
             consumer: consumer,
             mediaBox: &mediaBox,
@@ -187,8 +187,8 @@ public enum PDFSummaryExporter {
 
     private static func drawPageHeader(pageIndex: Int, in context: CGContext) {
         let text = pageIndex == 0
-            ? "SaneBooks — Proof Pack Summary"
-            : "SaneBooks — Proof Pack Summary (cont.)"
+            ? "ZecBooks — Proof Pack Summary"
+            : "ZecBooks — Proof Pack Summary (cont.)"
         let style: PDFTextStyle = pageIndex == 0 ? .title : .continuationTitle
         drawLine(text, style: style, at: CGPoint(x: horizontalMargin, y: headerBaseline), in: context)
     }
