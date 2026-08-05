@@ -1,6 +1,6 @@
 # Retroactive Grant Application — ZecBooks
 
-**Status:** **CLEAR TO SHIP** for FPF GitHub issue + forum thread (owner must still approve the public posts). Public evidence matrix green 2026-08-05.  
+**Status:** **FPF issue submitted** — https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/38 (2026-08-05). Forum thread still required in Retroactive Grants.  
 **Ask:** **$32,000** (owner-set). Soft risk: short completion window vs CipherPay-scale asks — defend with MIT + notarized provenance, not usage claims.  
 **Public product:** [zecbooks.app](https://zecbooks.app) · [ZecBooks-0.1.1.zip](https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip)  
 **Provenance:** [docs/ZecBooks-0.1.1-PROVENANCE.md](ZecBooks-0.1.1-PROVENANCE.md) (SHA-256 + Notarized Developer ID)
@@ -50,7 +50,7 @@ Non-Wallet Applications
 
 ### Project Description / Problem / Motivation
 
-A lot of people assume privacy coins are about hiding from taxes. That is not why we built this, and it is not why most Zcash users care about shielded money. We believe people have a right to financial privacy and still want to keep clean books.
+A lot of people assume privacy coins are about hiding from taxes. That is not why I built this, and it is not why most Zcash users care about shielded money. I believe people have a right to financial privacy and still want to keep clean books.
 
 Shielded ZEC already supports ZIP 316 viewing keys. Merchant checkout and wallets exist. The missing product is **accounting semantics**:
 
@@ -146,7 +146,8 @@ No invented download counts or testimonials.
 - [x] MIT `LICENSE` + `CONTRIBUTING.md`
 - [x] Notarized artifact + SHA-256 provenance
 - [x] In-app bug reporting + GitHub issue template
-- [ ] FPF GitHub issue + forum thread (at submission)
+- [x] FPF GitHub issue: https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/38
+- [ ] Forum thread (Retroactive Grants)
 - [x] Conflict disclosure: none
 
 ### Conflict of Interest Disclosure
@@ -155,7 +156,7 @@ None. Applicant builds SaneApps consumer Mac utilities; no conflict with ZCG com
 
 ### Community Forum Posting
 
-- [ ] Post FPF issue link to Retroactive Grants forum after submission.
+- [ ] Post FPF issue link to Retroactive Grants forum (pending login).
 
 ### Terms checklist (at submission)
 

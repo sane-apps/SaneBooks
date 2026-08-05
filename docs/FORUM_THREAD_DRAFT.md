@@ -1,23 +1,7 @@
-# Q3 submit packet — ZecBooks
+# Forum draft (copy into Retroactive Grants)
 
-**FPF issue created:** https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/38
-
-Forum thread still required (Retroactive Grants category).
-
-## 1) FPF GitHub issue
-
-https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/new?template=grant_application.yaml
-
-Title: `Retroactive Grant Application - ZecBooks`
-
-Fill from `docs/GRANT_PROPOSAL.md`.
-
-## 2) Forum thread (after GitHub issue exists)
-
-Category: Community Grants → Retroactive Grants  
 Title: `Retroactive Grant Application: ZecBooks`
 
-```
 ## ZecBooks — Retroactive Grant Application (Q3 2026)
 
 **Ask:** $32,000 USD  
@@ -49,9 +33,3 @@ CipherPay gets you paid privately. ZBooks runs team treasury. ZecBooks is the Ma
 3. Read MIT LICENSE + CONTRIBUTING.md on GitHub
 
 Happy to answer questions in this thread during the review period.
-```
-
-## 3) Owner-gated next steps
-
-1. Create FPF issue + forum thread (needs explicit public-post approval)
-2. Website Pages deploy if hero copy is not live yet
