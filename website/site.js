@@ -20,17 +20,18 @@
   );
   document.querySelectorAll(".reveal, .flow-step").forEach((el) => io.observe(el));
 
-  // Prefer native video when the MP4 exists; otherwise keep poster CTA.
+  // Prefer native video when a real MP4 exists; otherwise keep poster CTA.
+  // Pages may soft-200 HTML for missing paths — require video content-type.
   const video = document.querySelector("#overview-video");
   const placeholder = document.querySelector("#overview-placeholder");
   if (video && placeholder) {
     const source = video.querySelector("source");
-    const probe = new Image(); // reuse network path check via fetch HEAD
     const url = source ? source.getAttribute("src") : "";
     if (url) {
       fetch(url, { method: "HEAD" })
         .then((res) => {
-          if (!res.ok) throw new Error("missing");
+          const type = (res.headers.get("content-type") || "").toLowerCase();
+          if (!res.ok || !type.includes("video")) throw new Error("missing");
           placeholder.hidden = true;
           video.hidden = false;
         })
