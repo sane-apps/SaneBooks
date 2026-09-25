@@ -207,6 +207,9 @@ impl Ledger {
                 existing.time = row.time;
                 existing.direction = row.direction;
                 existing.zatoshis = row.zatoshis;
+                if existing.classification.kind == "untagged" {
+                    existing.classification = row.classification;
+                }
                 existing.memo = row.memo.or(existing.memo.take());
             } else {
                 self.rows.push(row);
@@ -236,6 +239,12 @@ impl Ledger {
         map.insert("network".into(), Json::String(self.network.clone()));
         map.insert("mode".into(), Json::String(self.vault_mode.clone()));
         map.insert("rows".into(), Json::Number(self.rows.len().to_string()));
+        let change_rows = self
+            .rows
+            .iter()
+            .filter(|row| row.classification.kind == "change")
+            .count();
+        map.insert("changeRows".into(), Json::Number(change_rows.to_string()));
         map.insert(
             "incomeZatoshis".into(),
             Json::Number(self.income_zatoshis().to_string()),
@@ -296,6 +305,21 @@ mod tests {
         assert_eq!(ledger.income_zatoshis(), 0);
         ledger.classify("row", ClassKind::Income, None, None, None).unwrap();
         assert_eq!(ledger.income_zatoshis(), 5);
+    }
+
+    #[test]
+    fn rescan_marks_untagged_change_without_clobbering_income() {
+        let mut ledger = sample();
+        let mut scanned = ledger.rows[0].clone();
+        scanned.classification = Classification::change();
+        scanned.direction = "change".into();
+        ledger.merge_scan(vec![scanned]);
+        assert_eq!(ledger.rows[0].classification.kind, "change");
+        ledger.classify("row", ClassKind::Income, None, None, None).unwrap();
+        let mut again = ledger.rows[0].clone();
+        again.classification = Classification::change();
+        ledger.merge_scan(vec![again]);
+        assert_eq!(ledger.rows[0].classification.kind, "income");
     }
 
     fn sample() -> Ledger {

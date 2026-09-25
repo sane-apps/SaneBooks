@@ -67,7 +67,7 @@ pub async fn sync_viewing_key(
     let keys = scanning_keys(key, &network)?;
     let mut rows = Vec::new();
     let mut nullifier_index: HashMap<String, usize> = HashMap::new();
-    // Carry nullifiers forward. A later output is change only when this account spent in that transaction.
+    // Carry nullifiers so a later spend can mark change. A note on the change address is change even before that link exists.
     let mut tracked = Nullifiers::<u32>::empty();
     let mut unlinked = 0u32;
     let mut gaps = false;
@@ -258,6 +258,13 @@ async fn fetch_range(
     Ok(blocks)
 }
 
+
+fn note_is_change(spent_in_transaction: bool, scope: Option<Scope>) -> bool {
+    // The change address is the internal scope. Trial decryption knows that
+    // before this scan has linked the spend that funded the note.
+    spent_in_transaction || scope == Some(Scope::Internal)
+}
+
 fn absorb_block(
     transactions: &[zcash_client_backend::wallet::WalletTx<u32>],
     height: u32,
@@ -279,7 +286,7 @@ fn absorb_block(
                 height,
                 time.clone(),
                 zatoshis_sapling(output.note()),
-                output.is_change(),
+                note_is_change(output.is_change(), output.recipient_key_scope()),
                 output.nf().map(nullifier_hex),
             );
         }
@@ -293,7 +300,7 @@ fn absorb_block(
                 height,
                 time.clone(),
                 zatoshis_orchard(&output.note().0),
-                output.is_change(),
+                note_is_change(output.is_change(), output.recipient_key_scope()),
                 output.nf().map(nullifier_hex),
             );
         }
@@ -307,7 +314,7 @@ fn absorb_block(
                 height,
                 time.clone(),
                 zatoshis_orchard(&output.note().0),
-                output.is_change(),
+                note_is_change(output.is_change(), output.recipient_key_scope()),
                 output.nf().map(nullifier_hex),
             );
         }
@@ -418,6 +425,16 @@ pub fn host_of(endpoint: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+
+    #[test]
+    fn change_address_is_change_before_the_spend_is_linked() {
+        assert!(note_is_change(false, Some(Scope::Internal)));
+        assert!(note_is_change(true, Some(Scope::External)));
+        assert!(!note_is_change(false, Some(Scope::External)));
+        assert!(!note_is_change(false, None));
+    }
+
 
     #[test]
     fn uivk_scan_is_partial_even_at_the_tip() {
