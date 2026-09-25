@@ -36,6 +36,23 @@
 
 SaneBooks never implements send/propose spend paths on shipping configs.
 
+
+## Institutions
+
+This is the note for a compliance officer.
+
+ZecBooks cannot spend. The command-line tool refuses recovery words and spending keys at the door. Sync uses a unified full viewing key or an incoming viewing key and a lightwalletd you name with `--endpoint`. You can point that at a server you run. The program does not embed a host of ours.
+
+An incoming viewing key on the detection machine is the exchange pattern. The spending key stays on offline hardware. The tool can see shielded activity. It cannot move funds. Incoming-only keys do not show the spend side of history, and the ledger says the history is partial.
+
+The proof pack is a scoped, expiring file of classified rows. It does not contain the viewing key. Opening it does not import a key and does not sync the chain. CSV and PDF exports in the Mac app are a different, plaintext path. The `.sanebooks` pack is the encrypted one.
+
+A lightwalletd can omit blocks. The pack records the server host, the scanned height, and the chain tip it was shown. That is not an independent proof the server told the truth.
+
+The ledger and the key file stay on the machine that runs the command. Restrict that directory to the operator. There is no telemetry.
+
+Custodial signing, threshold spend authority, and shielded deposit watching are not this tool.
+
 ## Validation level and known limits
 
 - This repository has adversarial unit coverage for pack round trips, tampering, semantic inconsistency, unknown pools, limits, RNG failure, CSV formula prefixes, PDF renderer failure, storage failure/permissions/budget rollback, Keychain double-failure behavior, hostile evidence text, and Zashi identity/merge behavior.

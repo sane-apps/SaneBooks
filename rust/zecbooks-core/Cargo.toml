@@ -1,0 +1,26 @@
+[package]
+name = "zecbooks-core"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "View-only Zcash books: key refusal, ledger, and proof packs. Cannot spend."
+
+[dependencies]
+base64 = "0.22"
+chacha20poly1305 = "0.10"
+getrandom = "0.2"
+hex = "0.4"
+pbkdf2 = "0.12"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+time = { version = "0.3", features = ["formatting", "parsing"] }
+unicode-normalization = "0.1"
+uuid = { version = "1", features = ["v5"] }
+zcash_keys = { workspace = true, features = ["sapling", "orchard"] }
+zcash_protocol = { workspace = true }
+
+[dev-dependencies]
+zip32 = "0.2"

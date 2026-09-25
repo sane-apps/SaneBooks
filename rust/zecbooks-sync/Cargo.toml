@@ -1,0 +1,25 @@
+[package]
+name = "zecbooks-sync"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "View-only shielded scan. No send and no spend."
+
+[dependencies]
+hex = "0.4"
+jubjub = "0.10"
+orchard = { version = "0.15.0", default-features = false }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
+sapling = { package = "sapling-crypto", version = "=0.7.0" }
+tonic = { version = "0.14", default-features = false, features = ["transport"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+zcash_client_backend = { workspace = true, features = [
+    "lightwalletd-tonic-transport",
+    "lightwalletd-tonic-tls-webpki-roots",
+] }
+zcash_keys = { workspace = true, features = ["sapling", "orchard"] }
+zcash_protocol = { workspace = true }
+zecbooks-core = { path = "../zecbooks-core" }
+zip32 = "0.2"

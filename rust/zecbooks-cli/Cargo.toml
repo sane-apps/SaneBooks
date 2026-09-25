@@ -1,0 +1,19 @@
+[package]
+name = "zecbooks-cli"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "View-only Zcash books for institutions. Cannot spend."
+
+[[bin]]
+name = "zecbooks"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+zecbooks-core = { path = "../zecbooks-core" }
+zecbooks-sync = { path = "../zecbooks-sync" }

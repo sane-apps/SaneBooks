@@ -1,0 +1,18 @@
+# Build from this directory: docker build -f Containerfile .
+# The context is the Rust workspace only. Mount /data for the ledger and the viewing key.
+# Do not put key files in this directory before building.
+FROM rust:1.88-bookworm AS build
+WORKDIR /src
+COPY Cargo.toml Cargo.lock ./
+COPY zecbooks-core zecbooks-core
+COPY zecbooks-sync zecbooks-sync
+COPY zecbooks-cli zecbooks-cli
+RUN cargo build --release --locked
+
+FROM debian:bookworm-slim
+RUN useradd --create-home --uid 10001 zecbooks
+COPY --from=build /src/target/release/zecbooks /usr/local/bin/zecbooks
+USER zecbooks
+WORKDIR /data
+VOLUME /data
+ENTRYPOINT ["zecbooks"]

@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = ["zecbooks-core", "zecbooks-sync", "zecbooks-cli"]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+publish = false
+rust-version = "1.88"
+
+# librustzcash 0.24 / zcash_client_backend 0.24.0 already trial-decrypts
+# Sapling, Orchard, and Ironwood. Confirmed against the 0.24.0 tag source
+# (scanning.rs IronwoodDomain) before this pin. Do not float "latest".
+[workspace.dependencies]
+zcash_client_backend = "=0.24.0"
+zcash_keys = "=0.16.1"
+zcash_protocol = "=0.10.5"

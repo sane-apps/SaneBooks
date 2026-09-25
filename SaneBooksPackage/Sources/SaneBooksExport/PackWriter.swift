@@ -19,6 +19,7 @@ public enum PackWriter {
             passphrase: passphrase,
             salt: nil,
             nonceData: nil,
+            sealedAt: nil,
             randomBytes: { try PackCrypto.secureRandomBytes(count: $0) }
         )
     }
@@ -29,13 +30,15 @@ public enum PackWriter {
         draft: ProofPackDraft,
         passphrase: String,
         salt: Data,
-        nonceData: Data
+        nonceData: Data,
+        sealedAt: Date? = nil
     ) throws -> EncodedPack {
         try seal(
             draft: draft,
             passphrase: passphrase,
             salt: salt,
             nonceData: nonceData,
+            sealedAt: sealedAt,
             randomBytes: { try PackCrypto.secureRandomBytes(count: $0) }
         )
     }
@@ -45,6 +48,7 @@ public enum PackWriter {
         passphrase: String,
         salt: Data? = nil,
         nonceData: Data? = nil,
+        sealedAt: Date? = nil,
         randomBytes: PackRandomBytes
     ) throws -> EncodedPack {
         if draft.partialHistory, !draft.acknowledgePartialHistory {
@@ -60,6 +64,7 @@ public enum PackWriter {
             vaultDisplayName: draft.vaultDisplayName,
             rangeStart: draft.rangeStart,
             rangeEnd: draft.rangeEnd,
+            createdAt: sealedAt ?? Date(),
             recipientLabel: draft.recipientLabel,
             partialHistory: draft.partialHistory,
             vaultMode: draft.vaultMode,
