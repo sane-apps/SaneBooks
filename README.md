@@ -128,7 +128,7 @@ zecbooks pack --ledger ledger.json --from 2025-01-01 --to 2025-12-31 --expire 20
 zecbooks open --pack year.sanebooks --passphrase-file pass.txt
 ```
 
-Change rows can sit in the pack and stay out of the income total. A partial scan will not seal unless you pass `--acknowledge-partial`. Prefer `--key-file`. `--key` is accepted and warned, because the shell history keeps it.
+A full viewing key marks notes on the change address as change, and those rows stay out of the income total. An incoming-only key cannot see that address, so you classify those notes yourself. A partial scan will not seal unless you pass `--acknowledge-partial`. Prefer `--key-file`. `--key` is accepted and warned, because the shell history keeps it.
 
 Build and test from this repo:
 

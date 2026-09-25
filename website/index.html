@@ -128,7 +128,7 @@
             <ul class="rule-list">
               <li><strong>Spend stays in custody.</strong> This program refuses recovery words and spending keys. It cannot build a transaction.</li>
               <li><strong>Prefer an incoming viewing key</strong> on the detection host when the auditor does not need the spend side. A unified full viewing key also works, and it shows more. Treat either key like a bank-feed password.</li>
-              <li><strong>The pack is scoped and expiring.</strong> Change can sit in the file and stay out of the income total. A partial scan will not seal unless you acknowledge it. The pack records the server host and the height it trusted, because a lightwalletd can omit blocks.</li>
+              <li><strong>The pack is scoped and expiring.</strong> A full viewing key marks notes on the change address as change, and those rows stay out of the income total. An incoming-only key cannot see that address. A partial scan will not seal unless you acknowledge it. The pack records the server host and the height it trusted, because a lightwalletd can omit blocks.</li>
               <li><strong>This does not custody coins.</strong> It does not sign, and it is not a claim that any named exchange already holds shielded ZEC this way. It is the books those desks need once they do.</li>
             </ul>
           </div>
