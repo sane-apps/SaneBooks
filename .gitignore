@@ -15,6 +15,7 @@ xcuserdata/
 
 # Packs must never be committed (may contain confidential ledger rows)
 *.sanebooks
+!rust/testdata/swift-golden.sanebooks
 
 # Runtime / agent logs under outputs — keep visual-audit PNGs + VERDICT tracked
 outputs/**

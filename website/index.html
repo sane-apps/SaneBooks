@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZecBooks — Bookkeeping for shielded Zcash</title>
-  <meta name="description" content="Mac bookkeeping for shielded Zcash. Import a view-only key, keep private books on your Mac, and send your accountant a locked tax package — without wallet access.">
+  <title>ZecBooks: Books for shielded Zcash</title>
+  <meta name="description" content="View-only books for shielded Zcash. Exchanges and custodians keep the spending key offline, sync an incoming viewing key on their own server, and hand an auditor an expiring proof pack that cannot spend.">
   <link rel="canonical" href="https://zecbooks.app">
   <meta name="author" content="Mr. Sane">
   <meta name="robots" content="index, follow">
@@ -16,11 +16,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/site.css?v=20260805e">
+  <link rel="stylesheet" href="/site.css?v=20260925a">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ZecBooks — Bookkeeping for shielded Zcash">
-  <meta property="og:description" content="Mac bookkeeping for shielded Zcash. Import a view-only key, keep private books on your Mac, and send your accountant a locked tax package — without wallet access.">
+  <meta property="og:title" content="ZecBooks: Books for shielded Zcash">
+  <meta property="og:description" content="View-only books for shielded Zcash. Shield the coins. Keep the spending key offline. Give the auditor an expiring proof pack, not a key.">
   <meta property="og:url" content="https://zecbooks.app">
   <meta property="og:site_name" content="ZecBooks">
   <meta property="og:locale" content="en_US">
@@ -29,15 +29,15 @@
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="ZecBooks — bookkeeping for shielded Zcash on Mac">
+  <meta property="og:image:alt" content="ZecBooks — view-only books for shielded Zcash">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@MrSaneApps">
   <meta name="twitter:url" content="https://zecbooks.app">
-  <meta name="twitter:title" content="ZecBooks — Bookkeeping for shielded Zcash">
-  <meta name="twitter:description" content="Mac bookkeeping for shielded Zcash. Import a view-only key, keep private books on your Mac, and send your accountant a locked tax package — without wallet access.">
+  <meta name="twitter:title" content="ZecBooks: Books for shielded Zcash">
+  <meta name="twitter:description" content="View-only books for shielded Zcash. Shield the coins. Keep the spending key offline. Give the auditor an expiring proof pack, not a key.">
   <meta name="twitter:image" content="https://zecbooks.app/images/og-image-20260827.png?v=20260827-card">
-  <meta name="twitter:image:alt" content="ZecBooks — bookkeeping for shielded Zcash on Mac">
+  <meta name="twitter:image:alt" content="ZecBooks — view-only books for shielded Zcash">
 
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"ZecBooks","url":"https://zecbooks.app"}</script>
 <script type="application/ld+json">
@@ -45,9 +45,9 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "ZecBooks",
-    "operatingSystem": "macOS 14 Sonoma or later",
+    "operatingSystem": "macOS 14 or later, Windows, Linux",
     "applicationCategory": "FinanceApplication",
-    "description": "Mac bookkeeping for shielded Zcash. Keep private books from a view-only key, then send your accountant a locked file of the rows they need without wallet access.",
+    "description": "View-only books for shielded Zcash. A Mac app for a person and their accountant, and a zecbooks command for an exchange or custodian. Neither one can spend.",
     "url": "https://zecbooks.app",
     "downloadUrl": "https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip",
     "softwareVersion": "0.1.1",
@@ -55,7 +55,8 @@
     "author": { "@type": "Person", "name": "Mr. Sane", "url": "https://github.com/sane-apps" },
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "featureList": [
-      "View-only bookkeeping from a view-only key",
+      "View-only books from an incoming or full viewing key",
+      "zecbooks command for Windows, Linux, and macOS",
       "Classify income, change, expense, and fees",
       "Send a locked tax package to your accountant",
       "Accountant reviews selected rows without wallet access",
@@ -73,6 +74,7 @@
         <span>ZecBooks</span>
       </a>
       <div class="nav-links">
+        <a href="#institutions">Institutions</a>
         <a href="#watch">Watch</a>
         <a href="#how">How it works</a>
         <a href="#product">Product</a>
@@ -83,6 +85,7 @@
       <details class="nav-menu">
         <summary>Menu</summary>
         <div class="nav-menu-panel">
+          <a href="#institutions">Institutions</a>
           <a href="#watch">Watch</a>
           <a href="#how">How it works</a>
           <a href="#product">Product</a>
@@ -97,19 +100,57 @@
   <main id="main">
     <section class="hero" aria-label="Hero">
       <div class="hero-copy">
-        <p class="eyebrow">Mac bookkeeping · view-only · free</p>
+        <p class="eyebrow">View-only books · cannot spend</p>
         <h1>ZecBooks</h1>
-        <p class="hero-tag">Bookkeeping for shielded Zcash</p>
-        <p class="hero-badges" aria-label="Product promises">Cannot spend · Books stay on your Mac · Free download</p>
-        <p class="hero-lede">For people who want private Zcash and still keep honest books for their accountant. Import a view-only key, classify your books on your Mac, then send only the rows they need — without handing over your wallet.</p>
+        <p class="hero-tag">Shield the coins. Keep the books.</p>
+        <p class="hero-badges" aria-label="Product promises">Cannot spend · Your server or your Mac · No account</p>
+        <p class="hero-lede">For a person, an exchange, or a custodian who holds shielded Zcash and still has to show the books. A viewing key can see the activity. It cannot spend. You classify the rows, then hand over an expiring proof pack. The reader never gets a key.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip">Download for Mac</a>
-          <a class="button button-ghost" href="#watch">See how it works</a>
+          <a class="button button-primary" href="#institutions">For institutions</a>
+          <a class="button button-ghost" href="https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip">Download for Mac</a>
         </div>
         <p class="hero-note">Not a wallet. This app cannot spend ZEC. Never paste recovery words (a seed phrase).</p>
       </div>
       <div class="hero-stage">
         <img class="hero-shot" src="/images/shot-ledger.png?v=20260804f" width="1040" height="720" alt="ZecBooks ledger with classified shielded notes for bookkeeping">
+      </div>
+    </section>
+
+    <section id="institutions">
+      <div class="wrap">
+        <p class="section-kicker">For exchanges and custodians</p>
+        <h2 class="section-title">The public chain should not be your balance sheet</h2>
+        <div class="inst">
+          <div>
+            <p class="section-lede">ZEC held in the transparent pool is a published book. The balance, the deposits, and the withdrawals sit where anyone can read them. Shielding that ZEC moves the stock into the shielded pool. The chain no longer shows the size of the position or the movement inside the house. Customers can still receive ZEC. The desk can still face an audit.</p>
+            <p class="inst-copy">The audit is the hard part. A shielded balance is invisible to a bank, a regulator, or an outside accountant unless someone with a viewing key reads it. Giving them the spending key is how funds leave. Giving them a viewing key with no end date is how the history stays readable forever.</p>
+            <p class="inst-copy">ZecBooks is the disclosure layer, not the custody system. The spending key stays on the machine that can sign. A detection host holds an incoming viewing key: it can see shielded activity, and it cannot spend. That host runs <code>zecbooks</code> against a lightwalletd you operate. You name the server. There is no hidden one. You classify income, expense, change, and fees. You seal a proof pack for a date range. The pack expires. It does not contain the viewing key. The reviewer opens it with <code>zecbooks open</code> or with the Mac app. They cannot move funds.</p>
+            <ul class="rule-list">
+              <li><strong>Spend stays in custody.</strong> This program refuses recovery words and spending keys. It cannot build a transaction.</li>
+              <li><strong>Prefer an incoming viewing key</strong> on the detection host when the auditor does not need the spend side. A unified full viewing key also works, and it shows more. Treat either key like a bank-feed password.</li>
+              <li><strong>The pack is scoped and expiring.</strong> Change can sit in the file and stay out of the income total. A partial scan will not seal unless you acknowledge it. The pack records the server host and the height it trusted, because a lightwalletd can omit blocks.</li>
+              <li><strong>This does not custody coins.</strong> It does not sign, and it is not a claim that any named exchange already holds shielded ZEC this way. It is the books those desks need once they do.</li>
+            </ul>
+          </div>
+          <div class="inst-run">
+            <p class="label">On the detection host</p>
+            <pre class="cmd"><code>zecbooks check --key-file viewing.key
+zecbooks sync --key-file viewing.key \
+  --endpoint https://lwd.example:9067 \
+  --out ledger.json
+zecbooks classify --ledger ledger.json \
+  --id ROW --as change
+zecbooks pack --ledger ledger.json \
+  --from 2025-01-01 --to 2025-12-31 \
+  --expire 2027-04-15 \
+  --passphrase-file pass.txt \
+  --out year.sanebooks
+zecbooks open --pack year.sanebooks \
+  --passphrase-file pass.txt</code></pre>
+            <p class="inst-note">Windows, Linux, or macOS. One binary. The ledger and the key stay on that machine. Nothing phones home. Scan covers Sapling, Orchard, and Ironwood.</p>
+            <p class="inst-note">Build it from the <a href="https://github.com/sane-apps/SaneBooks">MIT source</a>, directory <code>rust/</code>. <code>cargo test --manifest-path rust/Cargo.toml --locked</code>. A container build is <code>docker build -f Containerfile .</code> from that directory. Mount the key and the ledger. Do not copy them into the image.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -245,11 +286,11 @@
         <div class="cta-band reveal">
           <div>
             <h2>Keep the books. Keep the keys.</h2>
-            <p>Download ZecBooks for Mac. Import a view-only key. Classify the ledger. Send your accountant a locked tax package — not your wallet.</p>
+            <p>A person downloads the Mac app. An exchange runs <code>zecbooks</code> on the detection host. Either way the reader gets a locked file, not a key, and nobody using ZecBooks can spend.</p>
           </div>
           <div class="cta-actions">
-            <a class="button button-primary" href="https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip">Download for Mac</a>
-            <a class="button button-ghost" href="/guides">Read the guides</a>
+            <a class="button button-primary" href="#institutions">Run the command</a>
+            <a class="button button-ghost" href="https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip">Download for Mac</a>
           </div>
         </div>
       </div>
@@ -258,7 +299,7 @@
 
   <footer class="site-footer">
     <div class="wrap footer-grid">
-      <div>ZecBooks by <a href="https://saneapps.com">SaneApps</a> · MIT open source · free Mac download</div>
+      <div>ZecBooks by <a href="https://saneapps.com">SaneApps</a> · MIT license · Mac app and the <code>zecbooks</code> command</div>
       <div class="footer-links">
         <a href="/guides">Guides</a>
         <a href="/privacy">Privacy</a>

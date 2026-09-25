@@ -423,6 +423,62 @@ section { position: relative; z-index: 1; padding: clamp(64px, 9vw, 120px) 0; }
   display: flex; justify-content: flex-end;
 }
 
+/* institutions */
+.inst {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: start;
+}
+.inst .section-lede { margin-bottom: 18px; }
+.inst-copy {
+  margin: 0 0 18px;
+  color: var(--muted);
+  max-width: 40rem;
+}
+.inst-copy code, .inst-note code, .cta-band code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  color: var(--paper);
+}
+.rule-list {
+  list-style: none;
+  padding: 8px 0 0;
+  margin: 8px 0 0;
+}
+.rule-list li {
+  padding: 16px 0;
+  border-top: 1px solid var(--gold-line);
+  color: var(--muted);
+}
+.rule-list strong { color: var(--paper); }
+.inst-run .label {
+  margin: 0 0 12px;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.cmd {
+  margin: 0;
+  padding: 22px 20px;
+  overflow-x: auto;
+  color: var(--paper-soft);
+  background: #090807;
+  border: 1px solid var(--gold-line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.inst-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 /* final CTA band */
 .cta-band {
   display: grid;
@@ -473,7 +529,7 @@ section { position: relative; z-index: 1; padding: clamp(64px, 9vw, 120px) 0; }
   .nav-menu { display: block; }
 }
 @media (max-width: 900px) {
-  .trust-rail, .guide-preview, .gallery, .proof-strip, .cta-band {
+  .trust-rail, .guide-preview, .gallery, .proof-strip, .cta-band, .inst {
     grid-template-columns: 1fr;
   }
   .hero-copy { max-width: none; }

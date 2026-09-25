@@ -113,6 +113,35 @@ Historical Mini captures live under:
 
 They are useful references, not proof of the current source. Current clean app-only, minimum-size user-journey captures live under `outputs/e2e/2026-08-04/final-green/cropped/`; build/test receipts live under `outputs/verify/` and are qualified in the current session handoff.
 
+
+## Institutions
+
+Custody and exchange teams run the `zecbooks` command on Windows, Linux, or macOS. It is a library and a binary, not a second desktop app. It cannot spend.
+
+Keep the spending key offline. Put an incoming viewing key, or a unified full viewing key, on the detection host. Pass `--endpoint` for that host's own lightwalletd. There is no hidden server. The ledger stays on the host. `zecbooks pack` writes an expiring `.sanebooks` proof pack. An accountant opens it with `zecbooks open` or with the Mac app. The pack does not contain the viewing key.
+
+```
+zecbooks check --key-file viewing.key
+zecbooks sync --key-file viewing.key --endpoint https://lwd.example:9067 --out ledger.json
+zecbooks classify --ledger ledger.json --id ROW --as change
+zecbooks pack --ledger ledger.json --from 2025-01-01 --to 2025-12-31 --expire 2026-04-15 --passphrase-file pass.txt --out year.sanebooks
+zecbooks open --pack year.sanebooks --passphrase-file pass.txt
+```
+
+Change rows can sit in the pack and stay out of the income total. A partial scan will not seal unless you pass `--acknowledge-partial`. Prefer `--key-file`. `--key` is accepted and warned, because the shell history keeps it.
+
+Build and test from this repo:
+
+```bash
+cargo test --manifest-path rust/Cargo.toml --locked
+```
+
+Container, from the `rust` directory: `docker build -f Containerfile .` Mount the key file and the ledger on `/data`. Do not copy them into the image.
+
+GitHub Actions builds a checksummed binary for Windows, Linux, and macOS. Nothing in the tool phones home.
+
+A viewing key reveals shielded history. Treat the key file like a bank-feed password.
+
 ## Docs
 
 | Doc | Purpose |

@@ -1,0 +1,56 @@
+name: zecbooks-cli
+
+on:
+  push:
+    paths:
+      - "rust/**"
+      - ".github/workflows/zecbooks-cli.yml"
+  pull_request:
+    paths:
+      - "rust/**"
+      - ".github/workflows/zecbooks-cli.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Test
+        run: cargo test --manifest-path rust/Cargo.toml --locked
+      - name: Release binary
+        run: cargo build --release --manifest-path rust/Cargo.toml --locked
+      - name: Zip and checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          bin="rust/target/release/zecbooks"
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            bin="rust/target/release/zecbooks.exe"
+          fi
+          mkdir -p dist
+          name="zecbooks-${{ matrix.os }}"
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            cp "$bin" "dist/zecbooks.exe"
+            (cd dist && zip "../${name}.zip" zecbooks.exe)
+          else
+            cp "$bin" dist/zecbooks
+            tar -C dist -czf "${name}.tar.gz" zecbooks
+          fi
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            sha256sum "${name}.zip" > "${name}.sha256"
+          else
+            shasum -a 256 "${name}.tar.gz" > "${name}.sha256" || sha256sum "${name}.tar.gz" > "${name}.sha256"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zecbooks-${{ matrix.os }}
+          path: |
+            zecbooks-*.tar.gz
+            zecbooks-*.zip
+            zecbooks-*.sha256
