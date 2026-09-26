@@ -33,8 +33,21 @@ pub struct ScanUpdate {
     pub endpoint_host: String,
 }
 
-pub fn history_is_partial(kind: KeyKind, synced: u32, tip: u32, gaps: bool, _unlinked: u32) -> bool {
-    kind == KeyKind::Uivk || synced < tip || gaps
+pub fn history_is_partial(kind: KeyKind, synced: u32, tip: u32, gaps: bool, unlinked: u32) -> bool {
+    kind == KeyKind::Uivk || synced < tip || gaps || unlinked > 0
+}
+
+/// A scan that begins after shielded activation is missing earlier history.
+/// Pass the account birthday when that height is the real start.
+pub fn late_start_is_partial(from_height: u32, sapling_activation: u32, birthday: Option<u32>) -> bool {
+    match birthday {
+        Some(birthday) => from_height > birthday,
+        None => from_height > sapling_activation,
+    }
+}
+
+pub fn sapling_activation(network: BooksNetwork) -> Result<u32, String> {
+    activation_height(&consensus(network), NetworkUpgrade::Sapling)
 }
 
 fn install_tls() {
@@ -441,6 +454,11 @@ mod tests {
         assert!(history_is_partial(KeyKind::Uivk, 10, 10, false, 0));
         assert!(!history_is_partial(KeyKind::Ufvk, 10, 10, false, 0));
         assert!(history_is_partial(KeyKind::Ufvk, 9, 10, false, 0));
+        assert!(history_is_partial(KeyKind::Ufvk, 10, 10, false, 1));
+        assert!(late_start_is_partial(3_496_000, 419_200, None));
+        assert!(!late_start_is_partial(419_200, 419_200, None));
+        assert!(!late_start_is_partial(3_080_001, 419_200, Some(3_080_001)));
+        assert!(late_start_is_partial(3_496_000, 419_200, Some(3_080_001)));
     }
 
     #[test]

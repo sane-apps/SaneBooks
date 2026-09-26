@@ -73,4 +73,28 @@ struct GoldenPackVectorTests {
         #expect(opened.payload.rows[0].party == "Client")
         #expect(opened.header.vaultDisplayName == "Treasury")
     }
+
+    @Test
+    func rustWriterPackOpensInTheMacReader() throws {
+        let parser = ISO8601DateFormatter()
+        parser.formatOptions = [.withInternetDateTime]
+        let packURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("rust/testdata/cli-mac.sanebooks")
+        let data = try Data(contentsOf: packURL)
+        let opened = try PackReader.open(
+            data,
+            passphrase: "correct horse battery",
+            now: parser.date(from: "2029-01-01T00:00:00Z")!
+        )
+        #expect(opened.payload.rows.count == 1)
+        #expect(opened.payload.rows[0].party == "Client")
+        #expect(opened.header.vaultDisplayName == "Desk")
+        #expect(opened.payload.attestation.lwdEndpointFingerprint == "lwd.example")
+        #expect(opened.payload.attestation.syncedToHeight == 3_500_000)
+        #expect(opened.header.partialHistory == false)
+    }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZecBooks: Books for shielded Zcash</title>
+  <title>ZecBooks: Shield your ZEC. Pass the audits.</title>
   <meta name="description" content="View-only books for shielded Zcash. Exchanges and custodians keep the spending key offline, sync an incoming viewing key on their own server, and hand an auditor an expiring proof pack that cannot spend.">
   <link rel="canonical" href="https://zecbooks.app">
   <meta name="author" content="Mr. Sane">
@@ -19,25 +19,25 @@
   <link rel="stylesheet" href="/site.css?v=20260925a">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ZecBooks: Books for shielded Zcash">
-  <meta property="og:description" content="View-only books for shielded Zcash. Shield the coins. Keep the spending key offline. Give the auditor an expiring proof pack, not a key.">
+  <meta property="og:title" content="ZecBooks: Shield your ZEC. Pass the audits.">
+  <meta property="og:description" content="Shield your ZEC. Pass the audits. Stay compliant.">
   <meta property="og:url" content="https://zecbooks.app">
   <meta property="og:site_name" content="ZecBooks">
   <meta property="og:locale" content="en_US">
-  <meta property="og:image" content="https://zecbooks.app/images/og-image-20260827.png?v=20260827-card">
-  <meta property="og:image:secure_url" content="https://zecbooks.app/images/og-image-20260827.png?v=20260827-card">
+  <meta property="og:image" content="https://zecbooks.app/images/og-image-20260925.png?v=20260925-inst">
+  <meta property="og:image:secure_url" content="https://zecbooks.app/images/og-image-20260925.png?v=20260925-inst">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="ZecBooks — view-only books for shielded Zcash">
+  <meta property="og:image:alt" content="ZecBooks. Shield your ZEC. Pass the audits. Stay compliant.">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@MrSaneApps">
   <meta name="twitter:url" content="https://zecbooks.app">
-  <meta name="twitter:title" content="ZecBooks: Books for shielded Zcash">
-  <meta name="twitter:description" content="View-only books for shielded Zcash. Shield the coins. Keep the spending key offline. Give the auditor an expiring proof pack, not a key.">
-  <meta name="twitter:image" content="https://zecbooks.app/images/og-image-20260827.png?v=20260827-card">
-  <meta name="twitter:image:alt" content="ZecBooks — view-only books for shielded Zcash">
+  <meta name="twitter:title" content="ZecBooks: Shield your ZEC. Pass the audits.">
+  <meta name="twitter:description" content="Shield your ZEC. Pass the audits. Stay compliant.">
+  <meta name="twitter:image" content="https://zecbooks.app/images/og-image-20260925.png?v=20260925-inst">
+  <meta name="twitter:image:alt" content="ZecBooks. Shield your ZEC. Pass the audits. Stay compliant.">
 
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"ZecBooks","url":"https://zecbooks.app"}</script>
 <script type="application/ld+json">
@@ -51,7 +51,7 @@
     "url": "https://zecbooks.app",
     "downloadUrl": "https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip",
     "softwareVersion": "0.1.1",
-    "image": "https://zecbooks.app/images/og-image-20260827.png?v=20260827-card",
+    "image": "https://zecbooks.app/images/og-image-20260925.png?v=20260925-inst",
     "author": { "@type": "Person", "name": "Mr. Sane", "url": "https://github.com/sane-apps" },
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "featureList": [
@@ -128,7 +128,7 @@
             <ul class="rule-list">
               <li><strong>Spend stays in custody.</strong> This program refuses recovery words and spending keys. It cannot build a transaction.</li>
               <li><strong>Prefer an incoming viewing key</strong> on the detection host when the auditor does not need the spend side. A unified full viewing key also works, and it shows more. Treat either key like a bank-feed password.</li>
-              <li><strong>The pack is scoped and expiring.</strong> A full viewing key marks notes on the change address as change, and those rows stay out of the income total. An incoming-only key cannot see that address. A partial scan will not seal unless you acknowledge it. The pack records the server host and the height it trusted, because a lightwalletd can omit blocks.</li>
+              <li><strong>The pack is scoped and expiring.</strong> A full viewing key marks notes on the change address as change, and those rows stay out of the income total. An incoming-only key cannot see that address. A partial scan will not seal unless you acknowledge it. A start after shielded activation is partial unless you pass <code>--birthday</code> for the account. The pack records the server host and the height it trusted, because a lightwalletd can omit blocks.</li>
               <li><strong>This does not custody coins.</strong> It does not sign, and it is not a claim that any named exchange already holds shielded ZEC this way. It is the books those desks need once they do.</li>
             </ul>
           </div>

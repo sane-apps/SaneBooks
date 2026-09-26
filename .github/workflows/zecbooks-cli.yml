@@ -37,7 +37,7 @@ jobs:
           name="zecbooks-${{ matrix.os }}"
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             cp "$bin" "dist/zecbooks.exe"
-            (cd dist && zip "../${name}.zip" zecbooks.exe)
+            python -c "import zipfile; z=zipfile.ZipFile('${name}.zip','w',zipfile.ZIP_DEFLATED); z.write('dist/zecbooks.exe','zecbooks.exe'); z.close()"
           else
             cp "$bin" dist/zecbooks
             tar -C dist -czf "${name}.tar.gz" zecbooks
