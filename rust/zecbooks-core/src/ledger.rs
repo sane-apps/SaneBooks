@@ -257,6 +257,10 @@ impl Ledger {
             "syncedToHeight".into(),
             Json::Number(self.synced_to_height.to_string()),
         );
+        map.insert(
+            "scannedFromHeight".into(),
+            Json::Number(self.scanned_from_height.to_string()),
+        );
         Json::Object(map)
     }
 }

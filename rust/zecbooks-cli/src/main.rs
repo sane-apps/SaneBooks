@@ -12,7 +12,7 @@ use clap::{Parser, Subcommand};
 use zecbooks_core::{
     inspect, open, parse_date, seal, BooksNetwork, ClassKind, Json, Ledger, SealOptions,
 };
-use zecbooks_sync::sync_viewing_key;
+use zecbooks_sync::{late_start_is_partial, sapling_activation, sync_viewing_key};
 
 #[derive(Parser)]
 #[command(
@@ -48,6 +48,9 @@ enum Command {
         network: String,
         #[arg(long)]
         from_height: Option<u32>,
+        /// Height where this account first existed. A later start is partial history.
+        #[arg(long)]
+        birthday: Option<u32>,
         #[arg(long, default_value = "Books")]
         name: String,
     },
@@ -144,6 +147,7 @@ async fn run(cli: Cli) -> Result<Json, String> {
             out,
             network,
             from_height,
+            birthday,
             name,
         } => {
             let text = read_key(key_file, key)?;
@@ -179,7 +183,9 @@ async fn run(cli: Cli) -> Result<Json, String> {
             }
             ledger.synced_to_height = update.synced_to_height;
             ledger.chain_tip_height = Some(update.chain_tip_height);
-            ledger.partial_history = update.partial_history || checked.kind == zecbooks_core::KeyKind::Uivk;
+            let activation = sapling_activation(checked.network)?;
+            ledger.partial_history = update.partial_history
+                || late_start_is_partial(ledger.scanned_from_height, activation, birthday);
             ledger.unlinked_spends = update.unlinked_spends;
             ledger.ironwood_capable = checked.has_orchard;
             ledger.merge_scan(update.rows);
