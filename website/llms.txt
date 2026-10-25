@@ -1,0 +1,14 @@
+# ZecBooks
+
+> View-only books for shielded Zcash. Exchanges and custodians keep the spending key offline, sync an incoming viewing key on their own server, and hand an auditor an expiring proof pack that cannot spend.
+
+## Key pages
+- https://zecbooks.app
+- https://zecbooks.app/privacy
+- https://zecbooks.app/guides
+- https://zecbooks.app/guides/what-is-a-viewing-key
+- https://zecbooks.app/guides/export-ufvk-from-zashi
+- https://zecbooks.app/guides/build-a-proof-pack
+- https://zecbooks.app/guides/share-proof-pack-safely
+- https://zecbooks.app/guides/proof-pack-vs-csv
+- https://zecbooks.app/guides/open-proof-pack-reader
