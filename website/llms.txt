@@ -1,14 +1,17 @@
 # ZecBooks
 
-> View-only books for shielded Zcash. Exchanges and custodians keep the spending key offline, sync an incoming viewing key on their own server, and hand an auditor an expiring proof pack that cannot spend.
+> View-only books for shielded Zcash. A free Mac app (MIT license) for a person and their accountant, and a zecbooks command for exchanges and custodians on Windows, Linux and macOS. It classifies income, change, expense and fees, then hands a reviewer a locked, expiring file. It cannot spend.
 
 ## Key pages
-- https://zecbooks.app
-- https://zecbooks.app/privacy
-- https://zecbooks.app/guides
-- https://zecbooks.app/guides/what-is-a-viewing-key
-- https://zecbooks.app/guides/export-ufvk-from-zashi
-- https://zecbooks.app/guides/build-a-proof-pack
-- https://zecbooks.app/guides/share-proof-pack-safely
-- https://zecbooks.app/guides/proof-pack-vs-csv
-- https://zecbooks.app/guides/open-proof-pack-reader
+- [Home](https://zecbooks.app): what ZecBooks does and download
+- [For exchanges and custodians](https://zecbooks.app/institutions/): the zecbooks command
+- [Privacy](https://zecbooks.app/privacy/): what stays on your Mac
+
+## Guides
+- [All guides](https://zecbooks.app/guides/)
+- [What Is a Zcash Viewing Key? UFVK vs UIVK vs Seed](https://zecbooks.app/guides/what-is-a-viewing-key/): A Zcash viewing key can see shielded activity but cannot spend. How full and incoming viewing keys differ from recovery words, and which ZecBooks accepts.
+- [How to Export a Zcash Viewing Key (UFVK) From Zashi](https://zecbooks.app/guides/export-ufvk-from-zashi/): Export a view-only unified full viewing key from Zashi or Zodl and import it into ZecBooks on your Mac. Never move your recovery words.
+- [How to Build a Locked Zcash Tax Package for Your Accountant](https://zecbooks.app/guides/build-a-proof-pack/): Classify income, change, expense and fees, pick the rows, set an expiry date and export a locked file for your accountant. It holds no keys.
+- [How to Share Zcash Books With Your Accountant Safely](https://zecbooks.app/guides/share-proof-pack-safely/): Send your accountant a locked, expiring ZecBooks file instead of your viewing key or recovery words. What to send, what never to send, and what expiry does.
+- [Locked Tax Package vs CSV and PDF: What to Send](https://zecbooks.app/guides/proof-pack-vs-csv/): When to send a locked, expiring ZecBooks tax package and when a plain CSV or PDF export is enough. CSV and PDF files never expire.
+- [How to Open a ZecBooks Tax Package (for Accountants)](https://zecbooks.app/guides/open-proof-pack-reader/): Got a .sanebooks file from a client? Open it in ZecBooks for Mac with the passphrase they gave you. No viewing key, no sync and no account needed.

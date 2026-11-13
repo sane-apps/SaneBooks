@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZecBooks: Shield your ZEC. Pass the audits.</title>
-  <meta name="description" content="View-only books for shielded Zcash. Exchanges and custodians keep the spending key offline and hand auditors an expiring proof pack that cannot spend.">
+  <title>ZecBooks: Shielded Zcash Books That Pass the Audits</title>
+  <meta name="description" content="View-only books for shielded Zcash. A Mac app and a zecbooks command classify income and change, then hand your accountant an expiring file that cannot spend.">
   <link rel="canonical" href="https://zecbooks.app">
   <meta name="author" content="Mr. Sane">
   <meta name="robots" content="index, follow">
@@ -19,8 +19,8 @@
   <link rel="stylesheet" href="/site.css?v=20260925a">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ZecBooks: Shield your ZEC. Pass the audits.">
-  <meta property="og:description" content="View-only books for shielded Zcash. Exchanges and custodians keep the spending key offline and hand auditors an expiring proof pack that cannot spend.">
+  <meta property="og:title" content="ZecBooks: Shielded Zcash Books That Pass the Audits">
+  <meta property="og:description" content="View-only books for shielded Zcash. A Mac app and a zecbooks command classify income and change, then hand your accountant an expiring file that cannot spend.">
   <meta property="og:url" content="https://zecbooks.app">
   <meta property="og:site_name" content="ZecBooks">
   <meta property="og:locale" content="en_US">
@@ -34,8 +34,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@MrSaneApps">
   <meta name="twitter:url" content="https://zecbooks.app">
-  <meta name="twitter:title" content="ZecBooks: Shield your ZEC. Pass the audits.">
-  <meta name="twitter:description" content="View-only books for shielded Zcash. Exchanges and custodians keep the spending key offline and hand auditors an expiring proof pack that cannot spend.">
+  <meta name="twitter:title" content="ZecBooks: Shielded Zcash Books That Pass the Audits">
+  <meta name="twitter:description" content="View-only books for shielded Zcash. A Mac app and a zecbooks command classify income and change, then hand your accountant an expiring file that cannot spend.">
   <meta name="twitter:image" content="https://zecbooks.app/images/og-image-20260925.png?v=20260925-inst">
   <meta name="twitter:image:alt" content="ZecBooks. Shield your ZEC. Pass the audits. Stay compliant.">
 
@@ -47,7 +47,7 @@
     "name": "ZecBooks",
     "operatingSystem": "macOS 14 or later, Windows, Linux",
     "applicationCategory": "FinanceApplication",
-    "description": "View-only books for shielded Zcash. A Mac app for a person and their accountant, and a zecbooks command for an exchange or custodian. Neither one can spend.",
+    "description": "View-only books for shielded Zcash. A Mac app for a person and their accountant, and a zecbooks command for an exchange or custodian. Neither one can spend. Free under the MIT license.",
     "url": "https://zecbooks.app",
     "downloadUrl": "https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip",
     "softwareVersion": "0.1.1",
@@ -55,11 +55,16 @@
     "author": { "@type": "Person", "name": "Mr. Sane", "url": "https://github.com/sane-apps" },
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "featureList": [
-      "View-only books from an incoming or full viewing key",
+      "View-only books from a full or incoming viewing key",
       "zecbooks command for Windows, Linux, and macOS",
+      "Scans Sapling, Orchard, and Ironwood notes",
       "Classify income, change, expense, and fees",
-      "Send a locked tax package to your accountant",
-      "Accountant reviews selected rows without wallet access",
+      "zecbooks command marks change-address notes as change, kept out of income",
+      "zecbooks command flags a late-start scan as partial history",
+      "Send a locked, expiring tax package to your accountant",
+      "Memos stay out of tax packages unless you include them",
+      "Accountant opens the package with no viewing key",
+      "Standard, Large, and Extra Large text sizes",
       "Cannot spend ZEC"
     ]
   }
@@ -78,7 +83,7 @@
         <a href="#watch">Watch</a>
         <a href="#how">How it works</a>
         <a href="#product">Product</a>
-        <a href="/guides">Guides</a>
+        <a href="/guides/">Guides</a>
         <a href="https://saneapps.com">Sane Apps</a>
         <a class="button button-primary" href="https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip">Download for Mac</a>
       </div>
@@ -89,7 +94,7 @@
           <a href="#watch">Watch</a>
           <a href="#how">How it works</a>
           <a href="#product">Product</a>
-          <a href="/guides">Guides</a>
+          <a href="/guides/">Guides</a>
           <a href="https://saneapps.com">Sane Apps</a>
           <a href="https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip">Download for Mac</a>
         </div>
@@ -109,7 +114,7 @@
           <a class="button button-primary" href="#institutions">For institutions</a>
           <a class="button button-ghost" href="https://dist.zecbooks.app/updates/ZecBooks-0.1.1.zip">Download for Mac</a>
         </div>
-        <p class="hero-note">Not a wallet. This app cannot spend ZEC. Never paste recovery words (a seed phrase).</p>
+        <p class="hero-note">Free. MIT license. macOS 14 or later. Not a wallet: this app cannot spend ZEC. Never paste recovery words (a seed phrase).</p>
       </div>
       <div class="hero-stage">
         <img class="hero-shot" src="/images/shot-ledger.png?v=20260804f" width="1040" height="720" alt="ZecBooks ledger with classified shielded notes for bookkeeping">
@@ -250,7 +255,7 @@ zecbooks open --pack year.sanebooks \
         <h2 class="section-title reveal">Safe setup for tax season</h2>
         <p class="section-lede reveal">Short walkthroughs: what a view-only key is, how to export one, and how to build a file your accountant can open.</p>
         <div class="guide-preview reveal">
-          <a class="guide-teaser" href="/guides/what-is-a-viewing-key">
+          <a class="guide-teaser" href="/guides/what-is-a-viewing-key/">
             <div>
               <p class="label">Basics</p>
               <h3>What is a view-only key?</h3>
@@ -258,7 +263,7 @@ zecbooks open --pack year.sanebooks \
             </div>
             <span class="more">Read guide →</span>
           </a>
-          <a class="guide-teaser" href="/guides/export-ufvk-from-zashi">
+          <a class="guide-teaser" href="/guides/export-ufvk-from-zashi/">
             <div>
               <p class="label">Setup</p>
               <h3>Export a view-only key from Zashi</h3>
@@ -266,7 +271,7 @@ zecbooks open --pack year.sanebooks \
             </div>
             <span class="more">Read guide →</span>
           </a>
-          <a class="guide-teaser" href="/guides/build-a-proof-pack">
+          <a class="guide-teaser" href="/guides/build-a-proof-pack/">
             <div>
               <p class="label">Workflow</p>
               <h3>Build a tax package</h3>
@@ -276,7 +281,7 @@ zecbooks open --pack year.sanebooks \
           </a>
         </div>
         <div class="guides-all reveal">
-          <a class="button button-ghost" href="/guides">All guides</a>
+          <a class="button button-ghost" href="/guides/">All guides</a>
         </div>
       </div>
     </section>
@@ -301,8 +306,8 @@ zecbooks open --pack year.sanebooks \
     <div class="wrap footer-grid">
       <div>ZecBooks by <a href="https://saneapps.com">SaneApps</a> · MIT license · Mac app and the <code>zecbooks</code> command</div>
       <div class="footer-links">
-        <a href="/guides">Guides</a>
-        <a href="/privacy">Privacy</a>
+        <a href="/guides/">All Guides</a>
+        <a href="/privacy/">Privacy</a>
         <a href="https://saneapps.com">Sane Apps</a>
         <a href="https://github.com/sane-apps/SaneBooks">Source</a>
         <a href="mailto:hi@saneapps.com">hi@saneapps.com</a>

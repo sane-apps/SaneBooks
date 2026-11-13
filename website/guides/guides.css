@@ -182,3 +182,7 @@ tr:last-child td { border-bottom: 0; }
   .nav-menu { display: block; }
   .guide-grid { grid-template-columns: 1fr; }
 }
+
+/* Questions block (SEO pass 2026-11-12) */
+.faq h3 { margin: 26px 0 8px; }
+.faq p { margin: 0; }
